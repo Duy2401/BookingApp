@@ -7,6 +7,8 @@ const cookieParser = require("cookie-parser");
 
 // ROUTER
 const AuthRouter = require("./routers/Auth");
+const HotelRouter = require("./routers/Hotel");
+const FlightRouter = require("./routers/Flight");
 
 dotenv.config();
 const app = express();
@@ -27,8 +29,12 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
+// Router
 app.use("/v1/auth", AuthRouter);
+app.use("/v1/hotel", HotelRouter);
+app.use("/v1/flight", FlightRouter);
 
+// PORT RUN SERVER
 app.listen(8000, () => {
   console.log("Server is running");
 });

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Flight = require("./Flight");
 const Schema = mongoose.Schema;
 
 const FlightTypesSchema = new Schema({
@@ -10,13 +11,23 @@ const FlightTypesSchema = new Schema({
     type: String,
     require: true,
   },
-  FlightTypes_price: {
-    type: Number,
-    require: true,
-  },
-  FlightTypes_availableRooms: {
-    type: Number,
-    require: true,
+  FlightTypes_desc: {
+    desc_id: {
+      type: String,
+      default: null,
+    },
+    desc_title: {
+      type: String,
+      default: null,
+    },
+    desc_prices: {
+      type: Number,
+      default: null,
+    },
+    availableSeats: {
+      type: Number,
+      default: null,
+    },
   },
 });
 module.exports = mongoose.model("FlightTypes", FlightTypesSchema);

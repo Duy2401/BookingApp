@@ -130,6 +130,30 @@ const AuthController = {
       return res.status(200).json(returnedCustomers);
     }
   },
+  // Refresh Token save in DB redis when access Token expires get and compare
+  RequestRefreshToken: async (req, res) => {
+    const refreshToken = res.cookies.refreshToken;
+    if (!refreshToken) return res.status(401).json("You're not Authenticated");
+    jwt.verify(refreshToken, process.env.KEY_REFRESH_TOKEN, (error, user) => {
+      if (error) console.log(error);
+      const newAccessToken = AuthController.CreateAccessToken(user);
+      const newRefreshToken = AuthController.CreateRefreshToken(user);
+      res.cookie("RefreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        path: "/",
+        sameSite: "none",
+      });
+      return res
+        .status(200)
+        .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+    });
+  },
+  // ACCOUNT LOGOUT
+  Logout: async (req, res) => {
+    res.clearCookie("refreshToken");
+    return res.status(200).json("Logout successfully");
+  },
 };
 
 module.exports = AuthController;

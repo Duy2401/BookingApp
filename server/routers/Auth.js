@@ -11,4 +11,9 @@ router.post("/register", AuthController.RegisterCustomers);
 
 router.post("/login", AuthController.LoginCustomers);
 
+// Request refreshToken
+router.post("/refresh", AuthController.RequestRefreshToken);
+
+// Router of Logout
+router.post("/logout", AuthController.Logout);
 module.exports = router;
