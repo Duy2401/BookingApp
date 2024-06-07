@@ -57,12 +57,14 @@ const HotelsController = {
       const newHotelType = new HotelsType({
         HotelTypes_id: req.body.HotelTypes_id,
         HotelTypes_name: req.body.HotelTypes_name,
-        HotelTypes_desc: {
-          desc_id: req.body.desc_id,
-          desc_title: req.body.desc_title,
-          desc_prices: req.body.desc_prices,
-          availableRooms: req.body.availableRooms,
-        },
+        HotelTypes_desc: [
+          {
+            desc_id: req.body.desc_id,
+            desc_title: req.body.desc_title,
+            desc_prices: req.body.desc_prices,
+            availableRooms: req.body.availableRooms,
+          },
+        ],
       });
       const hotelType = await newHotelType.save();
       return res.status(200).json(hotelType);

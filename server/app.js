@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const AuthRouter = require("./routers/Auth");
 const HotelRouter = require("./routers/Hotel");
 const FlightRouter = require("./routers/Flight");
+const TourRouter = require("./routers/Tour");
 
 dotenv.config();
 const app = express();
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use("/v1/auth", AuthRouter);
 app.use("/v1/hotel", HotelRouter);
 app.use("/v1/flight", FlightRouter);
+app.use("/v1/tour", TourRouter);
 
 // PORT RUN SERVER
 app.listen(8000, () => {

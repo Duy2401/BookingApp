@@ -10,24 +10,26 @@ const HotelTypeSchema = new Schema({
     type: String,
     require: true,
   },
-  HotelTypes_desc: {
-    desc_id: {
-      type: String,
-      default: null,
+  HotelTypes_desc: [
+    {
+      desc_id: {
+        type: String,
+        default: null,
+      },
+      desc_title: {
+        type: String,
+        default: null,
+      },
+      desc_prices: {
+        type: Number,
+        default: null,
+      },
+      availableRooms: {
+        type: Number,
+        default: null,
+      },
     },
-    desc_title: {
-      type: String,
-      default: null,
-    },
-    desc_prices: {
-      type: Number,
-      default: null,
-    },
-    availableRooms: {
-      type: Number,
-      default: null,
-    },
-  },
+  ],
 });
 
 module.exports = mongoose.model("HotelTypes", HotelTypeSchema);

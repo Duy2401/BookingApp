@@ -11,23 +11,13 @@ const FlightTypesSchema = new Schema({
     type: String,
     require: true,
   },
-  FlightTypes_desc: {
-    desc_id: {
-      type: String,
-      default: null,
-    },
-    desc_title: {
-      type: String,
-      default: null,
-    },
-    desc_prices: {
-      type: Number,
-      default: null,
-    },
-    availableSeats: {
-      type: Number,
-      default: null,
-    },
+  FlightTypes_availableSeats: {
+    type: Number,
+    require: true,
+  },
+  FlightTypes_prices: {
+    type: Number,
+    require: true,
   },
 });
 module.exports = mongoose.model("FlightTypes", FlightTypesSchema);

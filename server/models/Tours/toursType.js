@@ -9,18 +9,26 @@ const TourTypesSchema = new Schema({
     type: String,
     require: true,
   },
-  TourTypes_price: {
-    type: Number,
-    require: true,
-  },
-  TourTypes_availableSeats: {
-    type: Number,
-    require: true,
-  },
-  TourTypes_description: {
-    type: String,
-    require: true,
-  },
+  TourTypes_desc: [
+    {
+      desc_id: {
+        type: String,
+        default: null,
+      },
+      desc_title: {
+        type: String,
+        default: null,
+      },
+      desc_prices: {
+        type: Number,
+        default: null,
+      },
+      availableSeats: {
+        type: Number,
+        default: null,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("TourTypes", TourTypesSchema);
