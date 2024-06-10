@@ -30,6 +30,24 @@ const BookingToursSchema = new Schema({
     ref: "ToursPackages",
     require: true,
   },
+  QuantityPeople: {
+    adult: {
+      type: Number,
+      require: true,
+    },
+    child: {
+      type: Number,
+      require: true,
+    },
+    AgeChild: {
+      type: Number,
+      require: true,
+    },
+  },
+  PaymentMethod: {
+    type: String,
+    require: true,
+  },
   Booking_status: {
     type: Number,
     require: true,

@@ -15,9 +15,27 @@ const TicketFlightSchema = new Schema({
     type: Date,
     require: true,
   },
+  QuantityPeople: {
+    adult: {
+      type: Number,
+      require: true,
+    },
+    child: {
+      type: Number,
+      require: true,
+    },
+    AgeChild: {
+      type: Number,
+      require: true,
+    },
+  },
+  PaymentMethod: {
+    type: String,
+    require: true,
+  },
   TicketFlight_status: {
     type: Number,
     require: true,
   },
 });
-module.exports = mongoose.model("icketFlights", TicketFlightSchema);
+module.exports = mongoose.model("TicketFlights", TicketFlightSchema);
