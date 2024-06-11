@@ -1,11 +1,10 @@
-const BookingHotel = require("../models/Booking/bookingHotel");
-const BookingTour = require("../models/Booking/bookingTour");
+const Booking = require("../models/Booking/booking");
 const TicketFlight = require("../models/Booking/ticketFlight");
 
 const BookingController = {
-  CreateBookingHotel: async (req, res) => {
+  CreateBooking: async (req, res) => {
     try {
-      const newBookingHotel = new BookingHotel({
+      const newBooking = new Booking({
         Booking_id: req.body.Booking_id,
         Booking_Type: req.body.Booking_Type,
         Booking_customer_id: req.body.Booking_customer_id,
@@ -13,42 +12,7 @@ const BookingController = {
           check_in: req.body.check_in,
           check_out: req.body.check_out,
         },
-        Booking_hotel_id: req.body.Booking_hotel_id,
-        QuantityPeople: {
-          adult: req.body.adult,
-          child: req.body.child,
-          AgeChild: req.body.AgeChild,
-        },
-        PaymentMethod: req.body.PaymentMethod,
-        Booking_status: req.bodyBooking_status,
-      });
-      const bookinghotel = await newBookingHotel.save();
-      return res.status(200).json(bookinghotel);
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  },
-  UpdateBookingHotel: async (req, res) => {
-    try {
-      const editBookingHotel = await BookingHotel.findById(req.params.id);
-      await editBookingHotel.updateOne({ $set: req.body });
-      return res.status(200).json("Update Booking Hotel Successfully");
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  },
-
-  CreateBookingTour: async (req, res) => {
-    try {
-      const newBookingTour = new BookingTour({
-        Booking_id: req.body.Booking_id,
-        Booking_Type: req.body.Booking_Type,
-        Booking_customer_id: req.body.Booking_customer_id,
-        Booking_date: {
-          check_in: req.body.check_in,
-          check_out: req.body.check_out,
-        },
-        Booking_tour_id: req.body.Booking_tour_id,
+        Booking_service_id: req.body.Booking_service_id,
         QuantityPeople: {
           adult: req.body.adult,
           child: req.body.child,
@@ -57,17 +21,37 @@ const BookingController = {
         PaymentMethod: req.body.PaymentMethod,
         Booking_status: req.body.Booking_status,
       });
-      const bookingtour = await newBookingTour.save();
-      return res.status(200).json(bookingtour);
+      const booking = await newBooking.save();
+      return res.status(200).json(booking);
     } catch (error) {
       return res.status(500).json(error);
     }
   },
-  UpdateBookingTour: async (req, res) => {
+  UpdateBooking: async (req, res) => {
     try {
-      const editBookingTour = await BookingTour.findById(req.params.id);
-      await editBookingTour.updateOne({ $set: req.body });
-      return res.status(200).json("Update Booking Tour Successfully");
+      const editBookingHotel = await BookingHotel.findById(req.params.id);
+      await editBookingHotel.updateOne({ $set: req.body });
+      return res.status(200).json("Update Booking Hotel Successfully");
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+  GetBooking: async (req, res) => {
+    try {
+      const booking = await Booking.findById(req.params.id)
+        .populate("Booking_service_id")
+        .populate("Booking_customer_id");
+      return res.status(200).json(booking);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+  GetAllBooking: async (req, res) => {
+    try {
+      const bookings = await Booking.find()
+        .populate("Booking_service_id")
+        .populate("Booking_customer_id");
+      return res.status(200).json(bookings);
     } catch (error) {
       return res.status(500).json(error);
     }

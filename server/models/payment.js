@@ -6,8 +6,13 @@ const PaymentSchema = new Schema({
     type: String,
     require: true,
   },
-  Payment_amount: {
+  Payment_TotalAmount: {
     type: Number,
+    require: true,
+  },
+  Payment_Service_id: {
+    type: Schema.Types.ObjectId,
+    ref: ["BookingSchema", "TicketFlights"],
     require: true,
   },
   Payment_date: {

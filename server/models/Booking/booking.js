@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const BookingToursSchema = new Schema({
+const BookingSchema = new Schema({
   Booking_id: {
     type: String,
     require: true,
@@ -25,9 +25,9 @@ const BookingToursSchema = new Schema({
       require: true,
     },
   },
-  Booking_tour_id: {
+  Booking_service_id: {
     type: Schema.Types.ObjectId,
-    ref: "ToursPackages",
+    ref: ["Hotels", "ToursPackages"],
     require: true,
   },
   QuantityPeople: {
@@ -53,4 +53,4 @@ const BookingToursSchema = new Schema({
     require: true,
   },
 });
-module.exports = mongoose.model("BookingTours", BookingToursSchema);
+module.exports = mongoose.model("BookingSchema", BookingSchema);
