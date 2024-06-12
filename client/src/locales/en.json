@@ -1,0 +1,8 @@
+{
+    "common": {
+      "button": {
+        "signin": "Sign In",
+        "register": "Register"
+      }
+    }
+  }

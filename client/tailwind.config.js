@@ -1,11 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
-  content: ["./src/*.js"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    colors: {
-      primary: "var(--color-primary)",
-      secondary: "var(--color-secondary)",
+    extend: {
+      fontFamily: {
+        Nunito: ["Nunito Sans", "sans-serif"],
+      },
+      colors: {
+        backgroud: "#003b95",
+      },
     },
   },
   plugins: [],

@@ -1,0 +1,9 @@
+{
+    "common": {
+      "button": {
+        "signin": "Đăng nhập",
+        "register": "Đăng ký"
+      }
+      
+    }
+  }
