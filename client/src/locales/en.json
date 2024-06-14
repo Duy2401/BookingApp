@@ -3,6 +3,12 @@
       "button": {
         "signin": "Sign In",
         "register": "Register"
+      },
+      "navigation":{
+        "stays":"Stays",
+        "flights":"Flights",
+        "tours":"Attractions",
+        "partners":"Become a partner"
       }
     }
   }

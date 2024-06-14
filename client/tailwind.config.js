@@ -9,6 +9,7 @@ module.exports = {
       },
       colors: {
         backgroud: "#003b95",
+        bgHover: "#1a4fa0",
       },
     },
   },

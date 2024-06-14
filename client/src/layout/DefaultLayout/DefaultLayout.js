@@ -1,8 +1,7 @@
-import Header from "../../components/Header/Header";
-
+import Header from "../components/Header/Header";
 function DefaultLayout({ children }) {
   return (
-    <div className="wrapper max-w-full">
+    <div className="wrapper">
       <Header />
       <div className="container">
         <div className="content">{children}</div>

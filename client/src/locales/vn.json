@@ -3,6 +3,12 @@
       "button": {
         "signin": "Đăng nhập",
         "register": "Đăng ký"
+      },
+      "navigation":{
+        "stays":"Lưu trú",
+        "flights":"Chuyến bay",
+        "tours":"Địa điểm tham quan",
+        "partners":"Trở thành đối tác"
       }
       
     }
