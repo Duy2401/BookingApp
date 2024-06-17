@@ -1,6 +1,6 @@
 import Navigation from "../../layout/components/Navigation";
-import Search from "../../layout/components/Search/Search";
 import SubtitileBanner from "../../layout/components/SubtitleBanner/index";
+import SearchHotel from "../../layout/components/Search/SearchHotel/SearchHotel";
 function Home() {
   return (
     <div className="bg-backgroud">
@@ -11,7 +11,7 @@ function Home() {
         titleSecond="địa điểm kế tiếp của bạn là chỗ nào? "
         titleThird="Tìm ưu đãi Genius đặc biệt tại khắp nơi trên thế giới!"
       />
-      <Search />
+      <SearchHotel />
     </div>
   );
 }

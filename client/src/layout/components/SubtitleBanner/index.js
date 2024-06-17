@@ -1,9 +1,9 @@
 const SubtitileBanner = ({ titleFirst, titleSecond, titleThird, ...props }) => {
-  let user = true;
+  let user = false;
   const userName = "Duy";
   return (
-    <div className="heading_website px-9">
-      <div className="text-white h-36 mx-48 my-10">
+    <div className="px-9 pb-8">
+      <div className="text-white mx-48 my-10">
         <h1 {...props}>
           {!user && <span>{titleFirst}</span>}
           {user && titleSecond && (
@@ -13,7 +13,7 @@ const SubtitileBanner = ({ titleFirst, titleSecond, titleThird, ...props }) => {
             </>
           )}
         </h1>
-        <p className="text-2xl mt-3 tracking-widest ">{titleThird}</p>
+        <p className="text-2xl mt-3 tracking-widest w-3/4">{titleThird}</p>
       </div>
     </div>
   );
