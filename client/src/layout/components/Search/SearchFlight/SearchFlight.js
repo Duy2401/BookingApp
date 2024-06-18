@@ -1,6 +1,7 @@
 import Button from "../../../../components/Button/button";
-
+import { useTranslation } from "react-i18next";
 const SearchFlight = () => {
+  const { t } = useTranslation();
   return (
     <div className="absolute max-w-mw_11 w-w_10 left-2/4 translate-x-trans_x translate-y-trans_y">
       <div className="flex items-center bg-yellow-400 text-black h-14 p-1 rounded">
@@ -46,7 +47,7 @@ const SearchFlight = () => {
         </div>
         <div className="flex items-center text-white mr-1">
           <Button className="bg-btnSearch text-xl font-bold rounded p-p_9_24">
-            Tìm
+            {t("common.button.search")}
           </Button>
         </div>
       </div>

@@ -2,7 +2,8 @@
     "common": {
       "button": {
         "signin": "Sign In",
-        "register": "Register"
+        "register": "Register",
+        "search":"Search"
       },
       "navigation":{
         "stays":"Stays",

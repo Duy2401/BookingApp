@@ -2,7 +2,8 @@
     "common": {
       "button": {
         "signin": "Đăng nhập",
-        "register": "Đăng ký"
+        "register": "Đăng ký",
+        "search":"Tìm"
       },
       "navigation":{
         "stays":"Lưu trú",
