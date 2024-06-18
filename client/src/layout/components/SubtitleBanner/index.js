@@ -3,7 +3,7 @@ const SubtitileBanner = ({ titleFirst, titleSecond, titleThird, ...props }) => {
   const userName = "Duy";
   return (
     <div className="px-9 pb-8">
-      <div className="text-white mx-48 my-10">
+      <div className="text-white mx-48 my-10 font-Nunito">
         <h1 {...props}>
           {!user && <span>{titleFirst}</span>}
           {user && titleSecond && (

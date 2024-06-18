@@ -25,12 +25,18 @@ module.exports = {
       maxWidth: {
         mw_11: "1100px",
       },
+      minWidth: {
+        mw_326: "326px",
+      },
       padding: {
         p_9_24: "9px 24px",
       },
       translate: {
         trans_x: "-50%",
         trans_y: "-30px",
+      },
+      boxShadow: {
+        box_shawdow_200: "0 2px 16px 0 rgba(26,26,26,0.24);",
       },
     },
   },

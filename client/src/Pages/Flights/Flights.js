@@ -1,7 +1,8 @@
 import Navigation from "../../layout/components/Navigation";
-import SubtitileBanner from "../../layout/components/SubtitleBanner/index";
-import SearchHotel from "../../layout/components/Search/SearchHotel/SearchHotel";
-function Home() {
+import SearchFlight from "../../layout/components/Search/SearchFlight/SearchFlight";
+import SubtitileBanner from "../../layout/components/SubtitleBanner";
+
+function Flights() {
   return (
     <div className="bg-backgroud">
       <Navigation />
@@ -11,9 +12,8 @@ function Home() {
         titleSecond="địa điểm kế tiếp của bạn là chỗ nào? "
         titleThird="Tìm ưu đãi Genius đặc biệt tại khắp nơi trên thế giới!"
       />
-      <SearchHotel />
+      <SearchFlight />
     </div>
   );
 }
-
-export default Home;
+export default Flights;

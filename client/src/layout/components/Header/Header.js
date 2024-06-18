@@ -20,7 +20,7 @@ function Header() {
   };
   return (
     <header className="px-9 pt-2 bg-backgroud">
-      <div className="flex items-center text-white h-16 mx-48">
+      <div className="flex items-center text-white h-16 mx-48 font-Nunito">
         <div className="logo flex-grow">
           <p className="font-Nunito font-bold text-3xl">Booking.com</p>
         </div>

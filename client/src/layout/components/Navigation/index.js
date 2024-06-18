@@ -1,12 +1,19 @@
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import Button from "../../../components/Button/button";
 const Navigation = () => {
   const { t } = useTranslation();
+  const location = useLocation();
   return (
     <nav className="bg-backgroud px-9">
-      <div className="flex items-center text-white h-16 mx-48">
+      <div className="flex items-center text-white h-16 mx-48 font-Nunito">
         <Button
-          className="flex p-3 text-base items-center bg-bgHover rounded-3xl"
+          href="/"
+          className={
+            location.pathname === "/"
+              ? "flex p-3 text-base items-center bg-bgHover rounded-3xl hover:bg-bgHover"
+              : "flex p-3 text-base items-center rounded-3xl hover:bg-bgHover"
+          }
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +31,12 @@ const Navigation = () => {
           {t("common.navigation.stays")}
         </Button>
         <Button
-          className="flex p-3 ml-3 text-base items-center hover:bg-bgHover rounded-3xl"
+          href="/flights"
+          className={
+            location.pathname === "/flights"
+              ? "flex p-3 ml-3 text-base items-center hover:bg-bgHover  bg-bgHover rounded-3xl"
+              : "flex p-3 ml-3 text-base items-center hover:bg-bgHover rounded-3xl"
+          }
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +54,12 @@ const Navigation = () => {
           {t("common.navigation.flights")}
         </Button>
         <Button
-          className="flex p-3 ml-3 text-base items-center hover:bg-bgHover rounded-3xl"
+          href="/attractions"
+          className={
+            location.pathname === "/attractions"
+              ? "flex p-3 ml-3 text-base items-center hover:bg-bgHover  bg-bgHover rounded-3xl"
+              : "flex p-3 ml-3 text-base items-center hover:bg-bgHover rounded-3xl"
+          }
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +78,11 @@ const Navigation = () => {
           {t("common.navigation.tours")}
         </Button>
         <Button
-          className="flex p-3 ml-3 text-base items-center hover:bg-bgHover rounded-3xl"
+          className={
+            location.pathname === ""
+              ? "flex p-3 ml-3 text-base items-center hover:bg-bgHover  bg-bgHover rounded-3xl"
+              : "flex p-3 ml-3 text-base items-center hover:bg-bgHover rounded-3xl"
+          }
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
