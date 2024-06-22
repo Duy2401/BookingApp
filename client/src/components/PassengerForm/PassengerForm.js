@@ -1,51 +1,89 @@
 import React, { useState } from "react";
-const PassengerForm = (props) => {
-  const [adultTickets, setAdultTickets] = useState(0);
-  const [childTickets, setChildTickets] = useState(0);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = {
-      adultTickets: adultTickets,
-      childTickets: childTickets,
-    };
-    props.onSubmit(formData);
+const FormNumber = () => {
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(1);
+  const [childrenAges, setChildrenAges] = useState([]);
+
+  const handleAdultChange = (event) => {
+    const newAdults = parseInt(event.target.value);
+    setAdults(newAdults);
+
+    if (newAdults < children) {
+      setChildren(newAdults);
+      updateChildrenAges(newAdults);
+    } else {
+      updateChildrenAges(newAdults);
+    }
   };
+
+  const handleChildChange = (event) => {
+    const newChildren = parseInt(event.target.value);
+    setChildren(newChildren);
+    updateChildrenAges(newChildren);
+  };
+
+  const updateChildrenAges = (newChildren) => {
+    const newChildrenAges = [];
+    for (let i = 0; i < newChildren; i++) {
+      newChildrenAges.push({ id: i, age: 0 });
+    }
+    setChildrenAges(newChildrenAges);
+  };
+
+  const handleChildAgeChange = (event) => {
+    const childId = parseInt(event.target.name.split("-")[2]);
+    const newAge = parseInt(event.target.value);
+
+    const updatedChildrenAges = [...childrenAges];
+    updatedChildrenAges[childId] = { id: childId, age: newAge };
+    setChildrenAges(updatedChildrenAges);
+  };
+
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      <div className="absolute bg-white p-2.5 right-28 rounded top-16 min-w-mw_326 shadow-box_shawdow_200">
-        <div className="flex flex-col">
-          <label className="mb-2 text-sm font-medium">Số người lớn:</label>
-          <input
-            type="number"
-            id="adult-tickets"
-            className="rounded-md border border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            min="1"
-            max="30"
-            value={adultTickets}
-            onChange={(e) => setAdultTickets(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-2 text-sm font-medium">Số trẻ em:</label>
-          <input
-            type="number"
-            id="child-tickets"
-            className="rounded-md border border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            min="1"
-            max="30"
-            value={childTickets}
-            onChange={(e) => setChildTickets(e.target.value)}
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full text-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Xong
-        </button>
+    <div className="passenger-input">
+      <div>
+        <label htmlFor="adults">Người lớn:</label>
+        <input
+          type="number"
+          id="adults"
+          name="adults"
+          min="1"
+          value={adults}
+          onChange={handleAdultChange}
+          required
+        />
       </div>
-    </form>
+
+      <div>
+        <label htmlFor="children">Trẻ em:</label>
+        <input
+          type="number"
+          id="children"
+          name="children"
+          min="0"
+          value={children}
+          onChange={handleChildChange}
+        />
+      </div>
+
+      {childrenAges.map((child) => (
+        <div key={child.id}>
+          <label htmlFor={`child-age-${child.id}`}>
+            Độ tuổi trẻ em {child.id + 1}:
+          </label>
+          <input
+            type="number"
+            id={`child-age-${child.id}`}
+            name={`child-age-${child.id}`}
+            min="0"
+            value={child.age}
+            onChange={handleChildAgeChange}
+          />
+        </div>
+      ))}
+    </div>
   );
 };
-export default PassengerForm;
+
+export default FormNumber;

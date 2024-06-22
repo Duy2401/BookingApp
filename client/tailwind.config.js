@@ -14,6 +14,7 @@ module.exports = {
         backgroud: "#003b95",
         bgHover: "#1a4fa0",
         btnSearch: "#006ce4",
+        iconGrey: "#595959",
       },
       flex: {
         flex25: "0 0 25%",
