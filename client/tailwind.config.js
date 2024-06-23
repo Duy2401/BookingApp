@@ -15,6 +15,7 @@ module.exports = {
         bgHover: "#1a4fa0",
         btnSearch: "#006ce4",
         iconGrey: "#595959",
+        btnText: "rgba(0,108,228,0.06);",
       },
       flex: {
         flex25: "0 0 25%",
@@ -22,6 +23,7 @@ module.exports = {
       },
       width: {
         w_10: "calc(100% - 10px)",
+        w_50: "calc(50% - 9px)",
       },
       maxWidth: {
         mw_11: "1100px",
@@ -35,6 +37,12 @@ module.exports = {
       translate: {
         trans_x: "-50%",
         trans_y: "-30px",
+      },
+      borderColor: {
+        border_color_1: "#868686",
+      },
+      borderWidth: {
+        bder_1: "1px",
       },
       boxShadow: {
         box_shawdow_200: "0 2px 16px 0 rgba(26,26,26,0.24);",

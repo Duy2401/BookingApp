@@ -8,7 +8,10 @@ const SearchFlight = () => {
   const show = useRef(null);
   const [datetime, setDatetime] = useState("");
   const [showForm, setShowForm] = useState(false);
-
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [seats, setSeats] = useState(1);
+  const [childrenAges, setChildrenAges] = useState([]);
   const handleChangeDate = (newValue) => {
     setDatetime(newValue);
   };
@@ -26,7 +29,14 @@ const SearchFlight = () => {
     setPassengerData(data);
     setShowForm(false);
   };
-
+  const handleSubmitValue = () => {
+    const formData = {
+      adults: adults,
+      children: children,
+      childrenAges: childrenAges,
+    };
+    console.log(formData);
+  };
   useEffect(() => {
     document.addEventListener("click", handleShowForm);
     return () => document.removeEventListener("click", handleShowForm);
@@ -69,7 +79,7 @@ const SearchFlight = () => {
         <div
           ref={show}
           onClick={(e) => handleShowForm(e)}
-          className="flex items-center bg-white rounded flex-1 p-2 mr-1 "
+          className="flex items-center bg-white rounded flex-1 p-2 mr-1 relative"
         >
           <span>
             <svg
@@ -84,20 +94,22 @@ const SearchFlight = () => {
               </g>
             </svg>
           </span>
-          {passengerData ? (
-            <span className="w-full outline-0 px-2 py-1" type="datetime-local">
-              {passengerData.adultTickets} người lớn ·
-              {passengerData.childTickets} trẻ em · {passengerData.roomsNumber}{" "}
-              phòng
-            </span>
-          ) : (
-            <input
-              className="w-full outline-0 px-2 py-1 "
-              type="text"
-              placeholder="Người lớn · Trẻ em · Phòng"
+          <span className="w-full outline-0 px-2 py-1">
+            {adults} người lớn . {children} trẻ em
+          </span>
+          {showForm && (
+            <PassengerForm
+              adults={adults}
+              setAdults={setAdults}
+              children={children}
+              setChildren={setChildren}
+              childrenAges={childrenAges}
+              setChildrenAges={setChildrenAges}
+              seats={seats}
+              setSeats={setSeats}
+              handleSubmitValue={handleSubmitValue}
             />
           )}
-          {showForm && <PassengerForm seats onSubmit={handleFormSubmit} />}
         </div>
         <div className="flex items-center text-white mr-1">
           <Button className="bg-btnSearch text-xl font-bold rounded p-p_9_24">
