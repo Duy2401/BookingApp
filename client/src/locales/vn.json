@@ -3,13 +3,22 @@
       "button": {
         "signin": "Đăng nhập",
         "register": "Đăng ký",
-        "search":"Tìm"
+        "search":"Tìm",
+        "done":"Xong"
       },
       "navigation":{
         "stays":"Lưu trú",
         "flights":"Chuyến bay",
         "tours":"Địa điểm tham quan",
         "partners":"Trở thành đối tác"
+      },
+      "search":{
+        "locations":"Bạn muốn đi đâu ?",
+        "checkInDate":"Ngày nhận phòng - Ngày trả phòng",
+        "adults":"Người lớn",
+        "childs":"Trẻ em",
+        "rooms":"Phòng",
+        "seats":"Ghế"
       }
       
     }

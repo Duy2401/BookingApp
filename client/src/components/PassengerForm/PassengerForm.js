@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../Button/button";
-
+import { useTranslation } from "react-i18next";
 const PassengerForm = ({
   adults,
   setAdults,
@@ -10,15 +10,15 @@ const PassengerForm = ({
   rooms,
   setRooms,
   seats,
-  setSeat,
+  setSeats,
   setChildrenAges,
   handleSubmitValue,
 }) => {
+  const { t } = useTranslation();
   const handleChange = {
     changeValue: (value, delta, setValueFunction) => {
       const newValue = value + delta;
-      if (newValue >= 0) {
-        // Add your specific boundary checks here
+      if (newValue > 0) {
         setValueFunction(newValue);
       }
     },
@@ -39,8 +39,8 @@ const PassengerForm = ({
     onIncreaseRooms: () => handleChange.changeValue(rooms, 1, setRooms),
     onDecreaseRooms: () => handleChange.changeValue(rooms, -1, setRooms),
 
-    onIncreaseSeats: () => handleChange.changeValue(seats, 1, setSeat),
-    onDecreaseSeats: () => handleChange.changeValue(seats, -1, setSeat),
+    onIncreaseSeats: () => handleChange.changeValue(seats, 1, setSeats),
+    onDecreaseSeats: () => handleChange.changeValue(seats, -1, setSeats),
   };
 
   const updateChildrenAges = (newChildren) => {
@@ -63,7 +63,7 @@ const PassengerForm = ({
   return (
     <div className="absolute right-0 left-0 p-8 rounded bg-white top-14 shadow-box_shawdow_200 box-border">
       <div className="flex justify-between items-center">
-        <label htmlFor="adults">Người lớn:</label>
+        <label htmlFor="adults">{t("common.search.adults")}</label>
 
         <div className="flex items-center rounded border-solid border-bder_1 border-border_color_1 mb-1">
           <button
@@ -83,7 +83,7 @@ const PassengerForm = ({
       </div>
 
       <div className="flex justify-between items-center">
-        <label htmlFor="children">Trẻ em:</label>
+        <label htmlFor="children">{t("common.search.childs")}</label>
         <div className="flex items-center rounded border-solid border-bder_1 border-border_color_1 mb-1">
           <button
             className="px-1 py-2 w-10 hover:bg-btnText"
@@ -102,18 +102,18 @@ const PassengerForm = ({
       </div>
       {rooms && (
         <div className="flex justify-between items-center">
-          <label htmlFor="children">Phòng:</label>
+          <label htmlFor="children">{t("common.search.rooms")}:</label>
           <div className="flex items-center rounded border-solid border-bder_1 border-border_color_1 mb-1">
             <button
               className="px-1 py-2 w-10 hover:bg-btnText"
-              onClick={handleChange.onDecreaseChilds}
+              onClick={handleChange.onDecreaseRooms}
             >
               -
             </button>
-            <span className="px-1 py-2 w-10 text-center">{children}</span>
+            <span className="px-1 py-2 w-10 text-center">{rooms}</span>
             <button
               className="px-1 py-2 w-10 hover:bg-btnText"
-              onClick={handleChange.onIncreaseChilds}
+              onClick={handleChange.onIncreaseRooms}
             >
               +
             </button>
@@ -122,7 +122,7 @@ const PassengerForm = ({
       )}
       {seats && (
         <div className="flex justify-between items-center">
-          <label htmlFor="children">Ghế:</label>
+          <label htmlFor="children">{t("common.search.seats")}:</label>
           <div className="flex items-center rounded border-solid border-bder_1 border-border_color_1 mb-1">
             <button
               className="px-1 py-2 w-10 hover:bg-btnText"
@@ -162,7 +162,7 @@ const PassengerForm = ({
         className="bg-btnSearch w-full rounded mt-2 p-2 text-white"
         onClick={handleSubmitValue}
       >
-        Xong
+        {t("common.button.done")}
       </Button>
     </div>
   );

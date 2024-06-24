@@ -30,6 +30,10 @@ module.exports = {
       },
       minWidth: {
         mw_326: "326px",
+        mw_430: "430px",
+      },
+      maxHeight: {
+        mh_288: "288px",
       },
       padding: {
         p_9_24: "9px 24px",
@@ -40,6 +44,10 @@ module.exports = {
       },
       borderColor: {
         border_color_1: "#868686",
+        border_color_2: "#e7e7e7",
+      },
+      backgroundColor: {
+        color_highlighted_alt: "rgba(26,26,26,0.06);",
       },
       borderWidth: {
         bder_1: "1px",

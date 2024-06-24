@@ -3,13 +3,23 @@
       "button": {
         "signin": "Sign In",
         "register": "Register",
-        "search":"Search"
+        "search":"Search",
+        "done":"Done"
+
       },
       "navigation":{
         "stays":"Stays",
         "flights":"Flights",
         "tours":"Attractions",
         "partners":"Become a partner"
+      },
+      "search":{
+        "locations":"Where are you going ?",
+        "checkInDate":"Check-in Date - Check-out Date",
+        "adults":"Adults",
+        "childs":"Childs",
+        "rooms":"Rooms",
+        "seats":"Seats"
       }
     }
   }

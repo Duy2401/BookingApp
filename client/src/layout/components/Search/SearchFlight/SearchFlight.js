@@ -24,18 +24,12 @@ const SearchFlight = () => {
     }
   };
 
-  const [passengerData, setPassengerData] = useState(null);
-  const handleFormSubmit = (data) => {
-    setPassengerData(data);
-    setShowForm(false);
-  };
   const handleSubmitValue = () => {
     const formData = {
       adults: adults,
       children: children,
       childrenAges: childrenAges,
     };
-    console.log(formData);
   };
   useEffect(() => {
     document.addEventListener("click", handleShowForm);
@@ -62,14 +56,14 @@ const SearchFlight = () => {
           <input
             className="w-full outline-0 px-2 py-1 "
             type="text"
-            placeholder="Bạn muốn đi đâu"
+            placeholder={t("common.search.locations")}
           />
         </div>
         <div className="flex items-center bg-white rounded flex-1 p-2 mr-1">
           <Datepicker
             separator={"-"}
             displayFormat={"DD/MM/YYYY"}
-            placeholder={"Ngày nhận phòng - Ngày trả phòng"}
+            placeholder={t("common.search.checkInDate")}
             value={datetime}
             inputClassName="w-full outline-0 pl-8 pr-2 py-1 text-base text-black"
             onChange={handleChangeDate}
@@ -95,7 +89,8 @@ const SearchFlight = () => {
             </svg>
           </span>
           <span className="w-full outline-0 px-2 py-1">
-            {adults} người lớn . {children} trẻ em
+            {adults} {t("common.search.adults")} . {children}{" "}
+            {t("common.search.childs")} . {seats} {t("common.search.seats")}
           </span>
           {showForm && (
             <PassengerForm
