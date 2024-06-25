@@ -1,29 +1,64 @@
 import { useState, useEffect, useRef } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { useTranslation } from "react-i18next";
-import PassengerForm from "../../../../components/PassengerForm/PassengerForm";
 import Button from "../../../../components/Button/button";
+import PassengerForm from "../../../../components/PassengerForm/PassengerForm";
+import TouristAttraction from "../../../../components/TouristAttraction/TouristAttraction";
 const SearchFlight = () => {
   const { t } = useTranslation();
-  const show = useRef(null);
-  const [datetime, setDatetime] = useState("");
+
+  const inputRef = useRef();
+  const showPassenger = useRef(null);
+  const showAttraction = useRef(null);
+
   const [showForm, setShowForm] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [datetime, setDatetime] = useState("");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [seats, setSeats] = useState(1);
   const [childrenAges, setChildrenAges] = useState([]);
+
   const handleChangeDate = (newValue) => {
     setDatetime(newValue);
   };
 
-  const handleShowForm = (event) => {
-    if (show.current && !show.current.contains(event.target)) {
+  const handleSearchChange = (event) => {
+    const keySearch = event.target.value;
+    if (!keySearch.trim()) {
+      setSearchTerm(""); // Only trim if value exists
+    } else {
+      setSearchTerm(keySearch);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    inputRef.current.focus();
+  };
+
+  const handleShowPassenger = (event) => {
+    if (
+      showPassenger.current &&
+      !showPassenger.current.contains(event.target)
+    ) {
       setShowForm(false);
     } else {
       setShowForm(true);
     }
   };
-
+  const handleShowAttraction = (event) => {
+    if (
+      showAttraction.current &&
+      !showAttraction.current.contains(event.target)
+    ) {
+      setShowSearch(false);
+    } else {
+      setShowSearch(true);
+    }
+  };
   const handleSubmitValue = () => {
     const formData = {
       adults: adults,
@@ -32,14 +67,22 @@ const SearchFlight = () => {
     };
   };
   useEffect(() => {
-    document.addEventListener("click", handleShowForm);
-    return () => document.removeEventListener("click", handleShowForm);
+    document.addEventListener("click", handleShowPassenger);
+    document.addEventListener("click", handleShowAttraction);
+    return () => {
+      document.removeEventListener("click", handleShowPassenger);
+      document.removeEventListener("click", handleShowAttraction);
+    };
   }, []);
 
   return (
     <div className="listChild absolute max-w-mw_11 w-w_10 left-2/4 translate-x-trans_x translate-y-trans_y">
       <div className="flex items-center bg-yellow-400 text-black h-14 p-1 rounded font-Nunito">
-        <div className="flex items-center bg-white rounded flex-1 p-2 mr-1">
+        <div
+          ref={showAttraction}
+          onClick={(e) => handleShowPassenger(e)}
+          className="flex items-center bg-white rounded flex-1 p-2 mr-1 relative"
+        >
           <span className="pl-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -54,10 +97,34 @@ const SearchFlight = () => {
             </svg>
           </span>
           <input
+            ref={inputRef}
+            value={searchTerm}
+            onChange={handleSearchChange}
             className="w-full outline-0 px-2 py-1 "
             type="text"
             placeholder={t("common.search.locations")}
           />
+          {searchTerm.length > 0 && (
+            <span onClick={handleClearSearch}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"
+                />
+              </svg>
+            </span>
+          )}
+          {showSearch && (
+            <TouristAttraction
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+          )}
         </div>
         <div className="flex items-center bg-white rounded flex-1 p-2 mr-1">
           <Datepicker
@@ -71,8 +138,8 @@ const SearchFlight = () => {
           />
         </div>
         <div
-          ref={show}
-          onClick={(e) => handleShowForm(e)}
+          ref={showPassenger}
+          onClick={(e) => handleShowPassenger(e)}
           className="flex items-center bg-white rounded flex-1 p-2 mr-1 relative"
         >
           <span>

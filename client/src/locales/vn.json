@@ -18,7 +18,8 @@
         "adults":"Người lớn",
         "childs":"Trẻ em",
         "rooms":"Phòng",
-        "seats":"Ghế"
+        "seats":"Ghế",
+        "locationTrent": "Địa điểm được yêu thích gần đây"
       }
       
     }

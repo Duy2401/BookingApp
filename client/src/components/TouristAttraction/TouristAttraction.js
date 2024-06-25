@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import provinces from "../../locales/provinces.json";
 
 const TouristAttraction = ({ searchTerm, setSearchTerm }) => {
+  const { t } = useTranslation();
   const [searchResult, setSearchResult] = useState([]);
   useEffect(() => {
     const filterSearchResults = () => {
@@ -19,7 +21,7 @@ const TouristAttraction = ({ searchTerm, setSearchTerm }) => {
     <div className="absolute max-w-full min-w-mw_430 right-0 left-0 rounded top-14 shadow-box_shawdow_200 box-border font-Nunito">
       <div className="">
         <div className="p-3 text-base font-bold">
-          Popular destinations nearby
+          {t("common.search.locationTrent")}
         </div>
         <ul className="overflow-hidden max-h-mh_288">
           {searchResult.map((item, index) => (

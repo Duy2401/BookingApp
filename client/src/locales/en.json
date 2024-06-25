@@ -19,7 +19,8 @@
         "adults":"Adults",
         "childs":"Childs",
         "rooms":"Rooms",
-        "seats":"Seats"
+        "seats":"Seats",
+        "locationTrent": "Popular destinations nearby"
       }
     }
   }

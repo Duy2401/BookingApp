@@ -3,7 +3,7 @@ function DefaultLayout({ children }) {
   return (
     <div className="wrapper">
       <Header />
-      <div className="container">
+      <div className="container1">
         <div className="content">{children}</div>
       </div>
     </div>

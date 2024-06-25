@@ -1,26 +1,51 @@
 import Datepicker from "react-tailwindcss-datepicker";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "../../../../components/Button/button";
 import TouristAttraction from "../../../../components/TouristAttraction/TouristAttraction";
 const SearchTour = () => {
   const { t } = useTranslation();
+  const inputRef = useRef();
+  const show = useRef();
+
   const [value, setValue] = useState();
+  const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
   const handleChangeDate = (newValue) => {
     setValue(newValue);
   };
-  const handleSearchChange = (event) => {
-    const keySearch = event.target.value;
-    if (keySearch) {
-      setSearchTerm(keySearch.trim()); // Only trim if value exists
+  const handleShowForm = (event) => {
+    if (show.current && !show.current.contains(event.target)) {
+      setShowForm(false);
+    } else {
+      setShowForm(true);
     }
   };
-
+  const handleSearchChange = (event) => {
+    const keySearch = event.target.value;
+    if (!keySearch.trim()) {
+      setSearchTerm(""); // Only trim if value exists
+    } else {
+      setSearchTerm(keySearch);
+    }
+  };
+  const handleClearSearch = () => {
+    inputRef.current.focus();
+    setSearchTerm("");
+  };
+  useEffect(() => {
+    document.addEventListener("click", handleShowForm);
+    return () => document.removeEventListener("click", handleShowForm);
+  }, []);
   return (
     <div className="absolute max-w-mw_11 w-w_10 left-2/4 translate-x-trans_x translate-y-trans_y">
       <div className="flex items-center bg-yellow-400 text-black h-14 p-1 rounded">
-        <div className="flex items-center bg-white rounded flex-1 p-2 mr-1 relative">
+        <div
+          ref={show}
+          onClick={(e) => handleShowForm(e)}
+          className="flex items-center bg-white rounded flex-1 p-2 mr-1 relative"
+        >
           <span className="pl-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -35,29 +60,34 @@ const SearchTour = () => {
             </svg>
           </span>
           <input
+            ref={inputRef}
             type="text"
             value={searchTerm}
             onChange={handleSearchChange}
             placeholder={t("common.search.locations")}
             className="w-full outline-0 px-2 py-1 font-Nunito"
           />
-          <span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"
-              />
-            </svg>
-          </span>
-          <TouristAttraction
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          {searchTerm.length > 0 && (
+            <span onClick={handleClearSearch}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"
+                />
+              </svg>
+            </span>
+          )}
+          {showForm && (
+            <TouristAttraction
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+          )}
         </div>
         <div className="flex items-center bg-white rounded flex-1 p-2 mr-1">
           <Datepicker
