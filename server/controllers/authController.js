@@ -39,7 +39,6 @@ const AuthController = {
         user_gender: req.body.user_gender,
         user_phone: req.body.user_phone,
         user_address: req.body.user_address,
-        user_username: req.body.user_username,
         user_email: req.body.user_email,
         user_password: hashed,
         user_role: req.body.user_role,
@@ -53,7 +52,7 @@ const AuthController = {
   },
   LoginUsers: async (req, res) => {
     const user = await User.findOne({
-      user_username: req.body.user_username,
+      user_email: req.body.user_email,
     });
     if (!user) return res.status(404).json("Wrong username");
 
@@ -90,7 +89,6 @@ const AuthController = {
         customer_gender: req.body.customer_gender,
         customer_phone: req.body.customer_phone,
         customer_address: req.body.customer_address,
-        customer_username: req.body.customer_username,
         customer_email: req.body.customer_email,
         customer_password: hashed,
         customer_role: req.body.customer_role,
@@ -104,7 +102,7 @@ const AuthController = {
   },
   LoginCustomers: async (req, res) => {
     const customers = await Customers.findOne({
-      customer_username: req.body.customer_username,
+      customer_email: req.body.customer_email,
     });
     if (!customers) return res.status(404).json("Wrong username");
 

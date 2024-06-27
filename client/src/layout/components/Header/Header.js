@@ -5,6 +5,7 @@ import { locales } from "../../../i18n/i18n";
 import Button from "../../../components/Button/button";
 
 function Header() {
+  const use = true;
   const { t, i18n } = useTranslation();
   const currentLanguage = locales[i18n.language];
 
@@ -114,14 +115,22 @@ function Header() {
               </g>
             </svg>
           </div>
-          <div className="Login px-3">
-            <Button className=" hover:bg-bgHover text-base min-w-24 p-2 rounded">
-              {t("common.button.signin")}
-            </Button>
-            <Button className=" hover:bg-bgHover text-base min-w-24 p-2 mr-1 rounded">
-              {t("common.button.register")}
-            </Button>
-          </div>
+          {use && (
+            <div className="Login px-3">
+              <Button
+                href="/sign-in"
+                className=" hover:bg-bgHover text-base min-w-24 p-2 rounded"
+              >
+                {t("common.button.signin")}
+              </Button>
+              <Button
+                href="/register"
+                className=" hover:bg-bgHover text-base min-w-24 p-2 mr-1 rounded"
+              >
+                {t("common.button.register")}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </header>

@@ -32,11 +32,11 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Router
-app.use("/v1/auth", AuthRouter);
-app.use("/v1/hotel", HotelRouter);
-app.use("/v1/flight", FlightRouter);
-app.use("/v1/tour", TourRouter);
-app.use("/v1/booking", BookingRouter);
+app.use("/api/auth", AuthRouter);
+app.use("/api/hotel", HotelRouter);
+app.use("/api/flight", FlightRouter);
+app.use("/api/tour", TourRouter);
+app.use("/api/booking", BookingRouter);
 
 // PORT RUN SERVER
 app.listen(8000, () => {

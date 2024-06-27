@@ -17,13 +17,6 @@ const CustomersSchema = new Schema({
     type: String,
     require: true,
   },
-  customer_username: {
-    type: String,
-    require: true,
-    minlength: 4,
-    maxlength: 50,
-    unique: true,
-  },
   customer_email: {
     type: String,
     require: true,

@@ -27,7 +27,7 @@ const BookingSchema = new Schema({
   },
   Booking_service_id: {
     type: Schema.Types.ObjectId,
-    ref: ["Hotels", "ToursPackages"],
+    ref: "Hotels",
     require: true,
   },
   QuantityPeople: {
