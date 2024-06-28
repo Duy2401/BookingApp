@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useMutation } from "react-query";
 
-const mutateData = async (url, data) => {
-  console.log(data);
-  const response = await axios.post(url, data);
+const mutateData = async (data) => {
+  const response = await axios.post(data.url, data.body);
   return response.data;
 };
 export const usePostData = () => {

@@ -3,14 +3,14 @@ import Button from "../../components/Button/button";
 import { usePostData } from "../../services/useFetchData";
 function Register() {
   const [body, setBody] = useState({
-    email: "",
-    password: "",
+    customer_email: "",
+    customer_password: "",
   });
   const { mutate, isLoading, error } = usePostData();
 
-  const HandleSubmitValue = (e) => {
+  const handleSubmitValue = async (e) => {
     e.preventDefault();
-    mutate("http://localhost:8000/auth/register", { data: body });
+    await mutate({ url: "http://localhost:8000/api/auth/register", body });
   };
   const handleChangeValue = (e) => {
     setBody({ ...body, [e.target.name]: e.target.value });
@@ -26,7 +26,7 @@ function Register() {
               </h1>
               <form
                 className="space-y-4 md:space-y-6"
-                onSubmit={HandleSubmitValue}
+                onSubmit={handleSubmitValue}
               >
                 <div>
                   <label
@@ -37,8 +37,8 @@ function Register() {
                   </label>
                   <input
                     type="email"
-                    name="email"
-                    value={body.email}
+                    name="customer_email"
+                    value={body.customer_email}
                     onChange={handleChangeValue}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
@@ -54,8 +54,8 @@ function Register() {
                   </label>
                   <input
                     type="password"
-                    name="password"
-                    value={body.password}
+                    name="customer_password"
+                    value={body.customer_password}
                     onChange={handleChangeValue}
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
