@@ -51,31 +51,35 @@ const AuthController = {
     }
   },
   LoginUsers: async (req, res) => {
-    const user = await User.findOne({
-      user_email: req.body.user_email,
-    });
-    if (!user) return res.status(404).json("Wrong username");
-
-    const valiPass = await bcrypt.compare(
-      req.body.user_password,
-      user.user_password
-    );
-    if (!valiPass) return res.status(404).json("Wrong password");
-    if (user && valiPass) {
-      const accessToken = AuthController.CreateAccessToken(user);
-      const refreshToken = AuthController.CreateRefreshToken(user);
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        path: "/",
-        sameSite: "none",
+    try {
+      const user = await User.findOne({
+        user_email: req.body.user_email,
       });
-      const { password, ...others } = user._doc;
-      const returnedUser = {
-        ...others,
-        accessToken: accessToken,
-      };
-      return res.status(200).json(returnedUser);
+      if (!user) return res.status(404).json("Wrong username");
+
+      const valiPass = await bcrypt.compare(
+        req.body.user_password,
+        user.user_password
+      );
+      if (!valiPass) return res.status(404).json("Wrong password");
+      if (user && valiPass) {
+        const accessToken = AuthController.CreateAccessToken(user);
+        const refreshToken = AuthController.CreateRefreshToken(user);
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: true,
+          path: "/",
+          sameSite: "none",
+        });
+        const { password, ...others } = user._doc;
+        const returnedUser = {
+          ...others,
+          accessToken: accessToken,
+        };
+        return res.status(200).json(returnedUser);
+      }
+    } catch (error) {
+      return res.status(500).json(error);
     }
   },
 
@@ -101,31 +105,35 @@ const AuthController = {
     }
   },
   LoginCustomers: async (req, res) => {
-    const customers = await Customers.findOne({
-      customer_email: req.body.customer_email,
-    });
-    if (!customers) return res.status(404).json("Wrong username");
-
-    const valiPass = await bcrypt.compare(
-      req.body.customer_password,
-      customers.customer_password
-    );
-    if (!valiPass) return res.status(404).json("Wrong password");
-    if (customers && valiPass) {
-      const accessToken = AuthController.CreateAccessToken(customers);
-      const refreshToken = AuthController.CreateRefreshToken(customers);
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        path: "/",
-        sameSite: "none",
+    try {
+      const customers = await Customers.findOne({
+        customer_email: req.body.customer_email,
       });
-      const { password, ...others } = customers._doc;
-      const returnedCustomers = {
-        ...others,
-        accessToken: accessToken,
-      };
-      return res.status(200).json(returnedCustomers);
+      if (!customers) return res.status(404).json("Wrong username");
+
+      const valiPass = await bcrypt.compare(
+        req.body.customer_password,
+        customers.customer_password
+      );
+      if (!valiPass) return res.status(404).json("Wrong password");
+      if (customers && valiPass) {
+        const accessToken = AuthController.CreateAccessToken(customers);
+        const refreshToken = AuthController.CreateRefreshToken(customers);
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: true,
+          path: "/",
+          sameSite: "none",
+        });
+        const { password, ...others } = customers._doc;
+        const returnedCustomers = {
+          ...others,
+          accessToken: accessToken,
+        };
+        return res.status(200).json(returnedCustomers);
+      }
+    } catch (err) {
+      return res.status(500).json(error);
     }
   },
   // Refresh Token save in DB redis when access Token expires get and compare

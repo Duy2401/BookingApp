@@ -1,23 +1,50 @@
 import { useState } from "react";
+import { useMutation } from "react-query";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../../components/Button/button";
 import { usePostData } from "../../services/useFetchData";
 function Register() {
-  const [body, setBody] = useState({
+  const [initialFormState, setInitialFormState] = useState({
     customer_email: "",
     customer_password: "",
   });
-  const { mutate, isLoading, error } = usePostData();
+  const [body, setBody] = useState(initialFormState);
 
+  const { mutate, data, error, status, isLoading } = usePostData();
   const handleSubmitValue = async (e) => {
     e.preventDefault();
-    await mutate({ url: "http://localhost:8000/api/auth/register", body });
+    try {
+      await mutate(
+        {
+          url: "http://localhost:8000/api/auth/register",
+          method: "POST",
+          body: body,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Đăng ký tài khoản thành công");
+            setBody(initialFormState);
+          },
+          onError: () => {
+            toast.error("Tài khoản đã tồn tại, vui lòng nhập email khác!");
+          },
+        }
+      );
+    } catch (error) {}
   };
+
   const handleChangeValue = (e) => {
-    setBody({ ...body, [e.target.name]: e.target.value });
+    setBody({
+      ...body,
+      [e.target.name]: e.target.value,
+    });
   };
+
   return (
     <>
-      <section className="bg-gray-50 dark:bg-gray-900 font-Nunito">
+      <section className="bg-gray-50 dark:bg-gray-900 font-Nunito relative">
+        <ToastContainer toast={"Đăng Ký Thành Công"} icon={true} />
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8 shadow-box_shawdow_100">

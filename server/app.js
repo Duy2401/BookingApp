@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const { createClient } = require("redis");
 var bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
@@ -15,9 +16,30 @@ const BookingRouter = require("./routers/Booking");
 dotenv.config();
 const app = express();
 
+// Database use save value of user and product
 mongoose
   .connect(process.env.MONGODB_URL)
   .then(() => console.log("CONNECT SUCCESS TO MONGODB"));
+
+// Databse use save token and authenticated users
+
+const client = createClient({
+  password: process.env.KEY_PASSWORD,
+  socket: {
+    host: process.env.KEY_HOST,
+    port: process.env.KEY_PORT,
+  },
+});
+
+client.on("connect", () => {
+  console.log("Connected to Redis");
+});
+
+client.on("error", (err) => {
+  console.error("Redis Client Error:", err);
+});
+
+client.connect();
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(

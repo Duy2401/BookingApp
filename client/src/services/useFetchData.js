@@ -1,12 +1,20 @@
 import axios from "axios";
 import { useMutation } from "react-query";
-
-const mutateData = async (data) => {
-  const response = await axios.post(data.url, data.body);
-  return response.data;
+const makeRequest = async ({ url, method, headers = {}, body = null }) => {
+  try {
+    const response = await axios({
+      url,
+      method,
+      headers,
+      data: body,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 export const usePostData = () => {
-  return useMutation(mutateData, {
+  return useMutation(makeRequest, {
     onSuccess: (data) => {
       console.log("Gởi dữ liệu thành công");
     },
