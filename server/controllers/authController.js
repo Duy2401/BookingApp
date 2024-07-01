@@ -133,27 +133,32 @@ const AuthController = {
         return res.status(200).json(returnedCustomers);
       }
     } catch (err) {
-      return res.status(500).json(error);
+      return res.status(500).json(err);
     }
   },
   // Refresh Token save in DB redis when access Token expires get and compare
   RequestRefreshToken: async (req, res) => {
-    const refreshToken = res.cookies.refreshToken;
-    if (!refreshToken) return res.status(401).json("You're not Authenticated");
-    jwt.verify(refreshToken, process.env.KEY_REFRESH_TOKEN, (error, user) => {
-      if (error) console.log(error);
-      const newAccessToken = AuthController.CreateAccessToken(user);
-      const newRefreshToken = AuthController.CreateRefreshToken(user);
-      res.cookie("RefreshToken", newRefreshToken, {
-        httpOnly: true,
-        secure: true,
-        path: "/",
-        sameSite: "none",
+    try {
+      const refreshToken = res.cookies.refreshToken;
+      if (!refreshToken)
+        return res.status(401).json("You're not Authenticated");
+      jwt.verify(refreshToken, process.env.KEY_REFRESH_TOKEN, (error, user) => {
+        if (error) console.log(error);
+        const newAccessToken = AuthController.CreateAccessToken(user);
+        const newRefreshToken = AuthController.CreateRefreshToken(user);
+        res.cookie("RefreshToken", newRefreshToken, {
+          httpOnly: true,
+          secure: true,
+          path: "/",
+          sameSite: "none",
+        });
+        return res
+          .status(200)
+          .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
       });
-      return res
-        .status(200)
-        .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
-    });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
   },
   // ACCOUNT LOGOUT
   Logout: async (req, res) => {

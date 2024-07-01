@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useMutation } from "react-query";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../../components/Button/button";
-import { usePostData } from "../../services/useFetchData";
+import { useFetchData } from "../../services/useFetchData";
 function Register() {
   const [initialFormState, setInitialFormState] = useState({
     customer_email: "",
@@ -11,7 +10,7 @@ function Register() {
   });
   const [body, setBody] = useState(initialFormState);
 
-  const { mutate, data, error, status, isLoading } = usePostData();
+  const { mutate, data, error, status, isLoading } = useFetchData();
   const handleSubmitValue = async (e) => {
     e.preventDefault();
     try {
@@ -22,12 +21,14 @@ function Register() {
           body: body,
         },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             toast.success("Đăng ký tài khoản thành công");
             setBody(initialFormState);
+            console.log(data);
           },
-          onError: () => {
+          onError: (error) => {
             toast.error("Tài khoản đã tồn tại, vui lòng nhập email khác!");
+            console.log(error);
           },
         }
       );

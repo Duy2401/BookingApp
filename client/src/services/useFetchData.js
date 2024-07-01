@@ -13,7 +13,7 @@ const makeRequest = async ({ url, method, headers = {}, body = null }) => {
     throw error;
   }
 };
-export const usePostData = () => {
+export const useFetchData = () => {
   return useMutation(makeRequest, {
     onSuccess: (data) => {
       console.log("Gởi dữ liệu thành công");
