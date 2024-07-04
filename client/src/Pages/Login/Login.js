@@ -19,17 +19,17 @@ function Login() {
     try {
       await mutate(
         {
-          url: "http://localhost:8000/api/auth/register",
+          url: "http://localhost:8000/api/auth/login",
           method: "POST",
           body: body,
         },
         {
           onSuccess: (data) => {
-            toast.success("Đăng ký tài khoản thành công");
+            toast.success("Đăng nhập thành công");
             console.log(data);
           },
           onError: (error) => {
-            toast.error("Tài khoản đã tồn tại, vui lòng nhập email khác!");
+            toast.error("Tài khoản không tồn tại, vui lòng thử lại");
             console.log(error);
           },
         }
@@ -111,7 +111,11 @@ function Login() {
                     </label>
                   </div>
                 </div>
-                <Button className="w-full bg-btnSearch text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                <Button
+                  type="sbumit"
+                  disabled={isLoading}
+                  className="w-full bg-btnSearch text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                >
                   Login
                 </Button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">

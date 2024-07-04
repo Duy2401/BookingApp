@@ -29,7 +29,7 @@ const CustomersSchema = new Schema({
     require: true,
     minLength: 6,
   },
-  customer_role: {
+  isRole: {
     type: Number,
     default: "01",
     require: true,

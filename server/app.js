@@ -2,10 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const { createClient } = require("redis");
 var bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
+const clieredisClient = require("./helpers/redisDB");
 // ROUTER
 const AuthRouter = require("./routers/Auth");
 const HotelRouter = require("./routers/Hotel");
@@ -21,26 +20,15 @@ mongoose
   .connect(process.env.MONGODB_URL)
   .then(() => console.log("CONNECT SUCCESS TO MONGODB"));
 
-// Databse use save token and authenticated users
-
-const client = createClient({
-  password: process.env.KEY_PASSWORD,
-  socket: {
-    host: process.env.KEY_HOST,
-    port: process.env.KEY_PORT,
-  },
-});
-
-client.on("connect", () => {
-  console.log("Connected to Redis");
-});
-
-client.on("error", (err) => {
-  console.error("Redis Client Error:", err);
-});
-
-client.connect();
-
+// // DB REDIS
+// const options = {
+//   password: process.env.KEY_PASSWORD,
+//   socket: {
+//     host: process.env.KEY_HOST,
+//     port: process.env.KEY_PORT,
+//   },
+// };
+// clieredisClient(options);
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
   bodyParser.urlencoded({
@@ -49,7 +37,12 @@ app.use(
     parameterLimit: 50000,
   })
 );
-app.use(cors());
+const corsOptions = {
+  origin: true, //included origin as true
+  credentials: true, //included credentials as true
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 

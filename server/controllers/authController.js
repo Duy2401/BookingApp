@@ -1,15 +1,16 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
 const User = require("../models/People/users");
 const Customers = require("../models/People/customers");
-
+const SecretToken = require("../configs/encodeToken");
+const connectRedis = require("../helpers/redisDB");
+const { setValue } = require("../helpers/WorkData");
 const AuthController = {
   CreateAccessToken: (user) => {
     return jwt.sign(
       {
         id: user.id,
-        role: user.user_role,
+        role: user.isRole,
       },
       process.env.KEY_ACCESS_TOKEN,
       {
@@ -21,7 +22,7 @@ const AuthController = {
     return jwt.sign(
       {
         id: user.id,
-        role: user.user_role,
+        role: user.isRole,
       },
       process.env.KEY_REFRESH_TOKEN,
       {
@@ -55,6 +56,7 @@ const AuthController = {
       const user = await User.findOne({
         user_email: req.body.user_email,
       });
+      console.log(user._id);
       if (!user) return res.status(404).json("Wrong username");
 
       const valiPass = await bcrypt.compare(
@@ -118,8 +120,10 @@ const AuthController = {
       if (!valiPass) return res.status(404).json("Wrong password");
       if (customers && valiPass) {
         const accessToken = AuthController.CreateAccessToken(customers);
-        const refreshToken = AuthController.CreateRefreshToken(customers);
-        res.cookie("refreshToken", refreshToken, {
+        const refreshToken = SecretToken.encodedRefreshToken(
+          AuthController.CreateRefreshToken(customers)
+        );
+        res.cookie("rfr", refreshToken, {
           httpOnly: true,
           secure: true,
           path: "/",
@@ -130,18 +134,28 @@ const AuthController = {
           ...others,
           accessToken: accessToken,
         };
-        return res.status(200).json(returnedCustomers);
+        return res.status(200).json({
+          status: true,
+          message: "Login in Successfully",
+          data: returnedCustomers,
+        });
       }
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(500).json({
+        status: true,
+        message: "Your session is not valid",
+        data: err,
+      });
     }
   },
   // Refresh Token save in DB redis when access Token expires get and compare
   RequestRefreshToken: async (req, res) => {
     try {
-      const refreshToken = res.cookies.refreshToken;
+      const refreshToken = SecretToken.decodedRefreshToken(req.cookie.rfr);
       if (!refreshToken)
-        return res.status(401).json("You're not Authenticated");
+        return res
+          .status(401)
+          .json({ status: true, message: "You're not Authenticated" });
       jwt.verify(refreshToken, process.env.KEY_REFRESH_TOKEN, (error, user) => {
         if (error) console.log(error);
         const newAccessToken = AuthController.CreateAccessToken(user);
@@ -157,7 +171,11 @@ const AuthController = {
           .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
       });
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({
+        status: true,
+        message: "Your session is not valid",
+        data: error,
+      });
     }
   },
   // ACCOUNT LOGOUT

@@ -29,7 +29,7 @@ const UserSchema = new Schema({
     type: String,
     require: true,
   },
-  user_role: {
+  isRole: {
     type: Number,
     default: "01",
     require: true,

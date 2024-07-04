@@ -7,6 +7,7 @@ const makeRequest = async ({ url, method, headers = {}, body = null }) => {
       method,
       headers,
       data: body,
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
