@@ -20,15 +20,6 @@ mongoose
   .connect(process.env.MONGODB_URL)
   .then(() => console.log("CONNECT SUCCESS TO MONGODB"));
 
-// // DB REDIS
-// const options = {
-//   password: process.env.KEY_PASSWORD,
-//   socket: {
-//     host: process.env.KEY_HOST,
-//     port: process.env.KEY_PORT,
-//   },
-// };
-// clieredisClient(options);
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
   bodyParser.urlencoded({

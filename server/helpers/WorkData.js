@@ -1,18 +1,19 @@
 const RedisClient = require("../helpers/redisDB");
 
 async function setValue(key, value) {
-  const options = {
+  const redisClient = new RedisClient({
     password: process.env.KEY_PASSWORD,
     socket: {
       host: process.env.KEY_HOST,
       port: process.env.KEY_PORT,
     },
-  };
-  const redisClient = new RedisClient(options);
-  await redisClient.connect();
-
+  });
   try {
-    await redisClient.set(key, JSON.stringify(value));
+    if (!redisClient.isConnected) {
+      // Check connection status
+      await redisClient.connect();
+    }
+    await redisClient.SET(key, JSON.stringify(value));
     return console.log(`Value set in Redis: ${key} -> ${value}`);
   } catch (error) {
     console.error("Error setting value in Redis:", error);

@@ -107,6 +107,7 @@ const AuthController = {
     }
   },
   LoginCustomers: async (req, res) => {
+    connectRedis();
     try {
       const customers = await Customers.findOne({
         customer_email: req.body.customer_email,
@@ -123,6 +124,7 @@ const AuthController = {
         const refreshToken = SecretToken.encodedRefreshToken(
           AuthController.CreateRefreshToken(customers)
         );
+        await setValue("DUY", "TASSK1");
         res.cookie("rfr", refreshToken, {
           httpOnly: true,
           secure: true,
