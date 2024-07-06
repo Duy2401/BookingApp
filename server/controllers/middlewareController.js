@@ -15,6 +15,26 @@ const middlewareControlle = {
       return res.status(401).json("You're not authenticated");
     }
   },
+  // IF YOU IS GUEST WANT BOOK SERVICE OF WEBSITE
+  verifyUser: (req, res, next) => {
+    middlewareControlle.verifyToken(req, res, () => {
+      if (req.user.isRole === 1) {
+        next();
+      } else {
+        return res.status(401).json("You're not authenticated");
+      }
+    });
+  },
+  // IF YOU IS PARTNER
+  verifyPartner: (req, res, next) => {
+    middlewareControlle.verifyToken(req, res, () => {
+      if (req.user.isRole === 2) {
+        next();
+      } else {
+        return res.status(401).json("You're not authenticated");
+      }
+    });
+  },
 };
 
 export default middlewareControlle;

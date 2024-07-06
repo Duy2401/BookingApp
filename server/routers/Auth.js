@@ -1,4 +1,5 @@
 const AuthController = require("../controllers/authController");
+const middlewareControlle = require("../controllers/middlewareController");
 const router = require("express").Router();
 
 // Router of employee
@@ -15,5 +16,5 @@ router.post("/login", AuthController.LoginCustomers);
 router.post("/refresh", AuthController.RequestRefreshToken);
 
 // Router of Logout
-router.post("/logout", AuthController.Logout);
+router.post("/logout", middlewareControlle.verifyToken, AuthController.Logout);
 module.exports = router;

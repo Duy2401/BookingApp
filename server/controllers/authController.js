@@ -4,7 +4,7 @@ const User = require("../models/People/users");
 const Customers = require("../models/People/customers");
 const SecretToken = require("../configs/encodeToken");
 const connectRedis = require("../helpers/redisDB");
-const { setValue } = require("../helpers/WorkData");
+const { setValue, getValue } = require("../helpers/WorkData");
 const AuthController = {
   CreateAccessToken: (user) => {
     return jwt.sign(
@@ -14,7 +14,7 @@ const AuthController = {
       },
       process.env.KEY_ACCESS_TOKEN,
       {
-        expiresIn: "5m",
+        expiresIn: "2m",
       }
     );
   },
@@ -26,7 +26,7 @@ const AuthController = {
       },
       process.env.KEY_REFRESH_TOKEN,
       {
-        expiresIn: "365d",
+        expiresIn: "7d",
       }
     );
   },
@@ -124,12 +124,12 @@ const AuthController = {
         const refreshToken = SecretToken.encodedRefreshToken(
           AuthController.CreateRefreshToken(customers)
         );
-        await setValue("DUY", "TASSK1");
+        await setValue(customers._id.toString(), refreshToken);
         res.cookie("rfr", refreshToken, {
           httpOnly: true,
-          secure: true,
+          secure: false,
           path: "/",
-          sameSite: "none",
+          sameSite: "strict",
         });
         const { password, ...others } = customers._doc;
         const returnedCustomers = {
@@ -152,25 +152,45 @@ const AuthController = {
   },
   // Refresh Token save in DB redis when access Token expires get and compare
   RequestRefreshToken: async (req, res) => {
+    const refreshToken = SecretToken.decodedRefreshToken(req.cookies.rfr);
     try {
-      const refreshToken = SecretToken.decodedRefreshToken(req.cookie.rfr);
       if (!refreshToken)
         return res
           .status(401)
           .json({ status: true, message: "You're not Authenticated" });
-      jwt.verify(refreshToken, process.env.KEY_REFRESH_TOKEN, (error, user) => {
-        if (error) console.log(error);
-        const newAccessToken = AuthController.CreateAccessToken(user);
-        const newRefreshToken = AuthController.CreateRefreshToken(user);
-        res.cookie("RefreshToken", newRefreshToken, {
-          httpOnly: true,
-          secure: true,
-          path: "/",
-          sameSite: "none",
+
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.KEY_REFRESH_TOKEN,
+        (error, user) => {
+          if (error) console.log(error);
+          return user;
+        }
+      );
+      const oldRefreshToken = await getValue(decoded.id);
+
+      if (SecretToken.decodedRefreshToken(oldRefreshToken) !== refreshToken) {
+        return res.status(403).json({
+          status: true,
+          message: "Invalid refresh token",
         });
-        return res
-          .status(200)
-          .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+      }
+      const newAccessToken = AuthController.CreateAccessToken(decoded);
+      const newRefreshToken = SecretToken.encodedRefreshToken(
+        AuthController.CreateRefreshToken(decoded)
+      );
+      await setValue(decoded.id, newRefreshToken);
+      res.cookie("rfr", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      return res.status(200).json({
+        status: true,
+        message: "Request RefreshToken Successfully",
+        data: { accessToken: newAccessToken },
       });
     } catch (error) {
       return res.status(500).json({
@@ -182,7 +202,7 @@ const AuthController = {
   },
   // ACCOUNT LOGOUT
   Logout: async (req, res) => {
-    res.clearCookie("refreshToken");
+    res.clearCookie("rfr");
     return res.status(200).json("Logout successfully");
   },
 };
