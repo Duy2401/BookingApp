@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { ToastContainer, toast } from "react-toastify";
 import Button from "../../components/Button/button";
 import { useFetchData } from "../../services/useFetchData";
 function Login() {
+  const queryClient = useQueryClient();
   const [body, setBody] = useState({
     customer_email: "",
     customer_password: "",
   });
-  const { mutate, data, error, status, isLoading } = useFetchData();
+  const { mutate, isLoading } = useFetchData();
   const handleChangeValue = (e) => {
     setBody({
       ...body,
@@ -17,7 +20,7 @@ function Login() {
   const handleSubmitValue = async (e) => {
     e.preventDefault();
     try {
-      await mutate(
+      const data = await mutate(
         {
           url: "http://localhost:8000/api/auth/login",
           method: "POST",
@@ -26,7 +29,7 @@ function Login() {
         {
           onSuccess: (data) => {
             toast.success("Đăng nhập thành công");
-            console.log(data);
+            queryClient.setQueryData("login", data.data);
           },
           onError: (error) => {
             toast.error("Tài khoản không tồn tại, vui lòng thử lại");

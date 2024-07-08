@@ -21,7 +21,7 @@ const Button = ({
   return (
     <Comp type="button" onClick={onClick} {...props}>
       {leftIcon && <>{leftIcon}</>}
-      <span className="px-2">{children}</span>
+      <div className="px-2">{children}</div>
       {rightIcon && <>{rightIcon}</>}
     </Comp>
   );

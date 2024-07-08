@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQueryClient } from "@tanstack/react-query";
 import { locales } from "../../../i18n/i18n";
-
+import SvgIcon from "../../../components/SvgIcon/SvgIcon";
 import Button from "../../../components/Button/button";
-
+import { UserProfile } from "./userProfile/userProfile";
+import { ReactComponent as Question } from "../../../assets/icons/Question.svg";
+import { ReactComponent as Notification } from "../../../assets/icons/Notification.svg";
+import VNflag from "../../../assets/images/VN.png";
+import USAflag from "../../../assets/images/USA.png";
 function Header() {
-  const use = true;
+  const queryClient = useQueryClient();
+  const loginData = queryClient.getQueryData("login");
+  console.log(loginData);
+  const use = false;
   const { t, i18n } = useTranslation();
   const currentLanguage = locales[i18n.language];
 
@@ -21,16 +29,16 @@ function Header() {
   };
   return (
     <header className="px-9 pt-2 bg-backgroud">
-      <div className="flex items-center text-white h-16 mx-48 font-Nunito">
+      <div className="flex items-center text-white h-h_48 mx-48 font-Nunito">
         <div className="logo flex-grow">
           <Button href="/" className="font-Nunito font-bold text-3xl">
             Booking.com
           </Button>
         </div>
-        <div className="flex items-center">
-          <div className="language px-3 relative">
+        <div className="flex items-center h-full">
+          <div className="language px-3 relative h-full">
             <Button
-              className="hover:bg-bgHover flex items-center min-w-28 w-full text-base justify-center rounded-md  p-2  ring-inset"
+              className="hover:bg-bgHover h-full flex items-center min-w-28 w-full text-base justify-center rounded-md  p-2  ring-inset"
               leftIcon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -67,11 +75,7 @@ function Header() {
               <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="py-1" role="none">
                   <div className="flex items-center p-2">
-                    <img
-                      className="w-6 h-6"
-                      alt="flag error"
-                      src="https://t-cf.bstatic.com/design-assets/assets/v3.112.0/images-flags/Vn@3x.png"
-                    />
+                    <img className="w-6 h-6" alt="flag error" src={VNflag} />
                     <Button
                       className=" px-4 py-2 text-base text-gray-700"
                       onClick={() => changeLanguage("vi")}
@@ -80,11 +84,7 @@ function Header() {
                     </Button>
                   </div>
                   <div className="flex items-center p-2">
-                    <img
-                      className="w-6 h-6"
-                      src="https://t-cf.bstatic.com/design-assets/assets/v3.112.0/images-flags/Us@3x.png"
-                      alt="flag error"
-                    />
+                    <img className="w-6 h-6" src={USAflag} alt="flag error" />
                     <Button
                       className=" px-4 py-2 text-base text-gray-700"
                       onClick={() => changeLanguage("en")}
@@ -96,36 +96,36 @@ function Header() {
               </div>
             )}
           </div>
-          <div className="contact px-3 py-2 rounded hover:bg-bgHover">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20px"
-              height="20px"
-              viewBox="0 0 24 24"
-            >
-              <g
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-              >
-                <path d="M12 13.496c0-2.003 2-1.503 2-3.506c0-2.659-4-2.659-4 0m2 6.007v-.5" />
-                <circle cx="12" cy="12" r="9" />
-              </g>
-            </svg>
+          <div className="h-full flex items-center contact px-3 rounded hover:bg-bgHover cursor-pointer">
+            <SvgIcon icon={Question} width={20} height={20} fill="#000" />
           </div>
+
           {use && (
-            <div className="Login px-3">
+            <>
+              <div className=" mx-1 h-full flex items-center contact px-3 rounded hover:bg-bgHover cursor-pointer">
+                <SvgIcon
+                  icon={Notification}
+                  width={20}
+                  height={20}
+                  fill="#000"
+                />
+              </div>
+              <div className="px-3 h-full">
+                <UserProfile />
+              </div>
+            </>
+          )}
+          {!use && (
+            <div className="Login px-3 flex h-full">
               <Button
                 href="/sign-in"
-                className=" hover:bg-bgHover text-base min-w-24 p-2 rounded"
+                className="flex items-center hover:bg-bgHover text-base min-w-24 px-2 rounded h-full"
               >
                 {t("common.button.signin")}
               </Button>
               <Button
                 href="/register"
-                className=" hover:bg-bgHover text-base min-w-24 p-2 mr-1 rounded"
+                className="flex items-center hover:bg-bgHover text-base min-w-24 px-2 ml-2 rounded h-full"
               >
                 {t("common.button.register")}
               </Button>

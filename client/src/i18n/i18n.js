@@ -12,10 +12,12 @@ const resources = {
   en: { translation: translationEN },
   vi: { translation: translationVN },
 };
-
+const getLanguage = () => {
+  const lang = localStorage.getItem("i18nextLng");
+  return lang || "en"; // Ngôn ngữ mặc định là tiếng Anh
+};
 i18next.use(LanguageDetector).use(initReactI18next).init({
-  lng: "vi",
-  fallbackLng: "vi",
+  lng: getLanguage(),
   debug: false,
   resources,
 });

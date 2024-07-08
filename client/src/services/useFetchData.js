@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 const makeRequest = async ({ url, method, headers = {}, body = null }) => {
   try {
     const response = await axios({
@@ -15,12 +15,11 @@ const makeRequest = async ({ url, method, headers = {}, body = null }) => {
   }
 };
 export const useFetchData = () => {
-  return useMutation(makeRequest, {
-    onSuccess: (data) => {
-      console.log("Gởi dữ liệu thành công");
-    },
+  return useMutation({
+    mutationFn: makeRequest,
+    onSuccess: (data) => {},
     onError: (error) => {
-      console.error("Gởi dữ liệu thất bại:", error);
+      console.error("Login error:", error);
     },
   });
 };

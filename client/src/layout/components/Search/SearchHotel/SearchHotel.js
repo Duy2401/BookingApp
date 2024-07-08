@@ -37,7 +37,6 @@ const SearchHotel = () => {
     setSearchTerm("");
     inputRef.current.focus();
   };
-  console.log(searchTerm);
   const handleShowPassenger = (event) => {
     if (
       showPassenger.current &&

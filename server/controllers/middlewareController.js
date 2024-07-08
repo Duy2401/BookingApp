@@ -37,4 +37,4 @@ const middlewareControlle = {
   },
 };
 
-export default middlewareControlle;
+module.exports = middlewareControlle;

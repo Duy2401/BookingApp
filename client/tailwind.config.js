@@ -25,6 +25,9 @@ module.exports = {
         w_10: "calc(100% - 10px)",
         w_50: "calc(50% - 9px)",
       },
+      height: {
+        h_48: "48px",
+      },
       maxWidth: {
         mw_11: "1100px",
       },
@@ -37,6 +40,7 @@ module.exports = {
       },
       padding: {
         p_9_24: "9px 24px",
+        p_5_10: "5px 10px",
       },
       translate: {
         trans_x: "-50%",
