@@ -1,40 +1,29 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { CustomerRegister } from "../../redux/customersSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../../components/Button/button";
-import { useFetchData } from "../../services/useFetchData";
 function Register() {
+  const dispatch = useDispatch();
+  const { customers, status, loading, error } = useSelector(
+    (state) => state.customers
+  );
   const [initialFormState, setInitialFormState] = useState({
     customer_email: "",
     customer_password: "",
   });
   const [body, setBody] = useState(initialFormState);
 
-  const { mutate, data, error, status, isLoading } = useFetchData();
-  const handleSubmitValue = async (e) => {
+  const handleSubmitValue = (e) => {
     e.preventDefault();
     try {
-      await mutate(
-        {
-          url: "http://localhost:8000/api/auth/register",
-          method: "POST",
-          body: body,
-        },
-        {
-          onSuccess: (data) => {
-            toast.success("Đăng ký tài khoản thành công");
-            setBody(initialFormState);
-            console.log(data);
-          },
-          onError: (error) => {
-            toast.error("Tài khoản đã tồn tại, vui lòng nhập email khác!");
-            console.log(error);
-          },
-        }
-      );
-    } catch (error) {}
+      dispatch(CustomerRegister(body));
+    } catch (error) {
+      console.log(error.message);
+    }
   };
-
+  console.log(status);
   const handleChangeValue = (e) => {
     setBody({
       ...body,
@@ -45,7 +34,9 @@ function Register() {
   return (
     <>
       <section className="bg-gray-50 dark:bg-gray-900 font-Nunito relative">
-        <ToastContainer toast={"Đăng Ký Thành Công"} icon={true} />
+        {customers && (
+          <ToastContainer toast={"Đăng Ký Thành Công"} icon={true} />
+        )}
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8 shadow-box_shawdow_100">
@@ -117,12 +108,11 @@ function Register() {
                 </div>
                 <Button
                   type="sbumit"
-                  disabled={isLoading}
                   className="w-full bg-btnSearch text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   Create an account
                 </Button>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                <div className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account ?
                   <Button
                     href="/sign-in"
@@ -130,7 +120,7 @@ function Register() {
                   >
                     Login here
                   </Button>
-                </p>
+                </div>
               </form>
             </div>
           </div>

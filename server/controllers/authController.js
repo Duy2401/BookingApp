@@ -103,7 +103,11 @@ const AuthController = {
       const customers = await NewCustomer.save();
       return res.status(200).json(customers);
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({
+        status: true,
+        message: "Emaill valided",
+        data: error,
+      });
     }
   },
   LoginCustomers: async (req, res) => {

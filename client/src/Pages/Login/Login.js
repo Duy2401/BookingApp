@@ -1,16 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
 import { ToastContainer, toast } from "react-toastify";
 import Button from "../../components/Button/button";
-import { useFetchData } from "../../services/useFetchData";
 function Login() {
-  const queryClient = useQueryClient();
   const [body, setBody] = useState({
     customer_email: "",
     customer_password: "",
   });
-  const { mutate, isLoading } = useFetchData();
   const handleChangeValue = (e) => {
     setBody({
       ...body,
@@ -20,23 +15,6 @@ function Login() {
   const handleSubmitValue = async (e) => {
     e.preventDefault();
     try {
-      const data = await mutate(
-        {
-          url: "http://localhost:8000/api/auth/login",
-          method: "POST",
-          body: body,
-        },
-        {
-          onSuccess: (data) => {
-            toast.success("Đăng nhập thành công");
-            queryClient.setQueryData("login", data.data);
-          },
-          onError: (error) => {
-            toast.error("Tài khoản không tồn tại, vui lòng thử lại");
-            console.log(error);
-          },
-        }
-      );
     } catch (error) {}
   };
   return (
@@ -116,7 +94,6 @@ function Login() {
                 </div>
                 <Button
                   type="sbumit"
-                  disabled={isLoading}
                   className="w-full bg-btnSearch text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   Login
