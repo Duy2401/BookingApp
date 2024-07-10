@@ -116,13 +116,13 @@ const AuthController = {
       const customers = await Customers.findOne({
         customer_email: req.body.customer_email,
       });
-      if (!customers) return res.status(404).json("Wrong username");
+      if (!customers) return res.status(404).json({ message: "Wrong Email" });
 
       const valiPass = await bcrypt.compare(
         req.body.customer_password,
         customers.customer_password
       );
-      if (!valiPass) return res.status(404).json("Wrong password");
+      if (!valiPass) return res.status(404).json({ message: "Wrong Password" });
       if (customers && valiPass) {
         const accessToken = AuthController.CreateAccessToken(customers);
         const refreshToken = SecretToken.encodedRefreshToken(
@@ -184,7 +184,7 @@ const AuthController = {
         AuthController.CreateRefreshToken(decoded)
       );
       await setValue(decoded.id, newRefreshToken);
-      res.cookie("rfr", refreshToken, {
+      res.cookie("rfr", newRefreshToken, {
         httpOnly: true,
         secure: false,
         path: "/",

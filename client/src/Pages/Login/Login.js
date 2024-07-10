@@ -1,7 +1,13 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import Button from "../../components/Button/button";
+import { CustomerLogin } from "../../redux/customersSlice";
+import { useNavigate } from "react-router-dom";
 function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { error } = useSelector((state) => state.customers);
   const [body, setBody] = useState({
     customer_email: "",
     customer_password: "",
@@ -15,6 +21,15 @@ function Login() {
   const handleSubmitValue = async (e) => {
     e.preventDefault();
     try {
+      const data = await dispatch(CustomerLogin(body));
+      if (data.meta.requestStatus === "fulfilled") {
+        toast.success("Đăng ký tài khoản thành công");
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
+      if (data.meta.requestStatus === "rejected")
+        toast.error(data.payload.message);
     } catch (error) {}
   };
   return (
@@ -36,7 +51,7 @@ function Login() {
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Your email
+                    <strong className="text-red-800 mr-1">*</strong>Your email
                   </label>
                   <input
                     type="email"
@@ -54,7 +69,7 @@ function Login() {
                     htmlFor="password"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Password
+                    <strong className="text-red-800 mr-1">*</strong>Password
                   </label>
                   <input
                     type="password"
@@ -77,19 +92,19 @@ function Login() {
                       required=""
                     />
                   </div>
-                  <div className="ml-3 text-sm">
+                  <div className="ml-3 text-sm flex">
                     <label
                       htmlFor="terms"
                       className="font-light text-gray-500 dark:text-gray-300"
                     >
                       I accept the
-                      <Button
-                        href="/policy"
-                        className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                      >
-                        Terms and Conditions
-                      </Button>
                     </label>
+                    <Button
+                      href="/policy"
+                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Terms and Conditions
+                    </Button>
                   </div>
                 </div>
                 <Button
@@ -98,15 +113,20 @@ function Login() {
                 >
                   Login
                 </Button>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Already have an account?
+                <div className="text-sm flex">
+                  <label
+                    htmlFor="terms"
+                    className="font-light text-gray-500 dark:text-gray-300"
+                  >
+                    Already have an account?
+                  </label>
                   <Button
                     href="/register"
                     className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Register here
                   </Button>
-                </p>
+                </div>
               </form>
             </div>
           </div>

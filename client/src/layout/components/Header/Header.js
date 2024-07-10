@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { locales } from "../../../i18n/i18n";
+import { useSelector } from "react-redux";
 import SvgIcon from "../../../components/SvgIcon/SvgIcon";
 import Button from "../../../components/Button/button";
 import { UserProfile } from "./userProfile/userProfile";
@@ -9,22 +10,20 @@ import { ReactComponent as Notification } from "../../../assets/icons/Notificati
 import VNflag from "../../../assets/images/VN.png";
 import USAflag from "../../../assets/images/USA.png";
 function Header() {
-  const use = false;
+  const { customers } = useSelector((state) => state.customers);
   const { t, i18n } = useTranslation();
   const currentLanguage = locales[i18n.language];
-
   const [isOpen, setIsOpen] = useState(false);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setIsOpen(!isOpen);
   };
-
   const handletoggleDropdown = () => {
     setIsOpen((isOpen) => !isOpen);
   };
   return (
-    <header className="px-9 pt-2 bg-backgroud">
+    <header className="px-9 pt-2 bg-backgroud h-16">
       <div className="flex items-center text-white h-h_48 mx-48 font-Nunito">
         <div className="logo flex-grow">
           <Button href="/" className="font-Nunito font-bold text-3xl">
@@ -96,7 +95,7 @@ function Header() {
             <SvgIcon icon={Question} width={20} height={20} fill="#000" />
           </div>
 
-          {use && (
+          {customers && (
             <>
               <div className=" mx-1 h-full flex items-center contact px-3 rounded hover:bg-bgHover cursor-pointer">
                 <SvgIcon
@@ -111,7 +110,7 @@ function Header() {
               </div>
             </>
           )}
-          {!use && (
+          {!customers && (
             <div className="Login px-3 flex h-full">
               <Button
                 href="/sign-in"

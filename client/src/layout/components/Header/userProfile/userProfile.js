@@ -8,7 +8,10 @@ import { ReactComponent as Booking } from "../../../../assets/icons/Booking.svg"
 import { ReactComponent as Account } from "../../../../assets/icons/User.svg";
 import { ReactComponent as Like } from "../../../../assets/icons/Like.svg";
 import { ReactComponent as Logout } from "../../../../assets/icons/Logout.svg";
+
+import { useDispatch, useSelector } from "react-redux";
 export const UserProfile = () => {
+  const { customers } = useSelector((state) => state.customers);
   const avt = false;
   return (
     <div className="relative flex items-center hover:bg-bgHover text-base min-w-24 p-2 mr-1 rounded cursor-pointer h-full">
@@ -22,8 +25,12 @@ export const UserProfile = () => {
       <Dropdown>
         <DropdownTrigger>
           <div className="infor">
-            <div className="infor-name text-base">Duy Nguyễn</div>
-            <div className="text-xs op">longduy2410@gmail.com</div>
+            <div className="infor-name text-base">
+              {customers.customer_name
+                ? customers.customer_name
+                : "New Customers"}
+            </div>
+            <div className="text-xs op">{customers.customer_email}</div>
           </div>
         </DropdownTrigger>
         <DropdownMenu
