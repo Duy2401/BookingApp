@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { logoutUser } from "../services/api";
 import axios from "axios";
 
 export const CustomerLogin = createAsyncThunk(
@@ -34,6 +35,17 @@ export const CustomerRegister = createAsyncThunk(
     }
   }
 );
+export const LogoutAccount = createAsyncThunk(
+  "customer/logout",
+  async ({ customers }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await logoutUser(customers, dispatch);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 const customersSlice = createSlice({
   name: "customers",
   initialState: {
@@ -42,9 +54,15 @@ const customersSlice = createSlice({
     error: null,
     success: false,
   },
-  reducers: {},
+  reducers: {
+    setTokens: (state, action) => {
+      if (state.customers) {
+        state.customers.accessToken = action.payload.accessToken;
+      }
+    },
+  },
   extraReducers: (builder) => {
-    // CUSTOMER LOGIN
+    // LOGIN
     builder
       .addCase(CustomerLogin.pending, (state) => {
         state.loading = true;
@@ -60,7 +78,7 @@ const customersSlice = createSlice({
         state.error = action.payload;
       });
 
-    // REGISTER ACCOUNT CUSTOMER
+    // REGISTER
     builder
       .addCase(CustomerRegister.pending, (state) => {
         state.loading = true;
@@ -75,7 +93,21 @@ const customersSlice = createSlice({
         state.loading = false;
         state.error = action.payload.message;
       });
+    // LOGOUT
+    builder
+      .addCase(LogoutAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(LogoutAccount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customers = null;
+      })
+      .addCase(LogoutAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
-
+export const { setTokens } = customersSlice.actions;
 export default customersSlice.reducer;

@@ -114,13 +114,13 @@ function Header() {
             <div className="Login px-3 flex h-full">
               <Button
                 href="/sign-in"
-                className="flex items-center hover:bg-bgHover text-base min-w-24 px-2 rounded h-full"
+                className="flex items-center hover:bg-bgHover text-base min-w-20 px-2 rounded h-full"
               >
                 {t("common.button.signin")}
               </Button>
               <Button
                 href="/register"
-                className="flex items-center hover:bg-bgHover text-base min-w-24 px-2 ml-2 rounded h-full"
+                className="flex items-center hover:bg-bgHover text-base min-w-20 px-2 ml-2 rounded h-full"
               >
                 {t("common.button.register")}
               </Button>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.customers);
+  const error = useSelector((state) => state.customers);
   const [body, setBody] = useState({
     customer_email: "",
     customer_password: "",
@@ -23,7 +23,7 @@ function Login() {
     try {
       const data = await dispatch(CustomerLogin(body));
       if (data.meta.requestStatus === "fulfilled") {
-        toast.success("Đăng ký tài khoản thành công");
+        toast.success("Đăng nhập thành công");
         setTimeout(() => {
           navigate("/");
         }, 1000);
