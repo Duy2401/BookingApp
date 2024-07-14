@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LogoutAccount } from "../../../../redux/customersSlice";
+import Button from "../../../../components/Button/button";
 export const UserProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ export const UserProfile = () => {
           aria-label="Dropdown menu with icons"
         >
           <DropdownItem
+            href="/mysettings/personal"
             key="new"
             className="mb-4"
             startContent={

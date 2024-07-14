@@ -2,6 +2,16 @@ const AuthController = require("../controllers/authController");
 const middlewareControlle = require("../controllers/middlewareController");
 const router = require("express").Router();
 
+router.post(
+  "/send-confirmation-email",
+  middlewareControlle.verifyToken,
+  AuthController.ConfirmationSendEmail
+);
+router.get(
+  "/confirm-email",
+  middlewareControlle.verifyToken,
+  AuthController.ConfirmationGetEmail
+);
 // Router of customers
 router.post("/register", AuthController.RegisterCustomers);
 

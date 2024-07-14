@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/People/users");
 const Customers = require("../models/People/customers");
+const transporter = require("../helpers/transporter");
 const { setValue, getValue, DelTokeLogout } = require("../helpers/WorkData");
 const AuthController = {
   CreateAccessToken: (user) => {
@@ -28,7 +29,33 @@ const AuthController = {
       }
     );
   },
+  // SEND EMAILL
+  ConfirmationSendEmail: async (req, res) => {
+    const { email } = req.body;
+    const mailOptions = {
+      from: "longduy2410@gmail.com",
+      to: email,
+      subject: "Email Xác Nhận",
+      text: `Vui lòng nhấp vào liên kết sau để xác nhận email của bạn: http://localhost:3000/confirm-email?token=unique-token`, // Generate a unique token
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json("Có lỗi xảy ra khi gửi email.");
+      } else {
+        return res.status(200).json("Email xác nhận đã được gửi.");
+      }
+    });
+  },
+  // GET VALIDATE EMAIL
+  ConfirmationGetEmail: async (req, res) => {
+    const { token } = req.query;
 
+    if (token === "unique-token") {
+      return res.status(200).json("Email đã được xác nhận thành công.");
+    } else {
+      return res.status(500).json("Token không hợp lệ.");
+    }
+  },
   //   ACOUNT OF CUSTOMERS
   RegisterCustomers: async (req, res) => {
     try {

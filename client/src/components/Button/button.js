@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import SvgIcon from "../SvgIcon/SvgIcon";
 const Button = ({
   to,
   href,
@@ -21,7 +22,7 @@ const Button = ({
   return (
     <Comp type="button" onClick={onClick} {...props}>
       {leftIcon && <>{leftIcon}</>}
-      <div className="px-2">{children}</div>
+      <div className="px-2 inline">{children}</div>
       {rightIcon && <>{rightIcon}</>}
     </Comp>
   );

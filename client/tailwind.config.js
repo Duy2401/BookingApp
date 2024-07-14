@@ -17,6 +17,9 @@ module.exports = {
         iconGrey: "#595959",
         btnText: "rgba(0,108,228,0.06);",
       },
+      gridTemplateColumns: {
+        grid_col_2: "auto 3fr",
+      },
       flex: {
         flex25: "0 0 25%",
         flex30: "0 0 30%",
