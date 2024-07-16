@@ -78,7 +78,7 @@ const SearchHotel = () => {
         <div
           ref={showAttraction}
           onClick={(e) => handleShowPassenger(e)}
-          className="flex items-center bg-white rounded flex-1 p-2 mr-1 relative"
+          className="flex items-center flex-shrink bg-white rounded flex-1 p-2 mr-1 relative"
         >
           <span className="pl-1">
             <svg
@@ -123,7 +123,7 @@ const SearchHotel = () => {
             />
           )}
         </div>
-        <div className="flex items-center bg-white rounded flex-1 p-2 mr-1">
+        <div className="flex items-center flex-shrink bg-white rounded flex-1 p-2 mr-1">
           <Datepicker
             separator={"-"}
             displayFormat={"DD/MM/YYYY"}
@@ -137,7 +137,7 @@ const SearchHotel = () => {
         <div
           ref={showPassenger}
           onClick={(e) => handleShowPassenger(e)}
-          className="flex items-center bg-white rounded flex-1 p-2 mr-1 relative"
+          className="flex items-center flex-shrink bg-white rounded flex-1 p-2 mr-1 relative"
         >
           <span>
             <svg
@@ -184,7 +184,7 @@ const SearchHotel = () => {
             />
           )}
         </div>
-        <div className="flex items-center text-white mr-1">
+        <div className="flex items-center flex-shrink text-white mr-1">
           <Button className="bg-btnSearch text-xl font-bold rounded p-p_9_24">
             {t("common.button.search")}
           </Button>

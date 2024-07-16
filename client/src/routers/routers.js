@@ -21,7 +21,7 @@ export const RouterPages = [
     path: "/mysettings",
     component: MySettting,
     children: [
-      { path: "personal", component: AccountInfor },
+      { path: "personal/:iduser", component: AccountInfor },
       { path: "secure", component: Secure },
       { path: "payment", component: BillingInfor },
       { path: "privacy", component: Privacy },

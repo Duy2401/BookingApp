@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import InputField from "../../components/InputField/InputField";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { EditProfileUser } from "../../redux/customersSlice";
 function AccountInfor() {
+  const id = useParams();
+  const dispatch = useDispatch();
+  const idUser = id.iduser.slice(7);
   const customers = useSelector((state) => state.customers?.customers);
-
-  const [formData, setFormData] = useState({
+  useEffect(() => {
+    setFormData(initialFormData);
+  }, [customers]);
+  const initialFormData = {
     customer_name: customers?.customer_name || "",
+    customer_gender: customers?.customer_gender || "",
+    customer_phone: customers?.customer_phone || "",
+    customer_address: customers?.customer_address || "",
     customer_email: customers?.customer_email || "",
-    phone_number: customers?.phone_number || "",
-    date_of_birth: customers?.date_of_birth || "",
-    gender: customers?.gender || "",
-    address: customers?.address || "",
-  });
+    customer_dateOfBirth: customers?.customer_dateOfBirth || "",
+  };
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,10 +29,14 @@ function AccountInfor() {
       [name]: value,
     });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    try {
+      const data = await dispatch(
+        EditProfileUser({ customers, newCustomers: formData, iduser: idUser })
+      );
+      return data;
+    } catch (error) {}
   };
 
   return (
@@ -47,35 +60,36 @@ function AccountInfor() {
           label="Địa chỉ email"
           type="email"
           name="customer_email"
+          readonly="readonly"
           value={formData.customer_email}
           onChange={handleChange}
         />
         <InputField
           label="Số điện thoại"
           type="text"
-          name="phone_number"
-          value={formData.phone_number}
+          name="customer_phone"
+          value={formData.customer_phone}
           onChange={handleChange}
         />
         <InputField
           label="Ngày sinh"
           type="date"
-          name="date_of_birth"
-          value={formData.date_of_birth}
+          name="customer_dateOfBirth"
+          value={formData.customer_dateOfBirth}
           onChange={handleChange}
         />
         <InputField
           label="Giới tính"
           type="text"
-          name="gender"
-          value={formData.gender}
+          name="customer_gender"
+          value={formData.customer_gender}
           onChange={handleChange}
         />
         <InputField
           label="Địa chỉ"
           type="text"
-          name="address"
-          value={formData.address}
+          name="customer_address"
+          value={formData.customer_address}
           onChange={handleChange}
         />
 

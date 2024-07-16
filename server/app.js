@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const clieredisClient = require("./helpers/redisDB");
 // ROUTER
 const AuthRouter = require("./routers/Auth");
+const UserRouter = require("./routers/User");
 const HotelRouter = require("./routers/Hotel");
 const FlightRouter = require("./routers/Flight");
 const TourRouter = require("./routers/Tour");
@@ -39,6 +40,7 @@ app.use(express.json());
 
 // Router
 app.use("/api/auth", AuthRouter);
+app.use("/api/user", UserRouter);
 app.use("/api/hotel", HotelRouter);
 app.use("/api/flight", FlightRouter);
 app.use("/api/tour", TourRouter);

@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const User = require("../models/People/users");
 const Customers = require("../models/People/customers");
 const transporter = require("../helpers/transporter");
 const { setValue, getValue, DelTokeLogout } = require("../helpers/WorkData");

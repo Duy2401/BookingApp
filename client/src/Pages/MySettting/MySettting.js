@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom";
 import Button from "../../components/Button/button";
+import { useSelector } from "react-redux";
 function MySettting() {
+  const customers = useSelector((state) => state.customers?.customers);
   return (
     <div className="grid grid-cols-grid_col_2 gap-5 p-5 m-5 border rounded">
       <aside
@@ -12,7 +14,7 @@ function MySettting() {
           <ul className="space-y-2 font-medium">
             <li className="p-4 border-b-2 border-gray-300">
               <Button
-                to="/mysettings/personal"
+                to={`/mysettings/personal/${customers?._id}`}
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                 leftIcon={
                   <svg

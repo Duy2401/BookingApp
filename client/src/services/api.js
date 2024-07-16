@@ -50,15 +50,15 @@ export const createAxiosInstance = (user, dispatch, additionalConfig = {}) => {
 };
 
 // Example usage of the axios instance for logout
-export const logoutUser = async (customers, dispatch) => {
-  try {
-    const axiosInstance = createAxiosInstance(customers, dispatch);
-    const data = await axiosInstance.post("/auth/logout", customers._id, {
-      headers: { token: `Bearer ${customers?.accessToken}` },
-    });
-    localStorage.clear();
-    return data.data;
-  } catch (error) {
-    return error;
-  }
-};
+// export const logoutUser = async (customers, dispatch) => {
+//   try {
+//     const axiosInstance = createAxiosInstance(customers, dispatch);
+//     const data = await axiosInstance.post("/auth/logout", customers._id, {
+//       headers: { token: `Bearer ${customers?.accessToken}` },
+//     });
+//     localStorage.clear();
+//     return data.data;
+//   } catch (error) {
+//     return error;
+//   }
+// };

@@ -24,7 +24,7 @@ function Header() {
   };
   return (
     <header className="px-9 pt-2 bg-backgroud h-16">
-      <div className="flex items-center text-white h-h_48 mx-48 font-Nunito">
+      <div className="flex items-center text-white h-h_48 mx-44 font-Nunito">
         <div className="logo flex-grow">
           <Button href="/" className="font-Nunito font-bold text-3xl">
             Booking.com

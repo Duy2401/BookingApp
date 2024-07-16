@@ -6,7 +6,7 @@ const Navigation = () => {
   const location = useLocation();
   return (
     <nav className="bg-backgroud px-9">
-      <div className="flex items-center text-white h-16 mx-48 font-Nunito">
+      <div className="flex items-center text-white h-16 mx-44 font-Nunito">
         <Button
           href="/"
           className={

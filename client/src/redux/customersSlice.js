@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { logoutUser } from "../services/api";
 import axios from "axios";
+import { logoutUser } from "../services/api";
+import { createAxiosInstance } from "../services/api";
 
 export const CustomerLogin = createAsyncThunk(
   "customer/login",
@@ -39,10 +40,35 @@ export const LogoutAccount = createAsyncThunk(
   "customer/logout",
   async ({ customers }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await logoutUser(customers, dispatch);
-      return response;
+      const axiosInstance = createAxiosInstance(customers, dispatch);
+      const response = await axiosInstance.post("/auth/logout", customers._id, {
+        headers: { token: `Bearer ${customers?.accessToken}` },
+      });
+      localStorage.clear();
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const EditProfileUser = createAsyncThunk(
+  "customer/edit",
+  async (
+    { customers, newCustomers, iduser },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const axiosInstance = createAxiosInstance(customers, dispatch);
+      const response = await axiosInstance.put(
+        `/user/edit/${iduser}`,
+        newCustomers,
+        {
+          headers: { token: `Bearer ${customers?.accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -104,6 +130,21 @@ const customersSlice = createSlice({
         state.customers = null;
       })
       .addCase(LogoutAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    // EDIT
+    builder
+      .addCase(EditProfileUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(EditProfileUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customers = action.payload.data;
+        state.success = true;
+      })
+      .addCase(EditProfileUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
