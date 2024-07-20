@@ -60,6 +60,7 @@ const HotelsController = {
           description_images: descriptionImages,
         },
         customers_id_create: req.body.customers_id_create,
+        hotel_price: req.body.hotel_price,
       });
 
       await newHotel.save();
@@ -72,7 +73,6 @@ const HotelsController = {
       });
     }
   },
-
   // Edit Infor of Hotel
   EditHotel: async (req, res) => {
     try {
@@ -124,6 +124,9 @@ const HotelsController = {
       return res.status(500).json(error);
     }
   },
+
+  // Get hotel
+  GetAll,
 };
 
 module.exports = HotelsController;

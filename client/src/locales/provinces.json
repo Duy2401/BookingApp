@@ -1,7 +1,8 @@
 [
     {
         "name": "Hà Nội",
-        "id":"01"
+        "id":"01",
+        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/0xzlsuanibj1699190830096.jpg"
     },
     {
         "name":"Hà Giang",
@@ -53,7 +54,8 @@
     },
     {
         "name":"Quảng Ninh"	,
-        "id":"22"
+        "id":"22",
+        "image": "https://statics.vinpearl.com/du-lich-vinh-Ha-Long-hinh-anh3_1625912082_1661247765.jpg"
     },
     {
         "name":"Bắc Giang",
@@ -97,7 +99,8 @@
     },
     {
         "name":"Ninh Bình",
-        "id":"37"
+        "id":"37",
+        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/0hjs20nwot8b1699190887366.png"
     },
     {
         "name":"Thanh Hóa",
@@ -121,11 +124,13 @@
     },
     {
         "name":"Thừa Thiên Huế"	,
-        "id":"46"
+        "id":"46",
+        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/0v2za9r51f8e1699191079741.png"
     },
     {
         "name":"Đà Nẵng",
-        "id":"48"
+        "id":"48",
+        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/0rpyt914mlbg1699190935705.png"
     },
     {
         "name":"Quảng Nam",
@@ -193,11 +198,13 @@
     },
     {
         "name":"Bà Rịa - Vũng Tàu"	,
-        "id":"77"
+        "id":"77",
+        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/099aig2d9aoo1699190907598.png"
     },
     {
         "name":"Hồ Chí Minh"	,
-        "id":"79"
+        "id":"79",
+        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/099aig2d9aoo1699190907598.png"
     },
     {
         "name":"Long An",
@@ -229,7 +236,8 @@
     },
     {
         "name":"Kiên Giang"	,
-        "id":"91"
+        "id":"91",
+        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/0u1ep5uv6s51699190970068.png"
     },
     {
         "name":"Cần Thơ"	,

@@ -15,6 +15,7 @@ const FromValue = () => {
     description_amenities: "",
     hotel_type: "",
     description_images: [],
+    hotel_price: "",
   });
 
   const handleChange = (e) => {
@@ -291,6 +292,17 @@ const FromValue = () => {
           />
         </label>
       </div>
+      <label className="block text-gray-700 font-bold mb-2">
+        Hotel Name:
+        <input
+          type="text"
+          name="hotel_name"
+          value={formData.hotel_name}
+          onChange={handleChange}
+          required
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </label>
       <button
         type="submit"
         className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md"

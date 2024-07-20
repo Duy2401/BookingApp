@@ -12,7 +12,7 @@ const Destinations = () => {
   return (
     <div className="grid grid-cols-5 grid-rows-4 gap-4 my-10">
       {desti.map((item, index) => (
-        <div className="item" key={index}>
+        <div className="item hover:cursor-pointer" key={index}>
           <div className="name text-base font-bold">{item.name}</div>
           <div className="quantity text-sm text-textGrey">
             3,9{index} chỗ nghỉ

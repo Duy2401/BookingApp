@@ -5,6 +5,7 @@ import SaleBanner from "../../assets/images/SaleBanner.jpg";
 import StayType from "./components/stayType/stayType";
 import LocalTrend from "./components/localTrend/localTrend";
 import Destinations from "./components/destinations/destinations";
+import ExploreVietnam from "./components/exploreVietnam/exploreVietnam";
 function Stays() {
   return (
     <>
@@ -35,6 +36,7 @@ function Stays() {
           </div>
         </div>
         <StayType />
+        <ExploreVietnam />
         <LocalTrend />
         <div className="my-10 flex justify-between">
           <div className="mx-3 overflow-hidden relative w-56 h-64 bg-backgroud rounded-2xl text-gray-50 flex flex-col justify-end items-center gap-2">
@@ -65,7 +67,7 @@ function Stays() {
               50%
             </span>
             <button className="z-10 duration-500 font-bold px-4 py-2 bg-gray-50 text-sky-500 hover:bg-sky-500 hover:text-gray-50">
-              Shop now
+              Booking now
             </button>
             <p className="text-xs mb-1">*Variable prices</p>
           </div>
@@ -97,7 +99,7 @@ function Stays() {
               25%
             </span>
             <button className="z-10 duration-500 font-bold px-4 py-2 bg-gray-50 text-sky-500 hover:bg-sky-500 hover:text-gray-50">
-              Shop now
+              Booking now
             </button>
             <p className="text-xs mb-1">*Variable prices</p>
           </div>
@@ -129,7 +131,7 @@ function Stays() {
               10%
             </span>
             <button className="z-10 duration-500 font-bold px-4 py-2 bg-gray-50 text-sky-500 hover:bg-sky-500 hover:text-gray-50">
-              Shop now
+              Booking now
             </button>
             <p className="text-xs mb-1">*Variable prices</p>
           </div>
@@ -161,7 +163,7 @@ function Stays() {
               10%
             </span>
             <button className="z-10 duration-500 font-bold px-4 py-2 bg-gray-50 text-sky-500 hover:bg-sky-500 hover:text-gray-50">
-              Shop now
+              Booking now
             </button>
             <p className="text-xs mb-1">*Variable prices</p>
           </div>

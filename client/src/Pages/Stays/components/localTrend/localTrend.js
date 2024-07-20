@@ -14,7 +14,7 @@ const LocalTrend = () => {
   return (
     <div className="font-Nunito mt-10">
       <div>
-        <h1 className="text-2xl font-black my-1 mb-3">
+        <h1 className="text-2xl font-black my-1 mb-3 ">
           Bạn có còn quan tâm đến những chỗ nghỉ này ?
         </h1>
       </div>
@@ -35,7 +35,7 @@ const LocalTrend = () => {
         className="pb-4"
       >
         <SwiperSlide>
-          <div className="mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
+          <div className=" hover:cursor-pointer mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
             <img
               src={Hotels}
               alt="thumbnail"
@@ -59,7 +59,7 @@ const LocalTrend = () => {
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className="mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
+          <div className=" hover:cursor-pointer mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
             <img
               src={CanHo}
               alt="thumbnail"
@@ -83,7 +83,7 @@ const LocalTrend = () => {
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className="mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
+          <div className=" hover:cursor-pointer mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
             <img
               src={Resorts}
               alt="thumbnail"
@@ -107,7 +107,7 @@ const LocalTrend = () => {
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className="mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
+          <div className=" hover:cursor-pointer mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
             <img
               src={BietThu}
               alt="thumbnail"
@@ -131,7 +131,7 @@ const LocalTrend = () => {
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className="mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
+          <div className=" hover:cursor-pointer mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg">
             <img
               src={Khinghiduong}
               alt="thumbnail"
