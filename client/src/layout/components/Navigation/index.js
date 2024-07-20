@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Button from "../../../components/Button/button";
-const Navigation = () => {
+const Navigations = () => {
   const { t } = useTranslation();
   const location = useLocation();
   return (
@@ -104,4 +104,4 @@ const Navigation = () => {
     </nav>
   );
 };
-export default Navigation;
+export default Navigations;

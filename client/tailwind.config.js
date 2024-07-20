@@ -16,6 +16,7 @@ module.exports = {
         btnSearch: "#006ce4",
         iconGrey: "#595959",
         btnText: "rgba(0,108,228,0.06);",
+        textGrey: "#595959",
       },
       gridTemplateColumns: {
         grid_col_2: "auto 3fr",
@@ -30,6 +31,7 @@ module.exports = {
       },
       height: {
         h_48: "48px",
+        h_500: "500px",
       },
       maxWidth: {
         mw_11: "1100px",
@@ -55,6 +57,7 @@ module.exports = {
       },
       backgroundColor: {
         color_highlighted_alt: "rgba(26,26,26,0.06);",
+        bgC_1: "rgba(0, 0, 0, 0.6);",
       },
       borderWidth: {
         bder_1: "1px",
@@ -62,6 +65,7 @@ module.exports = {
       boxShadow: {
         box_shawdow_200: "0 2px 16px 0 rgba(26,26,26,0.24);",
         box_shawdow_100: "4.0px 8.0px 8.0px rgba(0,0,0,0.38)",
+        box_shawdow_300: "rgba(0,0,0,0.24)0px 3px8px",
       },
     },
   },

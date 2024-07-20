@@ -1,26 +1,22 @@
 const Hotels = require("../models/Hotel/hotels");
 const HotelsType = require("../models/Hotel/hotelType");
-
+const { cloudinary } = require("../configs/cloudinary");
 const HotelsController = {
   // Business Partners create my hotel
   CreateHotel: async (req, res) => {
     try {
+      console.log("Files:", req.files);
+      const imageUrls = req.files.map((file) => file.secure_url);
+      console.log("Image URLs:", imageUrls);
       const newHotel = new Hotels({
-        hotel_id: req.body.hotel_id,
         hotel_name: req.body.hotel_name,
         hotel_address: req.body.hotel_address,
         hotel_descriptive: req.body.hotel_descriptive,
         hotel_description: {
-          description_note: {
-            note_title: req.body.note_title,
-            note_content: req.body.note_content,
-          },
-          description_generalRuleS: {
-            rules_title: req.body.rules_title,
-            rules_content: req.body.rules_content,
-          },
+          description_note: req.body.description_note,
+          description_generalRules: req.body.description_generalRules,
           description_amenities: req.body.description_amenities,
-          description_image: req.body.description_image,
+          description_images: imageUrls.map((url) => ({ name_image: url })),
         },
         customers_id_create: req.body.customers_id_create,
         hotel_type: req.body.hotel_type,
@@ -28,7 +24,11 @@ const HotelsController = {
       const hotels = await newHotel.save();
       return res.status(200).json(hotels);
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({
+        status: true,
+        message: "Create Hotel not success",
+        data: error,
+      });
     }
   },
   // Edit Infor of Hotel

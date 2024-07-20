@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const HotelSchema = new Schema({
-  hotel_id: {
-    type: String,
-    require: true,
-  },
   hotel_name: {
     type: String,
     require: true,
@@ -30,7 +26,7 @@ const HotelSchema = new Schema({
         },
       },
     ],
-    description_generalRuleS: [
+    description_generalRules: [
       {
         rules_title: {
           type: String,
@@ -44,7 +40,11 @@ const HotelSchema = new Schema({
     ],
     //amenities: tiện nghi
     description_amenities: [{ type: String, require: true }],
-    description_image: [{ type: String, require: true }],
+    description_images: [
+      {
+        name_image: { type: String, require: true },
+      },
+    ],
   },
   customers_id_create: {
     type: Schema.Types.ObjectId,

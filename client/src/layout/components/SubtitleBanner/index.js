@@ -1,14 +1,15 @@
+import { useSelector } from "react-redux";
+
 const SubtitileBanner = ({ titleFirst, titleSecond, titleThird, ...props }) => {
-  let user = false;
-  const userName = "Duy";
+  const customers = useSelector((state) => state.customers?.customers);
   return (
     <div className="px-9 pb-8">
       <div className="text-white mx-48 my-10 font-Nunito">
         <h1 {...props}>
-          {!user && <span>{titleFirst}</span>}
-          {user && titleSecond && (
+          {!customers && <span>{titleFirst}</span>}
+          {customers && titleSecond && (
             <>
-              <span>{userName}, </span>
+              <span>{customers.customer_name}, </span>
               <span>{titleSecond}</span>
             </>
           )}

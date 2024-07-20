@@ -1,3 +1,4 @@
+import Footer from "../components/Footer/footer";
 import Header from "../components/Header/Header";
 
 function LayoutLogin({ children }) {
@@ -5,6 +6,7 @@ function LayoutLogin({ children }) {
     <div className="wrapper">
       <Header />
       <div className="container1">{children}</div>
+      <Footer />
     </div>
   );
 }
