@@ -6,7 +6,7 @@ const middlewareControlle = require("../controllers/middlewareController");
 router.post(
   "/createhotel",
   upload.array("description_images", 10),
-  // middlewareControlle.verifyToken,
+  middlewareControlle.verifyToken,
   HotelsController.CreateHotel
 );
 

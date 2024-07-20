@@ -43,7 +43,7 @@ const FromValue = () => {
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      description_images: Array.from(e.target.files), // Convert FileList to Array
+      description_images: Array.from(e.target.files),
     }));
   };
   const handleArrayChange = (e, key) => {

@@ -1,49 +1,78 @@
 const Hotels = require("../models/Hotel/hotels");
 const HotelsType = require("../models/Hotel/hotelType");
 const streamifier = require("streamifier");
+const cloudinary = require("../configs/cloudinary");
 const HotelsController = {
   // Business Partners create my hotel
   CreateHotel: async (req, res) => {
     try {
-      if (req.files) {
-        console.log("req.files", req.files);
-      }
-      if (req.body.description_images) {
-        console.log("req.body", req.body.description_images);
-      }
-      let descriptionImages = [];
-      console.log(req.files);
-      if (req.files) {
+      const descriptionImages = [];
+
+      if (req.files && req.files.length) {
+        console.log(`Found ${req.files.length} file(s) to process.`);
+
         for (const file of req.files) {
-          const result = await new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-              { upload_preset: "ml_default", folder: "booking-image" },
-              (error, result) => {
-                if (error) reject(new Error("Failed to upload image"));
-                resolve(result.secure_url);
-              }
+          console.log(`Processing file: ${file.originalname}`);
+
+          if (!file.buffer) {
+            console.error("No buffer found for file:", file.originalname);
+            continue;
+          }
+
+          try {
+            const result = await new Promise((resolve, reject) => {
+              const uploadStream = cloudinary.uploader.upload_stream(
+                { upload_preset: "ml_default", folder: "booking-image" },
+                (error, result) => {
+                  if (error) {
+                    console.error(
+                      `Cloudinary upload error for file ${file.originalname}:`,
+                      error
+                    );
+                    return reject(new Error("Failed to upload image"));
+                  }
+                  console.log(
+                    `Successfully uploaded ${file.originalname} to Cloudinary.`
+                  );
+                  resolve(result.secure_url);
+                }
+              );
+              streamifier.createReadStream(file.buffer).pipe(uploadStream);
+            });
+
+            descriptionImages.push({ name_image: result });
+          } catch (uploadError) {
+            console.error(
+              `Error uploading file ${file.originalname}:`,
+              uploadError
             );
-            streamifier.createReadStream(file.buffer).pipe(uploadStream);
-          });
-          descriptionImages.push(result);
+          }
         }
+      } else {
+        console.error("No files found in req.files");
       }
-      console.log(descriptionImages);
-      const newHotel = new Hotels({
-        hotel_name: req.body.hotel_name,
-        hotel_address: req.body.hotel_address,
-        hotel_descriptive: req.body.hotel_descriptive,
-        hotel_description: {
-          description_note: req.body.description_note,
-          description_generalRules: req.body.description_generalRules,
-          description_amenities: req.body.description_amenities,
-          description_images: descriptionImages,
-        },
-        customers_id_create: req.body.customers_id_create,
-        hotel_type: req.body.hotel_type,
-      });
-      // const hotels = await newHotel.save();
-      return res.status(200).json(newHotel);
+
+      // const descriptionNote = JSON.parse(req.body.description_note);
+      // const descriptionGeneralRules = JSON.parse(
+      //   req.body.description_generalRules
+      // );
+      // const descriptionAmenities = req.body.description_amenities
+      //   ? JSON.parse(req.body.description_amenities)
+      //   : [];
+      // const newHotel = new Hotels({
+      //   hotel_name: req.body.hotel_name,
+      //   hotel_address: req.body.hotel_address,
+      //   hotel_descriptive: req.body.hotel_descriptive,
+      //   hotel_type: req.body.hotel_type,
+      //   description_note: descriptionNote,
+      //   description_generalRules: descriptionGeneralRules,
+      //   description_amenities: descriptionAmenities,
+      //   description_images: descriptionImages,
+      //   customers_id_create: req.body.customers_id_create,
+      // });
+
+      // await newHotel.save();
+      return res.status(200).json({ descriptionImages });
     } catch (error) {
       return res.status(500).json({
         status: false,
