@@ -5,7 +5,7 @@ const middlewareControlle = require("../controllers/middlewareController");
 // Business Partners create my hotel
 router.post(
   "/createhotel",
-  upload.array("description_images", 10),
+  upload.fields([{ name: "description_images", maxCount: 10 }]),
   middlewareControlle.verifyToken,
   HotelsController.CreateHotel
 );

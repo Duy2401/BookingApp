@@ -7,18 +7,9 @@ const HotelsController = {
   CreateHotel: async (req, res) => {
     try {
       const descriptionImages = [];
-
-      if (req.files && req.files.length) {
-        console.log(`Found ${req.files.length} file(s) to process.`);
-
-        for (const file of req.files) {
-          console.log(`Processing file: ${file.originalname}`);
-
-          if (!file.buffer) {
-            console.error("No buffer found for file:", file.originalname);
-            continue;
-          }
-
+      if (req.files && req.files["description_images"]) {
+        for (const file of req.files["description_images"]) {
+          if (!file.buffer) continue;
           try {
             const result = await new Promise((resolve, reject) => {
               const uploadStream = cloudinary.uploader.upload_stream(
@@ -51,28 +42,28 @@ const HotelsController = {
       } else {
         console.error("No files found in req.files");
       }
+      const descriptionNote = JSON.parse(req.body.description_note);
+      const descriptionGeneralRules = JSON.parse(
+        req.body.description_generalRules
+      );
+      const descriptionAmenities = req.body.description_amenities || [];
 
-      // const descriptionNote = JSON.parse(req.body.description_note);
-      // const descriptionGeneralRules = JSON.parse(
-      //   req.body.description_generalRules
-      // );
-      // const descriptionAmenities = req.body.description_amenities
-      //   ? JSON.parse(req.body.description_amenities)
-      //   : [];
-      // const newHotel = new Hotels({
-      //   hotel_name: req.body.hotel_name,
-      //   hotel_address: req.body.hotel_address,
-      //   hotel_descriptive: req.body.hotel_descriptive,
-      //   hotel_type: req.body.hotel_type,
-      //   description_note: descriptionNote,
-      //   description_generalRules: descriptionGeneralRules,
-      //   description_amenities: descriptionAmenities,
-      //   description_images: descriptionImages,
-      //   customers_id_create: req.body.customers_id_create,
-      // });
+      const newHotel = new Hotels({
+        hotel_name: req.body.hotel_name,
+        hotel_address: req.body.hotel_address,
+        hotel_descriptive: req.body.hotel_descriptive,
+        hotel_type: req.body.hotel_type,
+        hotel_description: {
+          description_note: descriptionNote,
+          description_generalRules: descriptionGeneralRules,
+          description_amenities: descriptionAmenities,
+          description_images: descriptionImages,
+        },
+        customers_id_create: req.body.customers_id_create,
+      });
 
-      // await newHotel.save();
-      return res.status(200).json({ descriptionImages });
+      await newHotel.save();
+      return res.status(201).json(newHotel);
     } catch (error) {
       return res.status(500).json({
         status: false,

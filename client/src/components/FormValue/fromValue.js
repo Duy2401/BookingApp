@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Dropzone from "react-dropzone";
 import { CreateHotel } from "../../redux/hotelsSlice";
+
 const FromValue = () => {
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
@@ -46,10 +46,12 @@ const FromValue = () => {
       description_images: Array.from(e.target.files),
     }));
   };
+
   const handleArrayChange = (e, key) => {
     const { value } = e.target;
     setFormData((prevData) => ({ ...prevData, [key]: value.split(",") }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -72,15 +74,14 @@ const FromValue = () => {
       formData.description_images.forEach((file) => {
         data.append("description_images", file);
       });
-
       const response = await dispatch(
-        CreateHotel({ newData: formData, customers })
+        CreateHotel({ newData: data, customers })
       );
+      // handle the response if needed
     } catch (error) {
       console.error("Error creating hotel:", error);
     }
   };
-
   return (
     <form
       onSubmit={handleSubmit}
@@ -252,19 +253,20 @@ const FromValue = () => {
           />
         </label>
       </div>
-
       <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">Images:</label>
-        <input
-          type="file"
-          name="description_images"
-          multiple
-          onChange={handleFileChange}
-          className="mt-1 block w-full"
-        />
+        <label className="block text-gray-700 font-bold mb-2">
+          Images:
+          <input
+            type="file"
+            name="description_images"
+            multiple
+            onChange={handleFileChange}
+            className="mt-1 block w-full"
+          />
+        </label>
         <div className="mt-2">
           {formData.description_images.length > 0 &&
-            Array.from(formData.description_images).map((file, index) => (
+            formData.description_images.map((file, index) => (
               <div key={index} className="mb-2">
                 <img
                   src={URL.createObjectURL(file)}
@@ -276,7 +278,6 @@ const FromValue = () => {
             ))}
         </div>
       </div>
-
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">
           Hotel Type:
@@ -290,7 +291,6 @@ const FromValue = () => {
           />
         </label>
       </div>
-
       <button
         type="submit"
         className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md"
@@ -300,4 +300,5 @@ const FromValue = () => {
     </form>
   );
 };
+
 export default FromValue;

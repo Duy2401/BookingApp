@@ -6,6 +6,7 @@ export const CreateHotel = createAsyncThunk(
   "hotels/create",
   async ({ newData, customers }, { rejectWithValue, dispatch }) => {
     try {
+      console.log(newData);
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.post("/hotel/createhotel", newData, {
         headers: {

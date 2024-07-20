@@ -1,14 +1,14 @@
 const multer = require("multer");
 const path = require("path");
 
-const storage = multer.memoryStorage(); // Hoặc sử dụng diskStorage nếu bạn cần lưu tệp vào đĩa
+const storage = multer.memoryStorage(); // Or diskStorage if needed
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
-    // Cấu hình lọc tệp nếu cần
+    // Optional file filter logic
     cb(null, true);
   },
-  limits: { fileSize: 5 * 1024 * 1024 }, // Ví dụ: 5MB tối đa
+  limits: { fileSize: 5 * 1024 * 1024 }, // Max file size (5MB in this example)
 });
 
 module.exports = upload;
