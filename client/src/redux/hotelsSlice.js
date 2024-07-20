@@ -9,7 +9,10 @@ export const CreateHotel = createAsyncThunk(
       console.log(newData, customers);
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.post("/hotel/createhotel", newData, {
-        headers: { token: `Bearer ${customers?.accessToken}` },
+        headers: {
+          token: `Bearer ${customers?.accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
       return response.data;
     } catch (error) {

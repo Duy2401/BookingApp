@@ -6,7 +6,7 @@ const FromValue = () => {
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
   const [formData, setFormData] = useState({
-    customers_id_create: customers._id,
+    customers_id_create: customers?._id || "",
     hotel_name: "",
     hotel_address: "",
     hotel_descriptive: "",
@@ -19,37 +19,37 @@ const FromValue = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleDynamicChange = (index, e, key, formData, setFormData) => {
+  const handleDynamicChange = (index, e, key) => {
     const { name, value } = e.target;
     const updatedArray = [...formData[key]];
     updatedArray[index] = { ...updatedArray[index], [name]: value };
-    setFormData({ ...formData, [key]: updatedArray });
+    setFormData((prevData) => ({ ...prevData, [key]: updatedArray }));
   };
 
-  const handleRemoveItem = (index, key, formData, setFormData) => {
+  const handleRemoveItem = (index, key) => {
     const updatedArray = [...formData[key]];
     updatedArray.splice(index, 1);
-    setFormData({ ...formData, [key]: updatedArray });
+    setFormData((prevData) => ({ ...prevData, [key]: updatedArray }));
   };
 
-  const handleAddItem = (key, newItem, formData, setFormData) => {
+  const handleAddItem = (key, newItem) => {
     const updatedArray = [...formData[key], newItem];
-    setFormData({ ...formData, [key]: updatedArray });
+    setFormData((prevData) => ({ ...prevData, [key]: updatedArray }));
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData({ ...formData, description_images: files });
+    setFormData((prevData) => ({
+      ...prevData,
+      description_images: Array.from(e.target.files), // Convert FileList to Array
+    }));
   };
-
   const handleArrayChange = (e, key) => {
     const { value } = e.target;
-    setFormData({ ...formData, [key]: value.split(",") });
+    setFormData((prevData) => ({ ...prevData, [key]: value.split(",") }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -68,17 +68,19 @@ const FromValue = () => {
       data.append("description_amenities", formData.description_amenities);
       data.append("customers_id_create", formData.customers_id_create);
       data.append("hotel_type", formData.hotel_type);
+
       formData.description_images.forEach((file) => {
         data.append("description_images", file);
       });
+
       const response = await dispatch(
         CreateHotel({ newData: formData, customers })
       );
-      console.log(formData);
     } catch (error) {
       console.error("Error creating hotel:", error);
     }
   };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -111,6 +113,7 @@ const FromValue = () => {
           />
         </label>
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">
           Hotel Descriptive:
@@ -120,9 +123,10 @@ const FromValue = () => {
             onChange={handleChange}
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          ></textarea>
+          />
         </label>
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">
           Description:
@@ -136,13 +140,7 @@ const FromValue = () => {
                 name="note_title"
                 value={note.note_title}
                 onChange={(e) =>
-                  handleDynamicChange(
-                    index,
-                    e,
-                    "description_note",
-                    formData,
-                    setFormData
-                  )
+                  handleDynamicChange(index, e, "description_note")
                 }
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -155,29 +153,16 @@ const FromValue = () => {
                 name="note_content"
                 value={note.note_content}
                 onChange={(e) =>
-                  handleDynamicChange(
-                    index,
-                    e,
-                    "description_note",
-                    formData,
-                    setFormData
-                  )
+                  handleDynamicChange(index, e, "description_note")
                 }
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              ></textarea>
+              />
             </label>
 
             <button
               type="button"
-              onClick={() =>
-                handleRemoveItem(
-                  index,
-                  "description_note",
-                  formData,
-                  setFormData
-                )
-              }
+              onClick={() => handleRemoveItem(index, "description_note")}
               className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md"
             >
               Remove Note
@@ -187,36 +172,29 @@ const FromValue = () => {
         <button
           type="button"
           onClick={() =>
-            handleAddItem(
-              "description_note",
-              { note_title: "", note_content: "" },
-              formData,
-              setFormData
-            )
+            handleAddItem("description_note", {
+              note_title: "",
+              note_content: "",
+            })
           }
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
           Add Note
         </button>
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">Rules:</label>
-        {formData.description_generalRules.map((note, index) => (
+        {formData.description_generalRules.map((rule, index) => (
           <div key={index} className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Rule Title:
               <input
                 type="text"
                 name="rules_title"
-                value={note.rules_title}
+                value={rule.rules_title}
                 onChange={(e) =>
-                  handleDynamicChange(
-                    index,
-                    e,
-                    "description_generalRules",
-                    formData,
-                    setFormData
-                  )
+                  handleDynamicChange(index, e, "description_generalRules")
                 }
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -227,52 +205,40 @@ const FromValue = () => {
               Rule Content:
               <textarea
                 name="rules_content"
-                value={note.rules_content}
+                value={rule.rules_content}
                 onChange={(e) =>
-                  handleDynamicChange(
-                    index,
-                    e,
-                    "description_generalRules",
-                    formData,
-                    setFormData
-                  )
+                  handleDynamicChange(index, e, "description_generalRules")
                 }
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              ></textarea>
+              />
             </label>
 
             <button
               type="button"
               onClick={() =>
-                handleRemoveItem(
-                  index,
-                  "description_generalRules",
-                  formData,
-                  setFormData
-                )
+                handleRemoveItem(index, "description_generalRules")
               }
               className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md"
             >
-              Remove Note
+              Remove Rule
             </button>
           </div>
         ))}
         <button
           type="button"
           onClick={() =>
-            handleAddItem(
-              "description_generalRules",
-              { rules_title: "", rules_content: "" },
-              formData,
-              setFormData
-            )
+            handleAddItem("description_generalRules", {
+              rules_title: "",
+              rules_content: "",
+            })
           }
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
-          Add Note
+          Add Rule
         </button>
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">
           Amenities (comma-separated):
@@ -286,6 +252,7 @@ const FromValue = () => {
           />
         </label>
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">Images:</label>
         <input
@@ -309,6 +276,7 @@ const FromValue = () => {
             ))}
         </div>
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">
           Hotel Type:
@@ -322,9 +290,10 @@ const FromValue = () => {
           />
         </label>
       </div>
+
       <button
         type="submit"
-        className=" mt-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md"
       >
         Submit
       </button>
