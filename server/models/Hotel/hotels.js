@@ -56,9 +56,5 @@ const HotelSchema = new Schema({
     ref: "HotelTypes",
     require: true,
   },
-  hotel_price: {
-    type: Number,
-    require: true,
-  },
 });
 module.exports = mongoose.model("Hotels", HotelSchema);

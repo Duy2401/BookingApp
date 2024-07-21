@@ -22,11 +22,8 @@ const ExploreVietnam = () => {
       </div>
       <Swiper spaceBetween={20} slidesPerView={6} className="pb-4">
         {desti.map((value, index) => (
-          <SwiperSlide>
-            <div
-              key={index}
-              className="mb-2.5 card max-w-40 max-h-52 rounded overflow-hidden justify-center flex flex-col items-center hover:cursor-pointer"
-            >
+          <SwiperSlide key={index}>
+            <div className="mb-2.5 card max-w-40 max-h-52 rounded overflow-hidden justify-center flex flex-col items-center hover:cursor-pointer">
               <img
                 src={value.image}
                 alt="thumbnail"

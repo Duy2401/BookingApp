@@ -8,8 +8,6 @@ const TouristAttraction = ({ searchTerm, setSearchTerm }) => {
   useEffect(() => {
     const filterSearchResults = () => {
       const filteredResults = provinces.filter((item) => {
-        // Implement your search logic here
-        // You can search by item properties, etc.
         return item.name.toLowerCase().includes(searchTerm.toLowerCase());
       });
       setSearchResult(filteredResults);
@@ -17,8 +15,12 @@ const TouristAttraction = ({ searchTerm, setSearchTerm }) => {
 
     filterSearchResults();
   }, [searchTerm, provinces]);
+
+  const handleGetValue = (value) => {
+    setSearchTerm(value);
+  };
   return (
-    <div className="absolute max-w-full min-w-mw_430 right-0 left-0 rounded top-14 shadow-box_shawdow_200 box-border font-Nunito">
+    <div className="absolute max-w-full min-w-mw_430 bg-white right-0 left-0 rounded top-14 shadow-box_shawdow_200 box-border font-Nunito">
       <div className="">
         <div className="p-3 text-base font-bold">
           {t("common.search.locationTrent")}
@@ -27,6 +29,7 @@ const TouristAttraction = ({ searchTerm, setSearchTerm }) => {
           {searchResult.map((item, index) => (
             <li
               key={index}
+              onClick={() => handleGetValue(item.name)}
               className="hover:bg-color_highlighted_alt p-2 border-bder_1 border-solid border-border_color_2 cursor-pointer"
             >
               <div className="flex items-center">

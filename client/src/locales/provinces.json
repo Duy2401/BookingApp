@@ -150,7 +150,9 @@
     },
     {
         "name":"Khánh Hòa",
-        "id":"56"
+        "id":"56",
+        "image":"https://xaviahotel.com/vnt_upload/news/11_2017/nha-trang_1.jpg"
+
     },
     {
         "name":"Ninh Thuận"	,
@@ -199,7 +201,7 @@
     {
         "name":"Bà Rịa - Vũng Tàu"	,
         "id":"77",
-        "image":"https://vnpay.vn/s1/statics.vnpay.vn/2023/11/099aig2d9aoo1699190907598.png"
+        "image":"https://bcp.cdnchinhphu.vn/thumb_w/777/334894974524682240/2023/12/18/ba-ria-vung-tau-1-1702878003826817104374.jpg"
     },
     {
         "name":"Hồ Chí Minh"	,

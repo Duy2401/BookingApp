@@ -21,7 +21,6 @@ const SearchHotel = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-
   const handleChangeDate = (newValue) => {
     setDatetime(newValue);
   };
@@ -57,7 +56,7 @@ const SearchHotel = () => {
       setShowSearch(true);
     }
   };
-  const handleSubmitValue = () => {
+  const handleSubmitValue = (event) => {
     const formData = {
       adults: adults,
       children: children,
@@ -185,7 +184,10 @@ const SearchHotel = () => {
           )}
         </div>
         <div className="flex items-center flex-shrink text-white mr-1">
-          <Button className="bg-btnSearch text-xl font-bold rounded p-p_9_24">
+          <Button
+            to={`/stays/searchresults?ss=${searchTerm}&checkin${datetime.startDate}&checkout=${datetime.endDate}&group_adults=${adults}&no_rooms=${rooms}&group_children=${children}`}
+            className="bg-btnSearch text-xl font-bold rounded p-p_9_24"
+          >
             {t("common.button.search")}
           </Button>
         </div>

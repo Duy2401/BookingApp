@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const HotelTypeSchema = new Schema({
+  // Loại hình khách sạn (ví dụ: 5 sao, resort, hostel, v.v.).
   HotelTypes_id: {
     type: String,
     require: true,
@@ -10,26 +11,7 @@ const HotelTypeSchema = new Schema({
     type: String,
     require: true,
   },
-  HotelTypes_desc: [
-    {
-      desc_id: {
-        type: String,
-        default: null,
-      },
-      desc_title: {
-        type: String,
-        default: null,
-      },
-      desc_prices: {
-        type: Number,
-        default: null,
-      },
-      availableRooms: {
-        type: Number,
-        default: null,
-      },
-    },
-  ],
 });
+0;
 
 module.exports = mongoose.model("HotelTypes", HotelTypeSchema);

@@ -20,6 +20,7 @@ module.exports = {
       },
       gridTemplateColumns: {
         grid_col_2: "auto 3fr",
+        grid_col_2A: " 262px auto;",
       },
       flex: {
         flex25: "0 0 25%",
@@ -32,6 +33,7 @@ module.exports = {
       height: {
         h_48: "48px",
         h_500: "500px",
+        h_100_vh: "100vh",
       },
       maxWidth: {
         mw_11: "1100px",
