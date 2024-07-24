@@ -17,10 +17,13 @@ module.exports = {
         iconGrey: "#595959",
         btnText: "rgba(0,108,228,0.06);",
         textGrey: "#595959",
+        bgTotal: "#ebf3ff",
       },
       gridTemplateColumns: {
         grid_col_2: "auto 3fr",
-        grid_col_2A: " 262px auto;",
+        grid_col_2A: "262px auto;",
+        grid_col_2B: "350px auto;",
+        grid_col_2C: "auto 262px;",
       },
       flex: {
         flex25: "0 0 25%",

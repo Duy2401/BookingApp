@@ -1,4 +1,3 @@
-import Navigation from "../../layout/components/Navigation";
 import SearchFlight from "../../layout/components/Search/SearchFlight/SearchFlight";
 import SubtitileBanner from "../../layout/components/SubtitleBanner";
 import Banner from "../../assets/images/BannerFlights.jpg";
@@ -6,7 +5,6 @@ function Flights() {
   return (
     <>
       <div className="bg-backgroud">
-        <Navigation />
         <SubtitileBanner
           className="text-6xl font-extrabold w-3/4"
           titleFirst="Bay với chất lượng, đặt vé cùng niềm tin!"

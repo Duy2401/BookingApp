@@ -4,7 +4,7 @@ const SubtitileBanner = ({ titleFirst, titleSecond, titleThird, ...props }) => {
   const customers = useSelector((state) => state.customers?.customers);
   return (
     <div className="px-9 pb-8">
-      <div className="text-white mx-48 my-10 font-Nunito">
+      <div className="text-white mx-48 mb-10 font-Nunito">
         <h1 {...props}>
           {!customers && <span>{titleFirst}</span>}
           {customers && titleSecond && (

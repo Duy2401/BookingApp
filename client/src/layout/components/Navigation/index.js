@@ -10,7 +10,7 @@ const Navigations = () => {
         <Button
           href="/"
           className={
-            location.pathname === "/" || "/stays/searchresults"
+            location.pathname === "/" && "/stays/searchresults"
               ? "flex p-3 text-base items-center bg-bgHover rounded-3xl hover:bg-bgHover"
               : "flex p-3 text-base items-center rounded-3xl hover:bg-bgHover"
           }

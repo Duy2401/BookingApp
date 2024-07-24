@@ -12,6 +12,5 @@ const HotelTypeSchema = new Schema({
     require: true,
   },
 });
-0;
 
 module.exports = mongoose.model("HotelTypes", HotelTypeSchema);

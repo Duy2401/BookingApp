@@ -9,8 +9,6 @@ function Partner() {
   };
   return (
     <>
-      <h1>Partner Page</h1>
-      <br />
       <div className="p-4">
         <button className="bg-blue-700 text-white p-5" onClick={handleShow}>
           TẠO KHÁCH SẠN

@@ -1,41 +1,52 @@
-import Button from "../../../../components/Button/button";
 import Datepicker from "react-tailwindcss-datepicker";
 import { useTranslation } from "react-i18next";
 import { useState, useRef, useEffect } from "react";
 import PassengerForm from "../../../../components/PassengerForm/PassengerForm";
 import TouristAttraction from "../../../../components/TouristAttraction/TouristAttraction";
+import { useNavigate } from "react-router-dom";
+
 const SearchHotel = () => {
   const { t } = useTranslation();
-
   const inputRef = useRef();
   const showPassenger = useRef(null);
   const showAttraction = useRef(null);
+  const navigate = useNavigate(); // Updated to use navigate
 
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const [datetime, setDatetime] = useState("");
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
-  const [rooms, setRooms] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(
+    localStorage.getItem("searchTerm") || ""
+  );
+  const [datetime, setDatetime] = useState({
+    startDate: localStorage.getItem("checkin") || "",
+    endDate: localStorage.getItem("checkout") || "",
+  });
+  const [adults, setAdults] = useState(
+    Number(localStorage.getItem("adults")) || 1
+  );
+  const [children, setChildren] = useState(
+    Number(localStorage.getItem("children")) || 0
+  );
+  const [rooms, setRooms] = useState(
+    Number(localStorage.getItem("rooms")) || 1
+  );
   const [childrenAges, setChildrenAges] = useState([]);
 
   const [showForm, setShowForm] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+
   const handleChangeDate = (newValue) => {
     setDatetime(newValue);
   };
+
   const handleSearchChange = (event) => {
     const keySearch = event.target.value;
-    if (!keySearch.trim()) {
-      setSearchTerm(""); // Only trim if value exists
-    } else {
-      setSearchTerm(keySearch);
-    }
+    setSearchTerm(keySearch.trim() !== "" ? keySearch : "");
   };
+
   const handleClearSearch = () => {
     setSearchTerm("");
     inputRef.current.focus();
   };
+
   const handleShowPassenger = (event) => {
     if (
       showPassenger.current &&
@@ -46,6 +57,7 @@ const SearchHotel = () => {
       setShowForm(true);
     }
   };
+
   const handleShowAttraction = (event) => {
     if (
       showAttraction.current &&
@@ -56,6 +68,7 @@ const SearchHotel = () => {
       setShowSearch(true);
     }
   };
+
   const handleSubmitValue = (event) => {
     const formData = {
       adults: adults,
@@ -63,6 +76,26 @@ const SearchHotel = () => {
       childrenAges: childrenAges,
     };
   };
+
+  const handleSearch = () => {
+    localStorage.setItem("searchTerm", searchTerm);
+    localStorage.setItem("checkin", datetime.startDate);
+    localStorage.setItem("checkout", datetime.endDate);
+    localStorage.setItem("adults", adults);
+    localStorage.setItem("children", children);
+    localStorage.setItem("rooms", rooms);
+
+    navigate(
+      `/stays/searchresults?ss=${encodeURIComponent(
+        searchTerm
+      )}&checkin=${encodeURIComponent(
+        datetime.startDate
+      )}&checkout=${encodeURIComponent(
+        datetime.endDate
+      )}&group_adults=${adults}&no_rooms=${rooms}&group_children=${children}`
+    );
+  };
+
   useEffect(() => {
     document.addEventListener("click", handleShowPassenger);
     document.addEventListener("click", handleShowAttraction);
@@ -71,8 +104,9 @@ const SearchHotel = () => {
       document.removeEventListener("click", handleShowAttraction);
     };
   }, []);
+
   return (
-    <div className="listChild absolute max-w-mw_11 w-w_10 left-2/4 translate-x-trans_x translate-y-trans_y">
+    <div className="listChild absolute max-w-mw_11 w-w_10 left-2/4 translate-x-trans_x translate-y-trans_y z-10">
       <div className="flex items-center bg-yellow-400 text-black h-14 p-1 rounded font-Nunito">
         <div
           ref={showAttraction}
@@ -98,6 +132,7 @@ const SearchHotel = () => {
             onChange={handleSearchChange}
             className="w-full outline-0 px-2 py-1 "
             type="text"
+            required="Vui lòng nhập địa điểm muốn đến"
             placeholder={t("common.search.locations")}
           />
           {searchTerm.length > 0 && (
@@ -184,15 +219,16 @@ const SearchHotel = () => {
           )}
         </div>
         <div className="flex items-center flex-shrink text-white mr-1">
-          <Button
-            to={`/stays/searchresults?ss=${searchTerm}&checkin${datetime.startDate}&checkout=${datetime.endDate}&group_adults=${adults}&no_rooms=${rooms}&group_children=${children}`}
+          <button
+            onClick={handleSearch}
             className="bg-btnSearch text-xl font-bold rounded p-p_9_24"
           >
             {t("common.button.search")}
-          </Button>
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
 export default SearchHotel;

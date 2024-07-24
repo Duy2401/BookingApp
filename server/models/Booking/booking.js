@@ -1,56 +1,51 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const BookingSchema = new Schema({
-  Booking_id: {
+  booking_id: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
-  Booking_Type: {
+  booking_Type: {
     type: String,
-    require: true,
+    required: true,
   },
-  Booking_customer_id: {
+  booking_customer_id: {
     type: Schema.Types.ObjectId,
     ref: "Customers",
-    require: true,
+    required: true,
   },
-  Booking_date: {
-    check_in: {
-      type: Date,
-      require: true,
-    },
-    check_out: {
-      type: Date,
-      require: true,
-    },
+
+  checkInDate: {
+    type: Date,
+    required: true,
   },
-  Booking_service_id: {
+  checkOutDate: {
+    type: Date,
+    required: true,
+  },
+  booking_service_id: {
     type: Schema.Types.ObjectId,
     ref: "Hotels",
-    require: true,
+    required: true,
   },
-  QuantityPeople: {
+  quantityPeople: {
     adult: {
       type: Number,
-      require: true,
+      required: true,
     },
     child: {
       type: Number,
-      require: true,
-    },
-    AgeChild: {
-      type: Number,
-      require: true,
+      required: true,
     },
   },
-  PaymentMethod: {
+  paymentMethod: {
     type: String,
-    require: true,
+    required: true,
   },
-  Booking_status: {
+  booking_status: {
     type: Number,
-    require: true,
+    required: true,
   },
 });
 module.exports = mongoose.model("BookingSchema", BookingSchema);

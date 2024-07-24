@@ -9,7 +9,6 @@ const SideBar = () => {
     }).format(value);
   };
   const [moneyRank, setMoneyRank] = useState(100);
-  console.log(formatCurrency(moneyRank));
   return (
     <>
       <div className="map-container">

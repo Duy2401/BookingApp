@@ -1,4 +1,3 @@
-import Navigations from "../../layout/components/Navigation";
 import SubtitileBanner from "../../layout/components/SubtitleBanner/index";
 import SearchHotel from "../../layout/components/Search/SearchHotel/SearchHotel";
 import SaleBanner from "../../assets/images/SaleBanner.jpg";
@@ -10,7 +9,6 @@ function Stays() {
   return (
     <>
       <div className="bg-backgroud mb-10 ">
-        <Navigations />
         <SubtitileBanner
           className="text-6xl font-black w-3/4"
           titleFirst="Tìm chỗ nghĩ tiếp theo"

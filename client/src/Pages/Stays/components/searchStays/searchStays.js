@@ -1,11 +1,9 @@
-import Navigations from "../../../../layout/components/Navigation";
 import SearchHotel from "../../../../layout/components/Search/SearchHotel/SearchHotel";
 import SideBar from "../../../../layout/components/Sidebar/Sidebar";
 import Button from "../../../../components/Button/button";
 const SearchStays = () => {
   return (
     <div className="relative">
-      <Navigations />
       <div className="mt-8">
         <SearchHotel />
       </div>

@@ -39,7 +39,7 @@ const SearchTour = () => {
     return () => document.removeEventListener("click", handleShowForm);
   }, []);
   return (
-    <div className="absolute max-w-mw_11 w-w_10 left-2/4 translate-x-trans_x translate-y-trans_y">
+    <div className="absolute max-w-mw_11 w-w_10 left-2/4 translate-x-trans_x translate-y-trans_y z-10">
       <div className="flex items-center bg-yellow-400 text-black h-14 p-1 rounded">
         <div
           ref={show}
