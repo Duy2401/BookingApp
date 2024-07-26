@@ -1,20 +1,23 @@
 import { useState } from "react";
-import FromValue from "../../components/FormValue/fromValue";
-import { dataHotel } from "../../utils/initialValue/initialValue";
+import { Outlet } from "react-router-dom";
+import Button from "../../components/Button/button";
 function Partner() {
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState(dataHotel);
   const handleShow = () => {
     setShow((show) => !show);
   };
   return (
     <>
       <div className="p-4">
-        <button className="bg-blue-700 text-white p-5" onClick={handleShow}>
+        <Button
+          to={"/partner/addhotels"}
+          className="bg-blue-700 text-white p-5"
+          onClick={handleShow}
+        >
           TẠO KHÁCH SẠN
-        </button>
+        </Button>
       </div>
-      {show && <FromValue formData={formData} setFormData={setFormData} />}
+      <Outlet />
     </>
   );
 }

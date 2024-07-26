@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "../../../components/Button/button";
 
 const PaymentForm = ({ handleSubmit }) => {
   const [formData, setFormData] = useState({
@@ -25,11 +26,11 @@ const PaymentForm = ({ handleSubmit }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
+    <div className="bg-white p-4 rounded-lg shadow-lg border-2">
       <h2 className="text-2xl font-bold mb-4">
         Nhập thông tin chi tiết của bạn
       </h2>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="block">
         <div className="mb-4">
           <label className="block text-gray-700">Họ (tiếng Anh) *</label>
           <input
@@ -121,12 +122,12 @@ const PaymentForm = ({ handleSubmit }) => {
             <p>Bạn đồng ý với các quy tắc chung này.</p>
           </p>
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        <Button
+          to={"/payment"}
+          className="w-full text-center block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
-          Tiếp theo: Chi tiết cuối cùng
-        </button>
+          Chi tiết cuối cùng
+        </Button>
       </form>
     </div>
   );

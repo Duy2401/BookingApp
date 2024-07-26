@@ -4,7 +4,19 @@ import { ReactComponent as Like } from "../../../../assets/icons/Like.svg";
 import { ReactComponent as Location } from "../../../../assets/icons/location.svg";
 import { ReactComponent as Bed } from "../../../../assets/icons/Bed.svg";
 import Review from "../reviews/review";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getDetailsHotel } from "../../../../redux/hotelsSlice";
+
 const HotelDetails = () => {
+  const id = useParams();
+  const dispatch = useDispatch();
+  const hotelDetails = useSelector((state) => state.hotels?.hotels);
+  const customers = useSelector((state) => state.customers?.customers);
+  useEffect(() => {
+    dispatch(getDetailsHotel({ idHotel: id.aid, customers }));
+  }, []);
   return (
     <div className="relative">
       <div className="px-9 p-2 mt-30 mx-44 font-Nunito">
@@ -29,12 +41,14 @@ const HotelDetails = () => {
         </div>
         <div className="" id="summary">
           <div className="flex justify-between items-center cursor-pointer">
-            <h1 className="text-2xl font-bold my-1">Flower De Maison Hotel</h1>
+            <h1 className="text-2xl font-bold my-1">
+              {hotelDetails.hotel_name}
+            </h1>
             <SvgIcon icon={Like} width={24} height={24} />
           </div>
           <div className="flex  items-center">
             <SvgIcon icon={Location} width={28} height={28} />
-            <p>34 Dương Đỗ Bá, Đà Nẵng, Việt Nam</p>
+            <p>{hotelDetails.hotel_address}</p>
           </div>
           <div className="mt-4 grid grid-cols-grid_col_2C">
             <div className="">
@@ -42,46 +56,29 @@ const HotelDetails = () => {
                 <div>
                   <img
                     className="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/featured/image.jpg"
+                    src={
+                      hotelDetails?.hotel_description?.description_images?.[0]
+                        ? hotelDetails?.hotel_description
+                            ?.description_images?.[0].name_image
+                        : ""
+                    }
                     alt=""
                   />
                 </div>
                 <div className="grid grid-cols-5 gap-4">
-                  <div>
-                    <img
-                      className="h-auto max-w-full rounded-lg"
-                      src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <img
-                      className="h-auto max-w-full rounded-lg"
-                      src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <img
-                      className="h-auto max-w-full rounded-lg"
-                      src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <img
-                      className="h-auto max-w-full rounded-lg"
-                      src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <img
-                      className="h-auto max-w-full rounded-lg"
-                      src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg"
-                      alt=""
-                    />
-                  </div>
+                  {hotelDetails?.hotel_description?.description_images
+                    ? hotelDetails?.hotel_description?.description_images
+                        .slice(1)
+                        .map((item, index) => (
+                          <div key={index}>
+                            <img
+                              className="h-auto max-w-full rounded-lg"
+                              src={item.name_image}
+                              alt=""
+                            />
+                          </div>
+                        ))
+                    : ""}
                 </div>
               </div>
             </div>
@@ -118,50 +115,21 @@ const HotelDetails = () => {
           <div className="grid gap-4">
             <div className="my-3 py-3">
               <div className="grid grid-cols-5 gap-4">
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Căn hộ
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Xe đưa đón sân bay
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Bãi đỗ xe miễn phí
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Phòng không hút thuốc
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Phòng gia đình
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Dịch vụ phòng
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Tiện nghi cho khách khuyết tật
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Hồ bơi riêng
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Bồn tắm
-                </Button>
-                <Button className="border-2 rounded min-w-28  p-3">
-                  Hồ bơi ngoài trời
-                </Button>
+                {hotelDetails?.hotel_description?.description_amenities[0]
+                  .split(",")
+                  .map((item, index) => (
+                    <Button
+                      className="border-2 rounded min-w-28 p-3"
+                      key={index}
+                    >
+                      {item}
+                    </Button>
+                  ))}
               </div>
             </div>
           </div>
           <div className="text-sm w-2/3 text-justify leading-8">
-            Nằm cách Bãi biển Mỹ Khê 4 phút đi bộ, Flower De Maison Hotel cung
-            cấp chỗ nghỉ có hồ bơi ngoài trời, phòng chờ chung và dịch vụ phòng.
-            Tất cả các căn đều có điều hòa và TV màn hình phẳng truyền hình vệ
-            tinh.Nơi đây còn có phòng tắm riêng với vòi xịt/chậu rửa vệ sinh ở
-            một số căn, cùng đồ vệ sinh cá nhân miễn phí, máy sấy tóc và dép đi
-            trong phòng. Khách có thể sử dụng sân hiên phơi nắng tại căn hộ.
-            Flower De Maison Hotel cách Bãi biển Bắc Mỹ An 12 phút đi bộ và Cầu
-            khóa Tình yêu Đà Nẵng 2.9 km.Sân bay gần nhất là Sân bay Quốc tế Đà
-            Nẵng, cách chỗ nghỉ 6 km, đồng thời chỗ nghỉ này cũng cung cấp dịch
-            vụ đưa đón sân bay mất phí.
+            {hotelDetails.hotel_descriptive}
           </div>
         </div>
         <div className="grid gap-4" id="convenient">
@@ -170,42 +138,22 @@ const HotelDetails = () => {
               Các tiện nghi được ưa chuộng nhất
             </h1>
             <div className="grid grid-cols-5 gap-4">
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Căn hộ
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Xe đưa đón sân bay
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Bãi đỗ xe miễn phí
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Phòng không hút thuốc
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Phòng gia đình
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Dịch vụ phòng
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Tiện nghi cho khách khuyết tật
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Hồ bơi riêng
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Bồn tắm
-              </Button>
-              <Button className="min-w-28 p-2 border-2 rounded text-left">
-                Hồ bơi ngoài trời
-              </Button>
+              {hotelDetails?.hotel_description?.description_amenities[0]
+                .split(",")
+                .map((item, index) => (
+                  <Button
+                    className="min-w-28 p-2 border-2 rounded text-left"
+                    key={index}
+                  >
+                    {item}
+                  </Button>
+                ))}
             </div>
           </div>
         </div>
         <div className="container mx-auto py-6" id="rooms">
           <div className="mt-6" id="rooms">
-            <div className="text-lg font-semibold mb-2">Loại chỗ ở</div>
+            <h2 class="text-2xl font-bold mb-4">Loại chỗ ở</h2>
             <div className="space-y-4">
               <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <p className="font-bold text-blue-700 underline">
@@ -221,34 +169,12 @@ const HotelDetails = () => {
                     className="border border-gray-300 rounded-lg px-3 py-1 w-28"
                     placeholder="Số phòng"
                   />
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
-                    Đặt phòng
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <p className="font-bold text-blue-700 underline">
-                  Phòng Deluxe Giường Đôi Có Bồn Tắm
-                </p>
-                <div className="flex items-center mb-2">
-                  <p className="mr-2">1 giường đôi</p>
-                  <SvgIcon icon={Bed} width={20} height={20} />
-                </div>
-
-                <div className="flex items-center space-x-2 mt-4">
-                  <input
-                    type="number"
-                    className="border border-gray-300 rounded-lg px-3 py-1 w-28"
-                    placeholder="Số phòng"
-                    disabled
-                  />
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg cursor-not-allowed"
-                    disabled
+                  <Button
+                    to={"/booking"}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                   >
                     Đặt phòng
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -303,7 +229,7 @@ const HotelDetails = () => {
                   <h4 className="font-bold my-2">
                     Chính sách nôi (cũi) và giường phụ
                   </h4>
-                  <p classNameName="pl-2">
+                  <p className="pl-2">
                     Khách sạn không cung cấp nôi/cũi và giường phụ.
                   </p>
                 </div>

@@ -48,7 +48,7 @@ const HotelsController = {
         req.body.description_generalRules
       );
       const descriptionAmenities = req.body.description_amenities || [];
-
+      const priceNumber = parseFloat(hotel_price.replace(/[^0-9.-]+/g, ""));
       const newHotel = new Hotels({
         hotel_name: req.body.hotel_name,
         hotel_address: req.body.hotel_address,
@@ -61,7 +61,7 @@ const HotelsController = {
           description_images: descriptionImages,
         },
         customers_id_create: req.body.customers_id_create,
-        hotel_price: req.body.hotel_price,
+        hotel_price: priceNumber,
       });
 
       await newHotel.save();
@@ -113,11 +113,69 @@ const HotelsController = {
     }
   },
 
+  GetHotels: async (req, res) => {
+    try {
+      // Tìm loại khách sạn theo tên
+      console.log(req.params.id);
+      const hotel = await Hotels.findById(req.params.id)
+        .populate("hotel_type")
+        .populate("RoomType");
+      if (!hotel) {
+        return res.status(404).json({ error: "Hotel type not found" });
+      }
+
+      return res.status(200).json({
+        status: true,
+        message: "Search Hotel successful",
+        data: hotel,
+      });
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+  SearchHotels: async (req, res) => {
+    try {
+      const address = req.params.address;
+      const sanitizedAddress = address.replace(
+        /[-\/\\^$*+?.()|[\]{}]/g,
+        "\\$&"
+      );
+      const searchRegex = new RegExp(sanitizedAddress, "i");
+
+      const hotels = await Hotels.find({
+        hotel_address: searchRegex,
+      })
+        .populate("RoomType")
+        .exec();
+
+      if (hotels.length === 0) {
+        return res.status(404).json({
+          status: false,
+          message: "There are no hotels in this location",
+          data: null,
+        });
+      }
+
+      return res.status(200).json({
+        status: true,
+        message: "Search Hotel successful",
+        data: hotels,
+      });
+    } catch (error) {
+      console.error("Search error:", error);
+      return res.status(500).json({
+        status: false,
+        message: "Search Hotel not successful",
+        data: error,
+      });
+    }
+  },
+
   // HOTEL TYPES
   CreateHotelType: async (req, res) => {
     try {
       const newHotelType = new HotelsType({
-        HotelTypes_id: req.body.HotelTypes_id,
         HotelTypes_name: req.body.HotelTypes_name,
       });
       const hotelType = await newHotelType.save();
@@ -134,13 +192,14 @@ const HotelsController = {
       });
     }
   },
-  EditHotelsType: async (req, res) => {
+
+  GetAllHotelsType: async (req, res) => {
     try {
-      const EditHoteltype = await HotelsType.findById(req.params.id);
-      await EditHoteltype.updateOne({ $set: req.body });
+      const EditHoteltype = await HotelsType.find();
       return res.status(200).json({
         status: true,
         message: "Edit HotelType successful",
+        data: EditHoteltype,
       });
     } catch (error) {
       return res.status(500).json({
@@ -169,23 +228,29 @@ const HotelsController = {
   // ROOM TYPES
   CreateRoomType: async (req, res) => {
     try {
-      const roomTypes = JSON.parse(req.body.room_types); // Assuming room_types is a JSON string
-      const newRoomTypes = roomTypes.map((roomTypeData) => ({
-        hotel_id: req.body.hotel_id,
-        ...roomTypeData,
-      }));
+      const { hotel_id, room_types } = req.body;
 
-      const savedRoomTypes = await RoomType.insertMany(newRoomTypes);
+      const newRooms = new RoomType({
+        hotel_id,
+        room_types,
+      });
+      await newRooms.save();
+
+      await Hotels.findByIdAndUpdate(hotel_id, {
+        $push: { RoomType: newRooms._id },
+      });
+
       return res.status(200).json({
         status: true,
         message: "Create RoomType successful",
-        data: savedRoomTypes,
+        data: newRooms,
       });
     } catch (error) {
+      console.error("Error creating room types:", error);
       return res.status(500).json({
         status: false,
         message: "Create RoomType not successful",
-        data: error,
+        error: error.message,
       });
     }
   },

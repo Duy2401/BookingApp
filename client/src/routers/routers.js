@@ -4,6 +4,7 @@ import Register from "../Pages/Register/Register";
 import Stays from "../Pages/Stays/Stays.js";
 import SearchStays from "../Pages/Stays/components/searchStays/searchStays.js";
 import HotelDetails from "../Pages/Stays/components/hoteldetails/hoteldetails.js";
+import CreateHotels from "../Pages/Stays/components/createHotels/createaHotel.js";
 // ATTRACTIONS
 import Attractions from "../Pages/Attractions/Attractions.js";
 // FLIGHTS
@@ -21,6 +22,8 @@ import Booking from "../Pages/Bookings/Booking.js";
 // LAYOUT
 import LayoutLogin from "../layout/LayoutLogin/LayoutLogin.js";
 import PaymentDetail from "../Pages/Bookings/Payments/PaymentDetail.js";
+import RoomTypeForm from "../Pages/Stays/components/createHotels/RoomTypeForm.js";
+import SearchFlights from "../Pages/Flights/components/searchFlight/searchFlight.js";
 
 export const RouterPages = [
   // STAYS
@@ -55,10 +58,17 @@ export const RouterPages = [
 
   // FLIGHTS
   { path: "/flights", component: Flights },
-  { path: "/flights/searchresults", component: Flights },
+  { path: "/flights/searchresults", component: SearchFlights },
 
   // SERVICES
-  { path: "/partner", component: Partner },
+  {
+    path: "/partner",
+    component: Partner,
+    children: [
+      { path: "addhotels", component: CreateHotels },
+      { path: "addrooms/:id", component: RoomTypeForm },
+    ],
+  },
   { path: "/booking", component: Booking },
   { path: "/payment", component: PaymentDetail },
 ];

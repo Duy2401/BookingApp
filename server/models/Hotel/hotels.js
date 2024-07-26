@@ -3,26 +3,26 @@ const Schema = mongoose.Schema;
 const HotelSchema = new Schema({
   hotel_name: {
     type: String,
-    require: true,
+    required: true,
   },
   hotel_address: {
     type: String,
-    require: true,
+    required: true,
   },
   hotel_descriptive: {
     type: String,
-    require: true,
+    required: true,
   },
   hotel_description: {
     description_note: [
       {
         note_title: {
           type: String,
-          required: true,
+          requiredd: true,
         },
         note_content: {
           type: String,
-          required: true,
+          requiredd: true,
         },
       },
     ],
@@ -30,31 +30,41 @@ const HotelSchema = new Schema({
       {
         rules_title: {
           type: String,
-          required: true,
+          requiredd: true,
         },
         rules_content: {
           type: String,
-          required: true,
+          requiredd: true,
         },
       },
     ],
     //amenities: tiện nghi
-    description_amenities: [{ type: String, require: true }],
+    description_amenities: [{ type: String, required: true }],
     description_images: [
       {
-        name_image: { type: String, require: true },
+        name_image: { type: String, required: true },
       },
     ],
   },
   customers_id_create: {
     type: Schema.Types.ObjectId,
     ref: "Customers",
-    require: true,
+    required: true,
   },
   hotel_type: {
     type: Schema.Types.ObjectId,
     ref: "HotelTypes",
-    require: true,
+    required: true,
+  },
+  RoomType: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "RoomTypeSchema",
+    },
+  ],
+  hotel_price: {
+    type: Number,
+    required: true,
   },
 });
 module.exports = mongoose.model("Hotels", HotelSchema);

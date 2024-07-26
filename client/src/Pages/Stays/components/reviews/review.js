@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "../../../../components/Button/button";
+import { Swiper, SwiperSlide } from "swiper/react";
 const Review = () => {
   const [showReview, setShowReview] = useState(false);
   const handleComment = () => {
@@ -7,7 +8,89 @@ const Review = () => {
   };
   return (
     <div>
-      <div></div>
+      <h2 class="text-2xl font-bold mb-4">Đánh giá của khách</h2>
+      <Swiper spaceBetween={20} slidesPerView={4} className="pb-4">
+        <SwiperSlide>
+          <div className="border-2 mb-2.5 card max-w-60 max-h-40 rounded overflow-hidden justify-center flex flex-col items-center hover:cursor-pointer">
+            <div className="content p-4 w-full">
+              <div className="infor flex items-center">
+                <div className="rounded-full mr-2 bg-yellow-400 p-p_5_10 w-8">
+                  <span className="text-black font-extrabold">D</span>
+                </div>
+                <div className="infor-name text-base">New Customers</div>
+              </div>
+              <p className="mt-2 text-sm italic">
+                “Lễ tân thân thiện niềm nở, phòng sạch tiện nghi, thiết bị vật
+                dụng đều sử dụng tốt”
+              </p>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="border-2 mb-2.5 card max-w-60 max-h-40 rounded overflow-hidden justify-center flex flex-col items-center hover:cursor-pointer">
+            <div className="content p-4 w-full">
+              <div className="infor flex items-center">
+                <div className="rounded-full mr-2 bg-yellow-400 p-p_5_10 w-8">
+                  <span className="text-black font-extrabold">D</span>
+                </div>
+                <div className="infor-name text-base">New Customers</div>
+              </div>
+              <p className="mt-2 text-sm italic">
+                “Lễ tân thân thiện niềm nở, phòng sạch tiện nghi, thiết bị vật
+                dụng đều sử dụng tốt”
+              </p>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="border-2 mb-2.5 card max-w-60 max-h-40 rounded overflow-hidden justify-center flex flex-col items-center hover:cursor-pointer">
+            <div className="content p-4 w-full">
+              <div className="infor flex items-center">
+                <div className="rounded-full mr-2 bg-yellow-400 p-p_5_10 w-8">
+                  <span className="text-black font-extrabold">D</span>
+                </div>
+                <div className="infor-name text-base">New Customers</div>
+              </div>
+              <p className="mt-2 text-sm italic">
+                “Lễ tân thân thiện niềm nở, phòng sạch tiện nghi, thiết bị vật
+                dụng đều sử dụng tốt”
+              </p>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="border-2 mb-2.5 card max-w-60 max-h-40 rounded overflow-hidden justify-center flex flex-col items-center hover:cursor-pointer">
+            <div className="content p-4 w-full">
+              <div className="infor flex items-center">
+                <div className="rounded-full mr-2 bg-yellow-400 p-p_5_10 w-8">
+                  <span className="text-black font-extrabold">D</span>
+                </div>
+                <div className="infor-name text-base">New Customers</div>
+              </div>
+              <p className="mt-2 text-sm italic">
+                “Lễ tân thân thiện niềm nở, phòng sạch tiện nghi, thiết bị vật
+                dụng đều sử dụng tốt”
+              </p>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="border-2 mb-2.5 card max-w-60 max-h-40 rounded overflow-hidden justify-center flex flex-col items-center hover:cursor-pointer">
+            <div className="content p-4 w-full">
+              <div className="infor flex items-center">
+                <div className="rounded-full mr-2 bg-yellow-400 p-p_5_10 w-8">
+                  <span className="text-black font-extrabold">D</span>
+                </div>
+                <div className="infor-name text-base">New Customers</div>
+              </div>
+              <p className="mt-2 text-sm italic">
+                “Lễ tân thân thiện niềm nở, phòng sạch tiện nghi, thiết bị vật
+                dụng đều sử dụng tốt”
+              </p>
+            </div>
+          </div>
+        </SwiperSlide>
+      </Swiper>
       <Button
         className="p-2 text-blue-600 border-2 border-blue-600 rounded"
         onClick={handleComment}

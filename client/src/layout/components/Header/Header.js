@@ -67,7 +67,7 @@ function Header() {
             </Button>
 
             {isOpen && (
-              <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="absolute right-0 z-30 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ">
                 <div className="py-1" role="none">
                   <div className="flex items-center p-2">
                     <img className="w-6 h-6" alt="flag error" src={VNflag} />

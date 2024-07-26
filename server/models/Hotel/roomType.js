@@ -9,24 +9,25 @@ const RoomTypeSchema = new Schema({
   },
   room_types: [
     {
-      room_id: { type: String },
-      room_type: { type: String },
-      price_range: { type: String },
-      isAvailable: { type: Boolean, default: false }, // Boolean: có phòng trống hay không
-      availableRooms: { type: Number, default: 0 }, // Number: số lượng phòng trống
+      room_type: { type: String, required: true },
+      price_range: { type: Number, required: true },
+      isAvailable: { type: Boolean, default: false },
+      availableRooms: { type: Number, default: 0 },
     },
   ],
 });
 RoomTypeSchema.pre("save", function (next) {
-  this.isAvailable = this.availableRooms > 0;
+  this.isAvailable = this.room_types.some((room) => room.availableRooms > 0);
   next();
 });
 
 // Pre-update hook
 RoomTypeSchema.pre("findOneAndUpdate", function (next) {
   const update = this.getUpdate();
-  if (update.availableRooms !== undefined) {
-    update.isAvailable = update.availableRooms > 0;
+  if (update.room_types) {
+    update.isAvailable = update.room_types.some(
+      (room) => room.availableRooms > 0
+    );
   }
   next();
 });
