@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import Button from "../../../components/Button/button";
-
+import { useSelector } from "react-redux";
 const PaymentForm = ({ handleSubmit }) => {
+  const customers = useSelector((state) => state.customers?.customers);
   const [formData, setFormData] = useState({
-    lastName: "",
-    firstName: "",
-    email: "",
-    phone: "",
+    fullName: customers.customer_name,
+    email: customers.customer_email,
+    phone: customers.customer_phone,
     region: "Việt Nam",
     additionalRequests: "",
     arrivalTime: "",
@@ -32,22 +32,11 @@ const PaymentForm = ({ handleSubmit }) => {
       </h2>
       <form onSubmit={onSubmit} className="block">
         <div className="mb-4">
-          <label className="block text-gray-700">Họ (tiếng Anh) *</label>
+          <label className="block text-gray-700">Tên Đầy Đủ(tiếng Anh) *</label>
           <input
             type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Tên (tiếng Anh) *</label>
-          <input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
+            name="fullName"
+            value={formData.fullName}
             onChange={handleChange}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
             required

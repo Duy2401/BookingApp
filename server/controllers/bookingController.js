@@ -4,27 +4,33 @@ const TicketFlight = require("../models/Booking/ticketFlight");
 const BookingController = {
   CreateBooking: async (req, res) => {
     try {
+      const { hotel, customer, checkInDate, checkOutDate, totalPrice, status } =
+        req.body;
+      const rooms = JSON.parse(req.body.rooms); // If rooms is a JSON string in form-data
+
+      // Create a new booking
       const newBooking = new Booking({
-        Booking_id: req.body.Booking_id,
-        Booking_Type: req.body.Booking_Type,
-        Booking_customer_id: req.body.Booking_customer_id,
-        Booking_date: {
-          check_in: req.body.check_in,
-          check_out: req.body.check_out,
-        },
-        Booking_service_id: req.body.Booking_service_id,
-        QuantityPeople: {
-          adult: req.body.adult,
-          child: req.body.child,
-          AgeChild: req.body.AgeChild,
-        },
-        PaymentMethod: req.body.PaymentMethod,
-        Booking_status: req.body.Booking_status,
+        hotel,
+        customer,
+        rooms,
+        checkInDate,
+        checkOutDate,
+        totalPrice,
+        status,
       });
+
+      // Save booking
       const booking = await newBooking.save();
-      return res.status(200).json(booking);
+      return res.status(200).json({
+        status: true,
+        message: "Booking Success",
+        data: booking,
+      });
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({
+        status: false,
+        message: error,
+      });
     }
   },
   UpdateBooking: async (req, res) => {

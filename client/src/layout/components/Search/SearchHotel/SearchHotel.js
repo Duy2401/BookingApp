@@ -87,9 +87,7 @@ const SearchHotel = () => {
     localStorage.setItem("adults", adults);
     localStorage.setItem("children", children);
     localStorage.setItem("rooms", rooms);
-    const data = await dispatch(
-      SearchHotels({ keySearch: searchTerm, customers })
-    );
+    const data = await dispatch(SearchHotels({ keySearch: searchTerm }));
     setTimeout(() => {
       if (data.payload.status === true) {
         navigate(

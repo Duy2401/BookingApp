@@ -1,16 +1,10 @@
-const BookingController = require("../controllers/bookingController");
 const middlewareControlle = require("../controllers/middlewareController");
-
+const Payment = require("../controllers/paymentController");
 const router = require("express").Router();
-
-// Hotel
-router.post(
-  "/create",
+router.get(
+  "/vnpay_return",
   middlewareControlle.verifyToken,
-  BookingController.CreateBooking
+  Payment.handleVNPayReturn
 );
-// Tour
-
-// Flight
 
 module.exports = router;

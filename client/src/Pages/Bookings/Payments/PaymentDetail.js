@@ -1,20 +1,11 @@
 import { useState } from "react";
 import BookingSummary from "../BookingSummary";
-import PaymentForm from "./PaymentForm ";
+import { useSelector } from "react-redux";
 
 const PaymentDetail = () => {
-  const [bookingDetails, setBookingDetails] = useState({
-    checkIn: "T2, 22 tháng 7 2024",
-    checkOut: "T3, 23 tháng 7 2024",
-    duration: 1,
-    room: "1 phòng cho 2 người lớn",
-    totalPrice: 396900,
-  });
-
-  const [hotelDetails, setHotelDetails] = useState({
-    name: "TTR Studio Apart Hotel",
-    address: "Lô A16-A17 Khu quy hoạch Nguyễn Khuyến, P. 5, Đà Lạt, Việt Nam",
-  });
+  const { bookingDetails, loading, error } = useSelector(
+    (state) => state.booking
+  );
 
   const handleSubmit = (formData) => {
     // Xử lý thông tin người dùng và gửi dữ liệu đến API hoặc server
@@ -65,17 +56,13 @@ const PaymentDetail = () => {
                 <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
               </svg>
             </span>
-            <span class="me-2">3</span>
             Confirmation
           </li>
         </ol>
       </div>
-      <div className="content mt-4 grid grid-cols-grid_col_2A">
+      <div className="content mt-4 grid grid-cols-grid_col_2B">
         <div className="max-w-2xl w-full">
-          <BookingSummary
-            hotelDetails={hotelDetails}
-            bookingDetails={bookingDetails}
-          />
+          <BookingSummary bookingDetails={bookingDetails} />
         </div>
         <div className="ml-2">
           <div className="bg-white p-4 rounded-lg shadow-lg mb-4">

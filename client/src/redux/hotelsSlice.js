@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createAxiosInstance } from "../services/api";
-
+import axios from "axios";
 // HOTELS
 export const CreateHotel = createAsyncThunk(
   "hotels/create",
@@ -22,16 +22,10 @@ export const CreateHotel = createAsyncThunk(
 // SEARCH HOTELS
 export const SearchHotels = createAsyncThunk(
   "hotels/searchhotel",
-  async ({ keySearch, customers }, { rejectWithValue, dispatch }) => {
+  async ({ keySearch }, { rejectWithValue }) => {
     try {
-      const axiosInstance = createAxiosInstance(customers, dispatch);
-      const response = await axiosInstance.get(
-        `/hotel/searchhotel/${keySearch}`,
-        {
-          headers: {
-            token: `Bearer ${customers?.accessToken}`,
-          },
-        }
+      const response = await axios.get(
+        `http://localhost:8000/api/hotel/searchhotel/${keySearch}`
       );
       return response.data;
     } catch (error) {
@@ -42,16 +36,10 @@ export const SearchHotels = createAsyncThunk(
 
 export const getDetailsHotel = createAsyncThunk(
   "hotels/getDetailsHotel",
-  async ({ idHotel, customers }, { rejectWithValue, dispatch }) => {
+  async ({ idHotel }, { rejectWithValue }) => {
     try {
-      const axiosInstance = createAxiosInstance(customers, dispatch);
-      const response = await axiosInstance.get(
-        `/hotel/gethoteldetail/${idHotel}`,
-        {
-          headers: {
-            token: `Bearer ${customers?.accessToken}`,
-          },
-        }
+      const response = await axios.get(
+        `http://localhost:8000/api/hotel/gethoteldetail/${idHotel}`
       );
       return response.data;
     } catch (error) {
@@ -104,6 +92,7 @@ const hotelsSlice = createSlice({
   initialState: {
     hotels: null,
     hotelsType: null,
+    hoteldeitals: null,
     rooms: null,
     loading: false,
     error: null,
@@ -119,7 +108,7 @@ const hotelsSlice = createSlice({
       })
       .addCase(getDetailsHotel.fulfilled, (state, action) => {
         state.loading = false;
-        state.hotels = action.payload.data;
+        state.hoteldeitals = action.payload.data;
         state.success = true;
       })
       .addCase(getDetailsHotel.rejected, (state, action) => {

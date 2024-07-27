@@ -6,7 +6,7 @@ const middlewareControlle = require("../controllers/middlewareController");
 router.post(
   "/createhotel",
   upload.fields([{ name: "description_images", maxCount: 10 }]),
-  // middlewareControlle.verifyToken,
+  middlewareControlle.verifyToken,
   HotelsController.CreateHotel
 );
 router.put(
@@ -20,16 +20,8 @@ router.delete(
   HotelsController.DeleteHotel
 );
 
-router.get(
-  "/searchhotel/:address",
-  middlewareControlle.verifyToken,
-  HotelsController.SearchHotels
-);
-router.get(
-  "/gethoteldetail/:id",
-  middlewareControlle.verifyToken,
-  HotelsController.GetHotels
-);
+router.get("/searchhotel/:address", HotelsController.SearchHotels);
+router.get("/gethoteldetail/:id", HotelsController.GetHotels);
 
 // Type hotel
 middlewareControlle.verifyToken,
@@ -38,11 +30,7 @@ middlewareControlle.verifyToken,
     middlewareControlle.verifyToken,
     HotelsController.CreateHotelType
   );
-router.get(
-  "/getallhoteltype",
-  middlewareControlle.verifyToken,
-  HotelsController.GetAllHotelsType
-);
+router.get("/getallhoteltype", HotelsController.GetAllHotelsType);
 middlewareControlle.verifyToken,
   router.delete(
     "/deletehoteltype/:id",

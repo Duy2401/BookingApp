@@ -12,7 +12,7 @@ const HotelRouter = require("./routers/Hotel");
 const FlightRouter = require("./routers/Flight");
 const TourRouter = require("./routers/Tour");
 const BookingRouter = require("./routers/Booking");
-
+const PaymentRouter = require("./routers/Payment");
 dotenv.config();
 const app = express();
 
@@ -45,7 +45,7 @@ app.use("/api/hotel", HotelRouter);
 app.use("/api/flight", FlightRouter);
 app.use("/api/tour", TourRouter);
 app.use("/api/booking", BookingRouter);
-
+app.use("/api/payment", PaymentRouter);
 // PORT RUN SERVER
 app.listen(8000, () => {
   console.log("Server is running");

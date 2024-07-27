@@ -48,7 +48,9 @@ const HotelsController = {
         req.body.description_generalRules
       );
       const descriptionAmenities = req.body.description_amenities || [];
-      const priceNumber = parseFloat(hotel_price.replace(/[^0-9.-]+/g, ""));
+      const priceNumber = parseFloat(
+        req.body.hotel_price.replace(/[^0-9.-]+/g, "")
+      );
       const newHotel = new Hotels({
         hotel_name: req.body.hotel_name,
         hotel_address: req.body.hotel_address,
@@ -115,8 +117,6 @@ const HotelsController = {
 
   GetHotels: async (req, res) => {
     try {
-      // Tìm loại khách sạn theo tên
-      console.log(req.params.id);
       const hotel = await Hotels.findById(req.params.id)
         .populate("hotel_type")
         .populate("RoomType");
@@ -137,6 +137,7 @@ const HotelsController = {
   SearchHotels: async (req, res) => {
     try {
       const address = req.params.address;
+      console.log(address);
       const sanitizedAddress = address.replace(
         /[-\/\\^$*+?.()|[\]{}]/g,
         "\\$&"

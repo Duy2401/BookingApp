@@ -1,21 +1,34 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const BookingSchema = new Schema({
-  booking_id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  booking_Type: {
-    type: String,
-    required: true,
-  },
-  booking_customer_id: {
-    type: Schema.Types.ObjectId,
-    ref: "Customers",
-    required: true,
-  },
 
+const BookingSchema = new Schema({
+  hotel: {
+    type: Schema.Types.ObjectId,
+    ref: "Hotels", // Reference to the Hotel schema
+    required: true,
+  },
+  customer: {
+    type: Schema.Types.ObjectId,
+    ref: "Customers", // Reference to the Customer schema
+    required: true,
+  },
+  rooms: [
+    {
+      roomType: {
+        type: Schema.Types.ObjectId,
+        ref: "RoomTypeSchema", // Reference to the RoomType schema
+        required: true,
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
   checkInDate: {
     type: Date,
     required: true,
@@ -24,28 +37,39 @@ const BookingSchema = new Schema({
     type: Date,
     required: true,
   },
-  booking_service_id: {
-    type: Schema.Types.ObjectId,
-    ref: "Hotels",
-    required: true,
-  },
-  quantityPeople: {
-    adult: {
-      type: Number,
-      required: true,
-    },
-    child: {
-      type: Number,
-      required: true,
-    },
-  },
-  paymentMethod: {
-    type: String,
-    required: true,
-  },
-  booking_status: {
+  totalPrice: {
     type: Number,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["pending", "confirmed", "canceled"], // Possible statuses for the booking
+    default: "pending",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
-module.exports = mongoose.model("BookingSchema", BookingSchema);
+
+BookingSchema.post("save", async function (doc, next) {
+  const RoomType = mongoose.model("RoomTypeSchema");
+
+  for (const room of doc.rooms) {
+    const updatedRoomType = await RoomType.findByIdAndUpdate(
+      room.roomType,
+      { $inc: { availableRooms: -room.quantity } },
+      { new: true }
+    );
+
+    if (updatedRoomType.availableRooms <= 0) {
+      await RoomType.findByIdAndUpdate(room.roomType, {
+        isAvailable: false,
+      });
+    }
+  }
+
+  next();
+});
+
+module.exports = mongoose.model("Bookings", BookingSchema);
