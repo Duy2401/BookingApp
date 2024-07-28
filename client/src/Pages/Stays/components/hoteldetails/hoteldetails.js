@@ -4,48 +4,68 @@ import { ReactComponent as Like } from "../../../../assets/icons/Like.svg";
 import { ReactComponent as Location } from "../../../../assets/icons/location.svg";
 import { ReactComponent as Bed } from "../../../../assets/icons/Bed.svg";
 import Review from "../reviews/review";
-import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getDetailsHotel } from "../../../../redux/hotelsSlice";
 import { setBookingDetails } from "../../../../redux/bookingsSlice";
 
 const HotelDetails = () => {
-  const id = useParams();
+  const { aid } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const customer = useSelector((state) => state.customers?.customers);
   const [hotelDetails, setHotelDetails] = useState(null);
+  const [bookingRooms, setBookingRooms] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
-      const result = await dispatch(getDetailsHotel({ idHotel: id.aid }));
+      const result = await dispatch(getDetailsHotel({ idHotel: aid }));
       setHotelDetails([result.payload.data]);
     };
     fetchData();
-  }, [dispatch, id.aid]);
-  const handleBookRoom = (roomType, roomName, availableRooms, price_range) => {
+  }, [dispatch, aid]);
+
+  const handleAddRoom = (roomId, roomType, availableRooms, price) => {
     const quantity = parseInt(
-      document.querySelector(`#quantity-${roomType}`)?.value || 0,
+      document.querySelector(`#quantity-${roomId}`)?.value || 0,
       10
     );
 
     if (quantity > 0 && quantity <= availableRooms) {
-      const bookingData = {
-        hotel: hotelDetails,
-        rooms: [{ roomType, roomName, price: price_range, quantity }],
-        checkInDate: localStorage.getItem("checkin"),
-        checkOutDate: localStorage.getItem("checkout"),
-        totalPrice: quantity * price_range,
+      const newRoom = {
+        roomId,
+        roomType,
+        price,
+        quantity,
       };
 
-      dispatch(setBookingDetails(bookingData));
-      navigate("/booking");
+      setBookingRooms((prevRooms) => [...prevRooms, newRoom]);
     } else {
       alert("Invalid quantity selected.");
     }
   };
 
-  if (!hotelDetails) return <div>Loading...</div>;
+  const handleBookRooms = () => {
+    if (bookingRooms.length === 0) {
+      alert("No rooms selected.");
+      return;
+    }
+    const bookingData = {
+      hotelId: hotelDetails,
+      customer: customer._id,
+      rooms: bookingRooms,
+      checkInDate: localStorage.getItem("checkin"),
+      checkOutDate: localStorage.getItem("checkout"),
+      totalPrice: bookingRooms.reduce(
+        (total, room) => total + room.price * room.quantity,
+        0
+      ),
+    };
+
+    dispatch(setBookingDetails(bookingData));
+    navigate("/booking");
+  };
   return (
     <div className="relative">
       {hotelDetails?.map((hotel, index) => (
@@ -197,36 +217,40 @@ const HotelDetails = () => {
                     <p>Giá phòng: {room.price_range}</p>
                     <div className="flex items-center space-x-2 mb-4">
                       {room.isAvailable ? (
-                        <>
-                          <input
-                            id={`quantity-${room._id}`}
-                            type="number"
-                            min={0}
-                            max={room.availableRooms}
-                            className="border border-gray-300 rounded-lg px-3 py-1 w-28"
-                            placeholder="Số phòng"
-                          />
-                          <Button
-                            onClick={() =>
-                              handleBookRoom(
-                                room._id,
-                                room.room_type,
-                                room.availableRooms,
-                                room.price_range
-                              )
-                            }
-                            className="bg-blue-500 text-white px-4 py-1 rounded-lg"
-                          >
-                            Đặt phòng
-                          </Button>
-                        </>
+                        <input
+                          id={`quantity-${room._id}`}
+                          type="number"
+                          min={0}
+                          max={room.availableRooms}
+                          className="border border-gray-300 rounded-lg px-3 py-1 w-28"
+                          placeholder="Số phòng"
+                        />
                       ) : (
                         <p className="font-bold text-red-600">Đã hết phòng</p>
                       )}
                     </div>
+                    <Button
+                      onClick={() =>
+                        handleAddRoom(
+                          room._id,
+                          room.room_type,
+                          room.availableRooms,
+                          room.price_range
+                        )
+                      }
+                      className="bg-blue-500 text-white px-4 py-1 rounded-lg"
+                    >
+                      Đặt phòng
+                    </Button>
                   </div>
                 ))}
               </div>
+              <Button
+                onClick={handleBookRooms}
+                className="bg-blue-500 text-white px-4 py-1 rounded-lg mt-4"
+              >
+                Đặt phòng
+              </Button>
             </div>
           </div>
           <Review />

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import Button from "../../../components/Button/button";
+import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const PaymentForm = ({ handleSubmit }) => {
+  const navigate = useNavigate();
   const customers = useSelector((state) => state.customers?.customers);
   const [formData, setFormData] = useState({
-    fullName: customers.customer_name,
-    email: customers.customer_email,
-    phone: customers.customer_phone,
+    fullName: customers?.customer_name || "",
+    email: customers?.customer_email || "",
+    phone: customers?.customer_phone || "",
     region: "Việt Nam",
     additionalRequests: "",
     arrivalTime: "",
@@ -19,14 +22,19 @@ const PaymentForm = ({ handleSubmit }) => {
       [name]: value,
     }));
   };
-
   const onSubmit = (e) => {
     e.preventDefault();
+    if (customers === null) {
+      toast.error("Vui lòng đăng nhập và ứng dụng");
+    } else {
+      navigate("/payment");
+    }
     handleSubmit(formData);
   };
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg border-2">
+      <ToastContainer icon={true} />
       <h2 className="text-2xl font-bold mb-4">
         Nhập thông tin chi tiết của bạn
       </h2>
@@ -74,7 +82,7 @@ const PaymentForm = ({ handleSubmit }) => {
             value={formData.region}
             onChange={handleChange}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-            required
+            required=""
           />
         </div>
         <div className="mb-4">
@@ -111,12 +119,12 @@ const PaymentForm = ({ handleSubmit }) => {
             <p>Bạn đồng ý với các quy tắc chung này.</p>
           </p>
         </div>
-        <Button
-          to={"/payment"}
+        <button
+          type="submit"
           className="w-full text-center block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           Chi tiết cuối cùng
-        </Button>
+        </button>
       </form>
     </div>
   );

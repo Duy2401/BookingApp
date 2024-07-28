@@ -7,7 +7,6 @@ const BookingPage = () => {
   const { bookingDetails, loading, error } = useSelector(
     (state) => state.booking
   );
-
   const handleSubmit = (formData) => {
     // Xử lý thông tin người dùng và gửi dữ liệu đến API hoặc server
     console.log(formData);

@@ -20,7 +20,7 @@ const BookingSummary = ({ bookingDetails }) => {
       <div className="bg-white p-2 rounded-lg border-2">
         <div className="list-item2 my-4 cursor-pointer">
           <div className="p-2  items-center justify-center rounded-md">
-            {bookingDetails.hotel.map((value, index) => (
+            {bookingDetails.hotelId.map((value, index) => (
               <div className="flex flex-col col-span-6 md:col-span-8 h-full gap-2">
                 <div className="flex items-center w-full">
                   <div className="flex gap-0 text-xl font-extrabold  hover:text-black cursor-pointer">
@@ -80,7 +80,7 @@ const BookingSummary = ({ bookingDetails }) => {
                 <p className="text-base font-medium">Bạn đã chọn</p>
                 {bookingDetails.rooms.map((room) => (
                   <p className="font-bold mb-4">
-                    {room.quantity} {room.roomName}
+                    {room.quantity} {room.roomType}
                   </p>
                 ))}
                 <Button href="/" className="text-blue-700 mt-2">

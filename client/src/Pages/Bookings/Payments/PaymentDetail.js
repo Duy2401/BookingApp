@@ -1,15 +1,25 @@
 import { useState } from "react";
 import BookingSummary from "../BookingSummary";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { handleBookRoom } from "../../../redux/paymentSlice";
 const PaymentDetail = () => {
+  const dispatch = useDispatch();
   const { bookingDetails, loading, error } = useSelector(
     (state) => state.booking
   );
-
-  const handleSubmit = (formData) => {
-    // Xử lý thông tin người dùng và gửi dữ liệu đến API hoặc server
-    console.log(formData);
+  const modifiedBookingDetails = {
+    ...bookingDetails,
+    hotelId: Array.isArray(bookingDetails.hotelId)
+      ? bookingDetails.hotelId[0]._id
+      : bookingDetails.hotelId._id,
+    rooms: bookingDetails.rooms.map((room) => ({
+      roomType: room.roomId,
+      price: room.price,
+      quantity: room.quantity,
+    })),
+  };
+  const handleSubmit = () => {
+    dispatch(handleBookRoom(modifiedBookingDetails));
   };
 
   return (
@@ -92,6 +102,12 @@ const PaymentDetail = () => {
                 />
               </div>
               {/* Add more bank logos as needed */}
+              <button
+                onClick={handleSubmit}
+                className="w-full text-center block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Thanh toán
+              </button>
             </div>
           </div>
         </div>
