@@ -1,41 +1,42 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const TicketFlightSchema = new Schema({
-  TicketFlight_id: {
-    type: String,
-    require: true,
-    unique: true,
-  },
-  TicketFlight_customer_id: {
+  transactionId: {
     type: Schema.Types.ObjectId,
-    ref: "Customers",
-    require: true,
+    ref: "Payment",
+    required: true,
   },
-  TicketFlight_date: {
-    type: Date,
-    require: true,
+  flight: {
+    type: Schema.Types.ObjectId,
+    ref: "Flights", // Reference to the Flight schema
+    required: true,
   },
-  QuantityPeople: {
-    adult: {
-      type: Number,
-      require: true,
-    },
-    child: {
-      type: Number,
-      require: true,
-    },
-    AgeChild: {
-      type: Number,
-      require: true,
-    },
+  customer: {
+    type: Schema.Types.ObjectId,
+    ref: "Customers", // Reference to the Passenger schema
+    required: true,
   },
-  PaymentMethod: {
+  seat_number: {
     type: String,
-    require: true,
+    required: true,
   },
-  TicketFlight_status: {
+  class: {
+    type: String,
+    enum: ["Economy", "Business", "First"],
+    required: true,
+  },
+  price: {
     type: Number,
-    require: true,
+    required: true,
+  },
+  booking_date: {
+    type: Date,
+    default: Date.now,
+  },
+  status: {
+    type: String,
+    enum: ["booked", "checked-in", "cancelled"],
+    default: "booked",
   },
 });
 module.exports = mongoose.model("TicketFlights", TicketFlightSchema);

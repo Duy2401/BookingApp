@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createAxiosInstance } from "../services/api";
-import axios from "axios";
+
+// Thunk for initiating VNPay payment
 export const initiateVNPayPayment = createAsyncThunk(
   "payment/initiateVNPayPayment",
-  async (bookingDetails, { rejectWithValue }) => {
+  async ({ bookingDetails, customers }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/payment/vnpay",
+      console.log("Booking Details:", bookingDetails);
+      const axiosInstance = createAxiosInstance(customers, dispatch);
+      const response = await axiosInstance.post(
+        "/payment/momo-payment",
         bookingDetails,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
       return response.data;
@@ -25,33 +26,40 @@ export const initiateVNPayPayment = createAsyncThunk(
 );
 
 // Action to handle booking rooms
-export const handleBookRoom = (bookingDetails) => async (dispatch) => {
-  try {
-    console.log("Booking details:", bookingDetails);
-    const modifiedBookingDetails = {
-      ...bookingDetails,
-      hotelId: Array.isArray(bookingDetails.hotelId)
-        ? bookingDetails.hotelId[0]._id
-        : bookingDetails.hotelId._id,
-      rooms: bookingDetails.rooms.map((room) => ({
-        roomType: room.roomId,
-        price: room.price,
-        quantity: room.quantity,
-      })),
-    };
-
-    const result = await dispatch(
-      initiateVNPayPayment(modifiedBookingDetails)
-    ).unwrap();
-    if (result.paymentUrl) {
-      window.location.href = result.paymentUrl;
-    } else {
-      console.error("No payment URL received");
+export const handleBookRoom =
+  ({ bookingDetails, customers }) =>
+  async (dispatch) => {
+    try {
+      const result = await dispatch(
+        initiateVNPayPayment({ bookingDetails, customers })
+      ).unwrap();
+      console.log("result", result);
+      if (result.payUrl) {
+        window.location.href = result.payUrl;
+      } else {
+        console.error("No payment URL received");
+      }
+    } catch (error) {
+      console.error("Error initiating payment:", error);
     }
-  } catch (error) {
-    console.error("Error initiating payment:", error);
+  };
+export const handleVNPayIPNResponse = createAsyncThunk(
+  "payment/handleVNPayIPNResponse",
+  async ({ queryParams, customers }, { rejectWithValue, dispatch }) => {
+    try {
+      const axiosInstance = createAxiosInstance(customers, dispatch);
+      const response = await axiosInstance.get("/payment/vnpay_ipn", {
+        params: queryParams,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response ? error.response.data : "Unknown error"
+      );
+    }
   }
-};
+);
+// Payment slice definition
 const paymentSlice = createSlice({
   name: "payment",
   initialState: {
@@ -76,4 +84,5 @@ const paymentSlice = createSlice({
       });
   },
 });
+
 export default paymentSlice.reducer;

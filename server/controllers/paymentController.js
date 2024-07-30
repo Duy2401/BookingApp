@@ -1,141 +1,119 @@
+const BookingHotel = require("../models/Booking/booking");
+const Payment = require("../models/payment");
 const crypto = require("crypto");
-const querystring = require("querystring");
-const Booking = require("../models/Booking/booking");
-const config = require("../configs/vnpays/vnpay"); // Your VNPay config
+const config = require("../configs/momo/momo");
+const axios = require("axios");
 
-// Initiate VNPay Payment
-const initiateVNPayPayment = (req, res) => {
-  try {
-    const {
-      hotelId,
-      customerId,
-      rooms,
-      checkInDate,
-      checkOutDate,
-      totalPrice,
-    } = req.body;
+const paymentController = {
+  createBooking: async (req, res) => {
+    let {
+      accessKey,
+      secretKey,
+      orderInfo,
+      partnerCode,
+      redirectUrl,
+      ipnUrl,
+      requestType,
+      extraData,
+      orderGroupId,
+      autoCapture,
+      lang,
+    } = config;
 
-    console.log("Request body:", req.body);
+    const { amount, bookingDetails, customers } = req.body;
+    const orderId = partnerCode + new Date().getTime();
+    const requestId = orderId;
 
-    if (
-      !hotelId ||
-      !customerId ||
-      !rooms ||
-      !checkInDate ||
-      !checkOutDate ||
-      !totalPrice
-    ) {
-      return res.status(400).json({ message: "Missing required fields" });
+    const rawSignature = [
+      `accessKey=${accessKey}`,
+      `amount=${amount}`,
+      `extraData=${extraData}`,
+      `ipnUrl=${ipnUrl}`,
+      `orderId=${orderId}`,
+      `orderInfo=${orderInfo}`,
+      `partnerCode=${partnerCode}`,
+      `redirectUrl=${redirectUrl}`,
+      `requestId=${requestId}`,
+      `requestType=${requestType}`,
+    ].join("&");
+
+    const signature = crypto
+      .createHmac("sha256", secretKey)
+      .update(rawSignature)
+      .digest("hex");
+
+    const requestBody = {
+      partnerCode,
+      partnerName: "Test",
+      storeId: "MomoTestStore",
+      requestId,
+      amount,
+      orderId,
+      orderInfo,
+      redirectUrl,
+      ipnUrl,
+      lang,
+      requestType,
+      autoCapture,
+      extraData,
+      orderGroupId,
+      signature,
+    };
+
+    const options = {
+      method: "POST",
+      url: "https://test-payment.momo.vn/v2/gateway/api/create",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(JSON.stringify(requestBody)),
+      },
+      data: requestBody,
+    };
+
+    try {
+      const result = await axios(options);
+      // Save the booking details to the database or any other necessary operation
+      const booking = new BookingHotel({
+        bookingDetails,
+        customers,
+        amount,
+        orderId,
+        status: "pending", // or any other initial status
+      });
+      await booking.save();
+
+      // Return MoMo response and necessary booking details
+      return res.status(200).json({
+        momoResponse: result.data,
+        bookingDetails,
+      });
+    } catch (error) {
+      return res.status(500).json({ statusCode: 500, message: error.message });
     }
+  },
 
-    const bookingDetails = {
-      hotelId,
-      customerId,
-      rooms,
-      checkInDate,
-      checkOutDate,
-      totalPrice,
-    };
+  returnBooking: async (req, res) => {
+    const query = req.query;
+    // Xử lý kết quả trả về từ MoMo và cập nhật trạng thái booking trong database
+    const { orderId, resultCode } = query;
 
-    req.session.bookingDetails = bookingDetails;
-
-    const vnpUrl = config.vnp_Url;
-    const returnUrl = config.vnp_ReturnUrl;
-    const tmnCode = config.vnp_TmnCode;
-    const secretKey = config.vnp_HashSecret;
-
-    let vnp_Params = {
-      vnp_Version: "2.1.0",
-      vnp_Command: "pay",
-      vnp_TmnCode: tmnCode,
-      vnp_Locale: "vn",
-      vnp_CurrCode: "VND",
-      vnp_TxnRef: Date.now().toString(),
-      vnp_OrderInfo: "Payment for booking",
-      vnp_OrderType: "other",
-      vnp_Amount: totalPrice * 100,
-      vnp_ReturnUrl: returnUrl,
-      vnp_IpAddr: req.ip,
-      vnp_CreateDate: new Date().toISOString(),
-    };
-
-    vnp_Params = sortObject(vnp_Params);
-
-    const signData = querystring.stringify(vnp_Params, { encode: false });
-    const hmac = crypto.createHmac("sha512", secretKey);
-    const signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-    vnp_Params["vnp_SecureHash"] = signed;
-
-    const paymentUrl = `${vnpUrl}?${querystring.stringify(vnp_Params, {
-      encode: false,
-    })}`;
-
-    res.json({ paymentUrl });
-  } catch (error) {
-    console.error("Error in initiateVNPayPayment:", error);
-    res.status(500).json({ message: "Internal Server Error", error });
-  }
-};
-
-// Handle VNPay Return
-const handleVNPayReturn = async (req, res) => {
-  let vnp_Params = req.query;
-
-  const secureHash = vnp_Params["vnp_SecureHash"];
-  delete vnp_Params["vnp_SecureHash"];
-  delete vnp_Params["vnp_SecureHashType"];
-
-  vnp_Params = sortObject(vnp_Params);
-  const signData = querystring.stringify(vnp_Params, { encode: false });
-  const hmac = crypto.createHmac("sha512", config.vnp_HashSecret);
-  const signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-
-  if (secureHash === signed) {
-    if (vnp_Params["vnp_ResponseCode"] === "00") {
-      try {
-        const bookingDetails = req.session.bookingDetails;
-        console.log(req.session.bookingDetails);
-        if (!bookingDetails) {
-          return res.status(400).json({ message: "No booking details found" });
-        }
-
-        const newBooking = new Booking({
-          hotel: bookingDetails.hotelId,
-          customer: bookingDetails.customerId,
-          rooms: bookingDetails.rooms,
-          checkInDate: bookingDetails.checkInDate,
-          checkOutDate: bookingDetails.checkOutDate,
-          totalPrice: bookingDetails.totalPrice,
-          status: "confirmed",
-        });
-        await newBooking.save();
-
-        res.json({
-          message: "Payment successful, booking created",
-          booking: newBooking,
-        });
-      } catch (error) {
-        console.error("Error creating booking:", error);
-        res.status(500).json({ message: "Error creating booking", error });
+    try {
+      const booking = await BookingHotel.findOne({ orderId });
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
       }
-    } else {
-      res.json({ message: "Payment failed", vnp_Params });
+
+      booking.status = resultCode === "0" ? "success" : "failed"; // cập nhật trạng thái tùy thuộc vào mã kết quả
+      await booking.save();
+
+      res.json({
+        message: "Booking status updated",
+        booking,
+      });
+    } catch (error) {
+      res.status(500).json({ statusCode: 500, message: error.message });
     }
-  } else {
-    res.status(400).json({ message: "Invalid signature" });
-  }
+  },
 };
 
-function sortObject(obj) {
-  const sorted = {};
-  const keys = Object.keys(obj).sort();
-  keys.forEach((key) => {
-    sorted[key] = obj[key];
-  });
-  return sorted;
-}
-
-module.exports = {
-  handleVNPayReturn,
-  initiateVNPayPayment,
-};
+module.exports = paymentController;

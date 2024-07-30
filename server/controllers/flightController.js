@@ -5,22 +5,13 @@ const FlightController = {
   // Business Partners create flight
   CreateFlight: async (req, res) => {
     try {
-      const newFlight = new Flight({
-        Flight_id: req.body.Flight_id,
-        Flight_infor: {
-          airline_id: req.body.airline_id,
-          airline_name: req.body.airline_name,
-        },
-        Flight_duration: req.body.Flight_duration,
-        Flight_DepartureTime: {
-          DepartureTime_at: req.body.DepartureTime_at,
-          DepartureTime_in: req.body.DepartureTime_in,
-        },
-        Flight_carbin: req.body.Flight_carbin,
-        Flight_status: req.body.Flight_status,
+      const newFlight = new Flight(req.body);
+      await newFlight.save();
+      return res.status(201).json({
+        status: true,
+        message: "Create Flight Success",
+        data: newFlight,
       });
-      const flight = await newFlight.save();
-      return res.status(200).json(flight);
     } catch (error) {
       return res.status(500).json(error);
     }

@@ -5,9 +5,14 @@ const router = require("express").Router();
 
 // Hotel
 router.post(
-  "/create",
+  "/createbookings",
   middlewareControlle.verifyToken,
-  BookingController.CreateBooking
+  BookingController.createBooking
+);
+router.post(
+  "/momo-notify",
+  middlewareControlle.verifyToken,
+  BookingController.handleMoMoNotify
 );
 // Tour
 

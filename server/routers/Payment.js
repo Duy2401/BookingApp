@@ -1,8 +1,8 @@
 const middlewareControlle = require("../controllers/middlewareController");
-const Payment = require("../controllers/paymentController");
+const paymentController = require("../controllers/paymentController");
 const router = require("express").Router();
 
-router.post("/vnpay", Payment.initiateVNPayPayment);
-router.get("/vnpay/callback", Payment.handleVNPayReturn);
+router.post("/momo-payment", paymentController.createBooking);
+router.get("/momo-return", paymentController.returnBooking);
 
 module.exports = router;

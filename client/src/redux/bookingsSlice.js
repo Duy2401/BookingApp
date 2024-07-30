@@ -8,12 +8,11 @@ export const createBooking = createAsyncThunk(
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.post(
-        "/booking/create",
+        "/booking/createbookings",
         bookingData,
         {
           headers: {
             token: `Bearer ${customers?.accessToken}`,
-            "Content-Type": "application/json",
           },
         }
       );

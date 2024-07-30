@@ -53,14 +53,15 @@ const HotelDetails = () => {
     }
     const bookingData = {
       hotelId: hotelDetails,
-      customer: customer._id,
+      customerId: customer?._id,
       rooms: bookingRooms,
       checkInDate: localStorage.getItem("checkin"),
       checkOutDate: localStorage.getItem("checkout"),
-      totalPrice: bookingRooms.reduce(
+      amount: bookingRooms.reduce(
         (total, room) => total + room.price * room.quantity,
         0
       ),
+      type: "hotel",
     };
 
     dispatch(setBookingDetails(bookingData));
@@ -229,19 +230,21 @@ const HotelDetails = () => {
                         <p className="font-bold text-red-600">Đã hết phòng</p>
                       )}
                     </div>
-                    <Button
-                      onClick={() =>
-                        handleAddRoom(
-                          room._id,
-                          room.room_type,
-                          room.availableRooms,
-                          room.price_range
-                        )
-                      }
-                      className="bg-blue-500 text-white px-4 py-1 rounded-lg"
-                    >
-                      Đặt phòng
-                    </Button>
+                    {room.isAvailable && (
+                      <Button
+                        onClick={() =>
+                          handleAddRoom(
+                            room._id,
+                            room.room_type,
+                            room.availableRooms,
+                            room.price_range
+                          )
+                        }
+                        className="bg-blue-500 text-white px-4 py-1 rounded-lg"
+                      >
+                        Đặt phòng
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>

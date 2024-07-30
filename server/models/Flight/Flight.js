@@ -1,43 +1,39 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const FlightsSchema = new Schema({
-  Flight_id: {
+  flightNumber: { type: String, required: true },
+  airline: { type: String, required: true },
+  departure: {
+    airport: { type: String, required: true },
+    city: { type: String, required: true },
+    country: { type: String, required: true },
+    date: { type: Date, required: true },
+    time: { type: String, required: true },
+  },
+  arrival: {
+    airport: { type: String, required: true },
+    city: { type: String, required: true },
+    country: { type: String, required: true },
+    date: { type: Date, required: true },
+    time: { type: String, required: true },
+  },
+  duration: { type: String, required: true },
+  status: {
     type: String,
-    require: true,
-    unique: true,
+    enum: ["Scheduled", "Delayed", "Cancelled", "Departed", "Arrived"],
+    default: "Scheduled",
   },
-  Flight_infor: {
-    airline_id: {
-      type: String,
-      require: true,
+  aircraft: {
+    model: { type: String, required: true },
+    registration: { type: String, required: true },
+    capacity: { type: Number, required: true },
+  },
+  fares: [
+    {
+      class: { type: String, required: true },
+      price: { type: Number, required: true },
+      currency: { type: String, required: true },
     },
-    airline_name: {
-      type: String,
-      require: true,
-    },
-  },
-  Flight_duration: {
-    type: Number,
-    require: true,
-  },
-  Flight_DepartureTime: {
-    DepartureTime_at: {
-      type: Number,
-      require: true,
-    },
-    DepartureTime_in: {
-      type: Number,
-      require: true,
-    },
-  },
-  Flight_carbin: {
-    type: Schema.Types.ObjectId,
-    ref: "FlightTypes",
-    require: true,
-  },
-  Flight_status: {
-    type: Number,
-    require: true,
-  },
+  ],
 });
 module.exports = mongoose.model("Flights", FlightsSchema);

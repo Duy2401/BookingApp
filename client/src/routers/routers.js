@@ -24,6 +24,8 @@ import LayoutLogin from "../layout/LayoutLogin/LayoutLogin.js";
 import PaymentDetail from "../Pages/Bookings/Payments/PaymentDetail.js";
 import RoomTypeForm from "../Pages/Stays/components/createHotels/RoomTypeForm.js";
 import SearchFlights from "../Pages/Flights/components/searchFlight/searchFlight.js";
+import VnpayReturn from "../Pages/Bookings/Payments/PaymentReturn.js";
+import CreateFlights from "../Pages/Flights/components/createFlights/createFlights.js";
 
 export const RouterPages = [
   // STAYS
@@ -67,8 +69,11 @@ export const RouterPages = [
     children: [
       { path: "addhotels", component: CreateHotels },
       { path: "addrooms/:id", component: RoomTypeForm },
+      { path: "addtours", component: CreateHotels },
+      { path: "addflights", component: CreateFlights },
     ],
   },
   { path: "/booking", component: Booking },
   { path: "/payment", component: PaymentDetail },
+  { path: "/payment_return", component: VnpayReturn },
 ];
