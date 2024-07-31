@@ -59,7 +59,7 @@ export const EditProfileUser = createAsyncThunk(
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.put(
-        `/user/edit/${iduser}`,
+        `/customer/edit_infor/${iduser}`,
         newCustomers,
         {
           headers: { token: `Bearer ${customers?.accessToken}` },
@@ -140,7 +140,11 @@ const customersSlice = createSlice({
       })
       .addCase(EditProfileUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.customers = action.payload.data;
+        state.customers = {
+          ...state.customers,
+          ...action.payload.data,
+          accessToken: state.customers.accessToken,
+        };
         state.success = true;
       })
       .addCase(EditProfileUser.rejected, (state, action) => {

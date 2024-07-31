@@ -26,24 +26,71 @@ const HotelDetails = () => {
     fetchData();
   }, [dispatch, aid]);
 
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+  // console.log(
+  //   hotelDetails.map((item) =>
+  //     item.RoomType.room_types.map((room) => room.availableRooms)
+  //   )
+  // );
   const handleAddRoom = (roomId, roomType, availableRooms, price) => {
+    // Lấy số lượng phòng từ input
     const quantity = parseInt(
       document.querySelector(`#quantity-${roomId}`)?.value || 0,
       10
     );
 
-    if (quantity > 0 && quantity <= availableRooms) {
-      const newRoom = {
-        roomId,
-        roomType,
-        price,
-        quantity,
-      };
-
-      setBookingRooms((prevRooms) => [...prevRooms, newRoom]);
-    } else {
-      alert("Invalid quantity selected.");
+    // Kiểm tra số lượng phòng có hợp lệ không
+    if (quantity < 0) {
+      alert("Quantity cannot be negative.");
+      return;
     }
+
+    if (quantity > availableRooms) {
+      alert("Quantity cannot be more than available rooms.");
+      return;
+    }
+
+    // Cập nhật hoặc thêm phòng mới vào danh sách
+    setBookingRooms((prevRooms) => {
+      const existingRoomIndex = prevRooms.findIndex(
+        (room) => room.roomId === roomId
+      );
+
+      if (existingRoomIndex > -1) {
+        const updatedRooms = [...prevRooms];
+        const currentQuantity = updatedRooms[existingRoomIndex].quantity;
+
+        if (quantity === 0) {
+          // Xóa phòng khỏi danh sách nếu số lượng bằng 0
+          updatedRooms.splice(existingRoomIndex, 1);
+        } else {
+          // Cập nhật số lượng phòng
+          updatedRooms[existingRoomIndex].quantity = quantity;
+        }
+
+        return updatedRooms;
+      } else {
+        if (quantity > 0) {
+          // Thêm phòng mới vào danh sách nếu chưa có
+          const newRoom = {
+            roomId,
+            roomType,
+            price,
+            quantity,
+          };
+          return [...prevRooms, newRoom];
+        } else {
+          return prevRooms;
+        }
+      }
+    });
   };
 
   const handleBookRooms = () => {
@@ -51,22 +98,24 @@ const HotelDetails = () => {
       alert("No rooms selected.");
       return;
     }
+    const totalPrice = bookingRooms.reduce(
+      (total, room) => total + room.price * room.quantity,
+      0
+    );
     const bookingData = {
-      hotelId: hotelDetails,
-      customerId: customer?._id,
+      hotel: hotelDetails,
+      customer: customer?._id,
       rooms: bookingRooms,
       checkInDate: localStorage.getItem("checkin"),
       checkOutDate: localStorage.getItem("checkout"),
-      amount: bookingRooms.reduce(
-        (total, room) => total + room.price * room.quantity,
-        0
-      ),
+      amount: totalPrice + totalPrice * 0.1,
       type: "hotel",
     };
 
     dispatch(setBookingDetails(bookingData));
     navigate("/booking");
   };
+
   return (
     <div className="relative">
       {hotelDetails?.map((hotel, index) => (
@@ -202,7 +251,7 @@ const HotelDetails = () => {
           </div>
           <div className="container mx-auto py-6" id="rooms">
             <div className="mt-6" id="rooms">
-              <h2 class="text-2xl font-bold mb-4">Loại chỗ ở</h2>
+              <h2 className="text-2xl font-bold mb-4">Loại chỗ ở</h2>
               <div className="space-y-4">
                 {hotel.RoomType?.room_types?.map((room, index) => (
                   <div
@@ -215,17 +264,24 @@ const HotelDetails = () => {
                       </p>
                       <SvgIcon icon={Bed} width={20} height={20} />
                     </div>
-                    <p>Giá phòng: {room.price_range}</p>
+                    <p>Giá phòng: {formatCurrency(room.price_range)}</p>
                     <div className="flex items-center space-x-2 mb-4">
                       {room.isAvailable ? (
-                        <input
-                          id={`quantity-${room._id}`}
-                          type="number"
-                          min={0}
-                          max={room.availableRooms}
-                          className="border border-gray-300 rounded-lg px-3 py-1 w-28"
-                          placeholder="Số phòng"
-                        />
+                        <div className="flex items-center my-3">
+                          <input
+                            id={`quantity-${room._id}`}
+                            type="number"
+                            min={0}
+                            max={room.availableRooms}
+                            className="border border-gray-300 rounded-lg px-3 py-1 w-36"
+                            placeholder="Số phòng"
+                          />
+                          <p className="font-bold text-red-600 ml-2">
+                            Còn lại{" "}
+                            {room.availableRooms < 5 && room.availableRooms}{" "}
+                            phòng
+                          </p>
+                        </div>
                       ) : (
                         <p className="font-bold text-red-600">Đã hết phòng</p>
                       )}
@@ -240,7 +296,7 @@ const HotelDetails = () => {
                             room.price_range
                           )
                         }
-                        className="bg-blue-500 text-white px-4 py-1 rounded-lg"
+                        className="bg-blue-500 text-white px-4 py-1 rounded-lg active:opacity-60"
                       >
                         Đặt phòng
                       </Button>
@@ -250,7 +306,7 @@ const HotelDetails = () => {
               </div>
               <Button
                 onClick={handleBookRooms}
-                className="bg-blue-500 text-white px-4 py-1 rounded-lg mt-4"
+                className="bg-blue-500 text-white px-4 py-1 rounded-lg mt-4 active:opacity-60"
               >
                 Đặt phòng
               </Button>
@@ -263,7 +319,10 @@ const HotelDetails = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {hotel.hotel_description.description_generalRules.map(
                   (rule, index) => (
-                    <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                    <div
+                      className="bg-gray-100 p-4 rounded-lg shadow-sm"
+                      key={index}
+                    >
                       <h3 className="text-lg font-bold mb-2">
                         {rule.rules_title}
                       </h3>

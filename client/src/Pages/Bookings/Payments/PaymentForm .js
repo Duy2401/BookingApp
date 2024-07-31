@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import Button from "../../../components/Button/button";
 import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const PaymentForm = ({ handleSubmit }) => {
   const navigate = useNavigate();
   const customers = useSelector((state) => state.customers?.customers);
+  const { bookingDetails, loading, error } = useSelector(
+    (state) => state.booking
+  );
   const [formData, setFormData] = useState({
     fullName: customers?.customer_name || "",
     email: customers?.customer_email || "",
@@ -106,18 +108,21 @@ const PaymentForm = ({ handleSubmit }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">
+          <label className="block font-extrabold text-xl mb-2">
             Xem lại các quy tắc chung
           </label>
-          <p>
+          <p className="underline">
             Xem lại quy tắc chung Chủ chỗ nghỉ muốn bạn đồng ý với các quy tắc
             chung này:
-            <p className="ml-1">Thời gian yên lặng từ 22:00 đến 06:00</p>
-            <p className="ml-1">
-              Không cho phép thú cưng Khi tiếp tục các bước tiếp theo
-            </p>
-            <p>Bạn đồng ý với các quy tắc chung này.</p>
           </p>
+          {bookingDetails.hotel.map((hotel) =>
+            hotel.hotel_description.description_note?.map((note, index) => (
+              <p className="ml-1 my-4 italic" key={index}>
+                {note.note_content}
+              </p>
+            ))
+          )}
+          <p className="underline">Bạn đồng ý với các quy tắc chung này.</p>
         </div>
         <button
           type="submit"

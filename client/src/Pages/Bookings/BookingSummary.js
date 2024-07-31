@@ -1,9 +1,6 @@
 import React from "react";
 import Button from "../../components/Button/button";
-import { ReactComponent as Payment } from "../../assets/icons/Payment.svg";
-import SvgIcon from "../../components/SvgIcon/SvgIcon";
 const BookingSummary = ({ bookingDetails }) => {
-  console.log(bookingDetails);
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("vi-VN", {
       currency: "VND",
@@ -15,13 +12,17 @@ const BookingSummary = ({ bookingDetails }) => {
   const differenceInDays = Math.ceil(
     differenceInMilliseconds / (1000 * 60 * 60 * 24)
   );
+
   return (
     <div>
       <div className="bg-white p-2 rounded-lg border-2">
         <div className="list-item2 my-4 cursor-pointer">
           <div className="p-2  items-center justify-center rounded-md">
-            {bookingDetails.hotelId.map((value, index) => (
-              <div className="flex flex-col col-span-6 md:col-span-8 h-full gap-2">
+            {bookingDetails.hotel.map((value, index) => (
+              <div
+                className="flex flex-col col-span-6 md:col-span-8 h-full gap-2"
+                key={index}
+              >
                 <div className="flex items-center w-full">
                   <div className="flex gap-0 text-xl font-extrabold  hover:text-black cursor-pointer">
                     {value.hotel_name}
@@ -104,8 +105,12 @@ const BookingSummary = ({ bookingDetails }) => {
                 <div className="flex justify-between">
                   <p className="text-base font-medium">Giá tiền</p>
                   <p className="text-base font-normal">
-                    VND {formatCurrency(bookingDetails.totalPrice)}
+                    VND {formatCurrency(bookingDetails.amount)}
                   </p>
+                </div>
+                <div className="flex justify-between my-2">
+                  <p className="text-base font-medium">Thuế VAT</p>
+                  <p className="text-base font-normal">10%</p>
                 </div>
               </div>
               <div className="border-b-2 pb-2">
@@ -125,27 +130,9 @@ const BookingSummary = ({ bookingDetails }) => {
           </div>
           <div>
             <p className="text-2xl font-bold">
-              VND {formatCurrency(bookingDetails.totalPrice)}
+              VND {formatCurrency(bookingDetails.amount)}
             </p>
-            <p className="text-sm ">Đã bao gồm thuế và phí</p>
-          </div>
-        </div>
-        <div className="flex p-4 justify-between items-center mt-6 bg-bgTotal">
-          <div className="flex flex-col col-span-6 md:col-span-8 h-full gap-2">
-            <div className="flex items-center w-full">
-              <div className="flex gap-0 text-xl font-extrabold  hover:text-black cursor-pointer">
-                Thông tin giá
-              </div>
-            </div>
-            <div className="pb-2">
-              <div className="flex justify-between">
-                <SvgIcon icon={Payment} width={20} height={20} />
-                <p className="text-sm font-medium pl-2">
-                  Bao gồm VND 40.700 phí và thuế
-                </p>
-              </div>
-              <p className="text-xs mt-2 pl-7">8 % Thuế GTGT VND 40.700</p>
-            </div>
+            <p className="text-sm mt-2 pl-2">Đã bao gồm thuế và phí</p>
           </div>
         </div>
       </div>

@@ -104,6 +104,7 @@ const SearchHotel = () => {
         toast.error(data.payload.message);
       }
     }, 1000);
+    if (searchTerm === "") return toast.warning("Nhập địa điểm bạn muốn đến ");
   };
 
   useEffect(() => {

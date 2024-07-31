@@ -7,12 +7,13 @@ function Secure() {
   const [formData, setFormData] = useState({
     customer_name: customers?.customer_name || "",
     customer_email: customers?.customer_email || "",
+    customer_password: customers?.customer_password || "",
     phone_number: customers?.phone_number || "",
     date_of_birth: customers?.date_of_birth || "",
     gender: customers?.gender || "",
-    address: customers?.address || "",
+    customer_address: customers.customer_address || "",
   });
-
+  console.log(customers);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -37,16 +38,16 @@ function Secure() {
       <form onSubmit={handleSubmit}>
         <InputField
           label="Mật Khẩu"
-          type="text"
+          type="password"
           name="customer_name"
-          value={formData.customer_name}
+          value={formData.customer_password}
           onChange={handleChange}
         />
         <InputField
           label="Địa chỉ"
           type="text"
-          name="address"
-          value={formData.address}
+          name="customer_address"
+          value={formData.customer_address}
           onChange={handleChange}
         />
       </form>

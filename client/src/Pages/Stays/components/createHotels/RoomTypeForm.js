@@ -69,9 +69,12 @@ const RoomTypeForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 p-6 bg-white rounded-lg shadow-md"
+    >
       {formData.room_types.map((roomType, index) => (
-        <div key={index} className="flex flex-col space-y-2">
+        <div key={index} className="flex flex-col space-y-4">
           <div className="flex space-x-4">
             <input
               type="text"
@@ -79,22 +82,20 @@ const RoomTypeForm = () => {
               placeholder="Room Type"
               value={roomType.room_type}
               onChange={(e) => handleRoomTypeChange(index, e)}
-              className="border rounded p-2 w-full"
+              className="border border-gray-300 rounded p-2 w-full focus:outline-none focus:ring focus:border-blue-300"
               required
             />
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Price:
-                <input
-                  type="text"
-                  name="price_range"
-                  value={roomType.price_range}
-                  onChange={(e) => handleRoomTypeChange(index, e)}
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </label>
-              <div className="mt-2 text-gray-600">{roomType.displayPrice}</div>
+            <div className="flex-5">
+              <label className="block text-gray-700 mb-1">Price:</label>
+              <input
+                type="text"
+                name="price_range"
+                value={roomType.price_range}
+                onChange={(e) => handleRoomTypeChange(index, e)}
+                required
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+              />
+              <div className="mt-1 text-gray-600">{roomType.displayPrice}</div>
             </div>
             <input
               type="number"
@@ -102,7 +103,7 @@ const RoomTypeForm = () => {
               placeholder="Available Rooms"
               value={roomType.availableRooms}
               onChange={(e) => handleRoomTypeChange(index, e)}
-              className="border rounded p-2 w-full"
+              className="border border-gray-300 rounded p-2 w-full focus:outline-none focus:ring focus:border-blue-300"
               min="0"
               required
             />
@@ -110,22 +111,27 @@ const RoomTypeForm = () => {
           <button
             type="button"
             onClick={() => handleRemoveRoomType(index)}
-            className="self-end bg-red-500 text-white p-2 rounded"
+            className="self-end bg-red-500 text-white py-1 px-3 rounded focus:outline-none focus:ring focus:ring-red-300"
           >
             Remove Room Type
           </button>
         </div>
       ))}
-      <button
-        type="button"
-        onClick={handleAddRoomType}
-        className="bg-blue-500 text-white p-2 rounded"
-      >
-        Add Room Type
-      </button>
-      <button type="submit" className="bg-green-500 text-white p-2 rounded">
-        Submit
-      </button>
+      <div className="flex space-x-4">
+        <button
+          type="button"
+          onClick={handleAddRoomType}
+          className="bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300"
+        >
+          Add Room Type
+        </button>
+        <button
+          type="submit"
+          className="bg-green-500 text-white py-2 px-4 rounded focus:outline-none focus:ring focus:ring-green-300"
+        >
+          Submit
+        </button>
+      </div>
     </form>
   );
 };

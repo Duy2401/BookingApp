@@ -4,6 +4,7 @@ import InputField from "../../components/InputField/InputField";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { EditProfileUser } from "../../redux/customersSlice";
+import { toast, ToastContainer } from "react-toastify";
 function AccountInfor() {
   const id = useParams();
   const dispatch = useDispatch();
@@ -11,7 +12,7 @@ function AccountInfor() {
   const customers = useSelector((state) => state.customers?.customers);
   useEffect(() => {
     setFormData(initialFormData);
-  }, [customers]);
+  }, []);
   const initialFormData = {
     customer_name: customers?.customer_name || "",
     customer_gender: customers?.customer_gender || "",
@@ -20,6 +21,7 @@ function AccountInfor() {
     customer_email: customers?.customer_email || "",
     customer_dateOfBirth: customers?.customer_dateOfBirth || "",
   };
+
   const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e) => {
@@ -35,13 +37,17 @@ function AccountInfor() {
       const data = await dispatch(
         EditProfileUser({ customers, newCustomers: formData, iduser: idUser })
       );
+      if (data.payload.status)
+        return toast.success("Thay đổi thông tin thành công");
+      if (!data.payload.status)
+        return toast.success("Thay đổi thông tin thất bại");
       return data;
     } catch (error) {}
   };
-
   return (
     <div>
       <div className="header mb-4">
+        <ToastContainer icon={true} />
         <h1 className="text-5xl font-black">Thông tin cá nhân</h1>
         <h3 className="mt-4 text-gray-500">
           Cập nhật thông tin của bạn và tìm hiểu các thông tin này được sử dụng
@@ -63,6 +69,7 @@ function AccountInfor() {
           readonly="readonly"
           value={formData.customer_email}
           onChange={handleChange}
+          disabled
         />
         <InputField
           label="Số điện thoại"
@@ -73,7 +80,7 @@ function AccountInfor() {
         />
         <InputField
           label="Ngày sinh"
-          type="date"
+          type="date-time"
           name="customer_dateOfBirth"
           value={formData.customer_dateOfBirth}
           onChange={handleChange}

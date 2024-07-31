@@ -1,5 +1,5 @@
-const Flight = require("../models/Flight/Flight");
-const FlightTypes = require("../models/Flight/FlightType");
+const Flight = require("../../models/Flight/Flight");
+const FlightTypes = require("../../models/Flight/FlightType");
 
 const FlightController = {
   // Business Partners create flight

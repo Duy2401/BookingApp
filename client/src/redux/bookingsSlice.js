@@ -4,12 +4,13 @@ import { createAxiosInstance } from "../services/api";
 
 export const createBooking = createAsyncThunk(
   "booking/createBooking",
-  async ({ bookingData, customers }, { rejectWithValue, dispatch }) => {
+  async ({ bookingDetails, customers }, { rejectWithValue, dispatch }) => {
     try {
+      console.log(bookingDetails);
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.post(
         "/booking/createbookings",
-        bookingData,
+        bookingDetails,
         {
           headers: {
             token: `Bearer ${customers?.accessToken}`,

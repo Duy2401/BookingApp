@@ -1,20 +1,13 @@
 const transporter = require("../../helpers/transporter");
 
-async function sendPaymentSuccessEmail(bookingDetails) {
+async function sendPaymentSuccessEmail() {
   const mailOptions = {
     from: "longduy2410@gmail.com",
-    to: `${bookingDetails.customer_id}`,
+    to: "duynld2210@gmail.com",
     subject: "Payment Successful",
     text: `Dear Customer,
 
-        Your payment for booking ${bookingDetails.bookingId} has been successfully processed.
-
-        Booking Details:
-        Hotel: ${bookingDetails.hotelName}
-        Room Type: ${bookingDetails.roomType}
-        Check-In Date: ${bookingDetails.checkInDate}
-        Check-Out Date: ${bookingDetails.checkOutDate}
-        Total Amount: ${bookingDetails.totalAmount}
+        tao dang test m co nhận được chưa v
 
         Thank you for booking with us!
 

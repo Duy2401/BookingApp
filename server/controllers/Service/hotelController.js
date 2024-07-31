@@ -1,8 +1,9 @@
-const Hotels = require("../models/Hotel/hotels");
-const HotelsType = require("../models/Hotel/hotelType");
+const Hotels = require("../../models/Hotel/hotels");
+const HotelsType = require("../../models/Hotel/hotelType");
 const streamifier = require("streamifier");
-const cloudinary = require("../configs/cloudinary");
-const RoomType = require("../models/Hotel/roomType");
+const cloudinary = require("../../configs/cloudinary");
+const RoomType = require("../../models/Hotel/roomType");
+
 const HotelsController = {
   // HOTELS
   CreateHotel: async (req, res) => {
@@ -136,13 +137,11 @@ const HotelsController = {
   },
   SearchHotels: async (req, res) => {
     try {
-      const address = req.params.address;
-      console.log(address);
-      const sanitizedAddress = address.replace(
-        /[-\/\\^$*+?.()|[\]{}]/g,
-        "\\$&"
-      );
-      const searchRegex = new RegExp(sanitizedAddress, "i");
+      const searchString = req.params.address.trim().toLowerCase();
+      const searchWords = searchString.split(/\s+/);
+
+      // Tìm kiếm ít nhất 1 trong các từ, không phân biệt thứ tự
+      const searchRegex = new RegExp(`.*${searchWords.join("|")}.*`, "i");
 
       const hotels = await Hotels.find({
         hotel_address: searchRegex,

@@ -6,15 +6,14 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const clieredisClient = require("./helpers/redisDB");
 // ROUTER
 const AuthRouter = require("./routers/Auth");
-const UserRouter = require("./routers/User");
 const HotelRouter = require("./routers/Hotel");
 const FlightRouter = require("./routers/Flight");
 const TourRouter = require("./routers/Tour");
 const BookingRouter = require("./routers/Booking");
 const PaymentRouter = require("./routers/Payment");
+const CustomerRouter = require("./routers/Customer");
 dotenv.config();
 const app = express();
 const secretKey = crypto.randomBytes(64).toString("hex");
@@ -52,12 +51,15 @@ app.use(express.json());
 
 // Router
 app.use("/api/auth", AuthRouter);
-app.use("/api/user", UserRouter);
+app.use("/api/customer", CustomerRouter);
 app.use("/api/hotel", HotelRouter);
 app.use("/api/flight", FlightRouter);
 app.use("/api/tour", TourRouter);
 app.use("/api/booking", BookingRouter);
 app.use("/api/payment", PaymentRouter);
+
+// sendPaymentSuccessEmail();
+
 // PORT RUN SERVER
 app.listen(8000, () => {
   console.log("Server is running");

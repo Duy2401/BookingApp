@@ -1,4 +1,4 @@
-const FlightController = require("../controllers/flightController");
+const FlightController = require("../controllers/Service/flightController");
 const router = require("express").Router();
 
 // Business Partners create my flight

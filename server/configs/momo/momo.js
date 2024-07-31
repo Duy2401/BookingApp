@@ -4,7 +4,7 @@ module.exports = {
   orderInfo: "pay with MoMo",
   partnerCode: "MOMO",
   redirectUrl: "http://localhost:3000",
-  ipnUrl: "https://0778-14-178-58-205.ngrok-free.app/callback", //chú ý: cần dùng ngrok thì momo mới post đến url này được
+  ipnUrl: "https://big-candies-drum.loca.lt/callback", //chú ý: cần dùng ngrok thì momo mới post đến url này được
   requestType: "payWithMethod",
   extraData: "",
   orderGroupId: "",

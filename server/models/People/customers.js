@@ -10,7 +10,7 @@ const CustomersSchema = new Schema({
     require: true,
   },
   customer_phone: {
-    type: Number,
+    type: String,
     require: true,
   },
   customer_address: {
@@ -34,8 +34,9 @@ const CustomersSchema = new Schema({
     default: "01",
     require: true,
   },
+  bookings: [{ type: Schema.Types.ObjectId, ref: "Bookings" }],
   customer_dateOfBirth: {
-    type: Date,
+    type: String,
     require: true,
   },
 });

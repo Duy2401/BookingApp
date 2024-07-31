@@ -3,7 +3,7 @@ import SideBar from "../../../../layout/components/Sidebar/Sidebar";
 import Button from "../../../../components/Button/button";
 import calculateDateDifference from "../../../../components/CalculateDateDifference/calculateDateDifference";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const SearchStays = () => {
   const listHotels = useSelector((state) => state.hotels?.hotels);
   const [hotels, setHotels] = useState(listHotels);
@@ -14,6 +14,7 @@ const SearchStays = () => {
     quantity_children: localStorage.getItem("children"),
     quantity_people: localStorage.getItem("checkout"),
   };
+  console.log(listHotels);
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -22,6 +23,9 @@ const SearchStays = () => {
       maximumFractionDigits: 0,
     }).format(value);
   };
+  useEffect(() => {
+    setHotels(listHotels);
+  }, [listHotels]);
   return (
     <div className="relative">
       <div className="mt-8">
@@ -105,12 +109,18 @@ const SearchStays = () => {
                               đêm, {localStorage.getItem("adults")} người lớn
                             </div>
                             <div className="text-xl font-bold mb-3 flex">
-                              {formatCurrency(
-                                hotel.hotel_price *
-                                  calculateDateDifference(
-                                    Quantity.checkin,
-                                    Quantity.checkout
-                                  )
+                              {Quantity.checkin || Quantity.checkout ? (
+                                formatCurrency(
+                                  hotel.hotel_price *
+                                    calculateDateDifference(
+                                      Quantity.checkin,
+                                      Quantity.checkout
+                                    )
+                                )
+                              ) : (
+                                <Button className="bg-btnSearch p-1 text-white rounded-md text-sm">
+                                  Hiện thị giá
+                                </Button>
                               )}
                             </div>
                             <div className="text-xs text-textGrey float-right mb-3">

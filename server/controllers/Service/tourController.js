@@ -1,5 +1,5 @@
-const TourPackage = require("../models/Tours/toursPackage");
-const TourType = require("../models/Tours/toursType");
+const TourPackage = require("../../models/Tours/toursPackage");
+const TourType = require("../../models/Tours/toursType");
 
 const TourController = {
   CreateTour: async (req, res) => {

@@ -1,4 +1,4 @@
-const TourController = require("../controllers/tourController");
+const TourController = require("../controllers/Service/tourController");
 const router = require("express").Router();
 
 router.post("/createtour", TourController.CreateTour);

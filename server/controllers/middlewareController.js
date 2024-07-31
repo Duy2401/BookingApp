@@ -15,7 +15,7 @@ const middlewareControlle = {
       return res.status(401).json("You're not authenticated");
     }
   },
-  // IF YOU IS GUEST WANT BOOK SERVICE OF WEBSITE
+  // THIS'IS ADMIN
   verifyUser: (req, res, next) => {
     middlewareControlle.verifyToken(req, res, () => {
       if (req.user.isRole === 1) {
@@ -29,6 +29,16 @@ const middlewareControlle = {
   verifyPartner: (req, res, next) => {
     middlewareControlle.verifyToken(req, res, () => {
       if (req.user.isRole === 2) {
+        next();
+      } else {
+        return res.status(401).json("You're not authenticated");
+      }
+    });
+  },
+  // IF YOU IS CUSTOMERS HAD ACCOUNT
+  verifyCustomer: (req, res, next) => {
+    middlewareControlle.verifyToken(req, res, () => {
+      if (req.user.isRole === 3) {
         next();
       } else {
         return res.status(401).json("You're not authenticated");
