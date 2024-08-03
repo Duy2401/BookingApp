@@ -1,34 +1,36 @@
-// VnpayReturn.jsx
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { handleVNPayIPNResponse } from "../../../redux/paymentSlice";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+
 const VnpayReturn = () => {
-  const dispatch = useDispatch();
-  const { data, error } = useSelector((state) => state.payment);
+  const location = useLocation();
 
   useEffect(() => {
-    // Extract query parameters from URL
-    const queryParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(queryParams.entries());
+    const checkPaymentStatus = async () => {
+      try {
+        const params = new URLSearchParams(location.search);
+        const response = await axios.get(
+          "http://localhost:8000/api/payment/vnpay_return",
+          { params }
+        );
+        const { status, message, code } = response.data;
 
-    // Dispatch action to handle VNPay IPN response
-    dispatch(handleVNPayIPNResponse(params));
-  }, [dispatch]);
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+        if (status) {
+          // Xử lý khi thanh toán thành công
+          console.log("Payment success:", message);
+        } else {
+          // Xử lý khi thanh toán thất bại
+          console.log("Payment failure:", message, "Code:", code);
+        }
+      } catch (error) {
+        console.error("Error checking payment status:", error);
+      }
+    };
 
-  if (data) {
-    return (
-      <div>
-        <h1>Payment Status</h1>
-        <p>Response Code: {data.RspCode}</p>
-        <p>Message: {data.Message}</p>
-      </div>
-    );
-  }
+    checkPaymentStatus();
+  }, [location]);
 
-  return <div>Loading...</div>;
+  return <div>Processing payment...</div>;
 };
 
 export default VnpayReturn;

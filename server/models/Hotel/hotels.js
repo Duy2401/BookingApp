@@ -52,14 +52,15 @@ const HotelSchema = new Schema({
     required: true,
   },
   hotel_type: {
-    type: Schema.Types.ObjectId,
-    ref: "HotelTypes",
+    type: String,
     required: true,
   },
-  RoomType: {
-    type: Schema.Types.ObjectId,
-    ref: "RoomTypeSchema",
-  },
+  room_types: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "RoomType",
+    },
+  ],
   hotel_price: {
     type: Number,
     required: true,

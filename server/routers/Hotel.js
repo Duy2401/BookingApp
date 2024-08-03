@@ -23,21 +23,6 @@ router.delete(
 router.get("/searchhotel/:address", HotelsController.SearchHotels);
 router.get("/gethoteldetail/:id", HotelsController.GetHotels);
 
-// Type hotel
-middlewareControlle.verifyToken,
-  router.post(
-    "/createhoteltype",
-    middlewareControlle.verifyToken,
-    HotelsController.CreateHotelType
-  );
-router.get("/getallhoteltype", HotelsController.GetAllHotelsType);
-middlewareControlle.verifyToken,
-  router.delete(
-    "/deletehoteltype/:id",
-    middlewareControlle.verifyToken,
-    HotelsController.DeleteHotelsType
-  );
-
 // Type Rooms
 router.post(
   "/createroomtype",

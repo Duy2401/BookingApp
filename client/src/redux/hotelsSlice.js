@@ -69,7 +69,6 @@ export const AddRoomsHotel = createAsyncThunk(
   "roomsType/Addrooms",
   async ({ newRooms, customers }, { rejectWithValue, dispatch }) => {
     try {
-      console.log(newRooms, customers);
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.post(
         "/hotel/createroomtype",

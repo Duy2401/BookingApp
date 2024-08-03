@@ -1,13 +1,48 @@
-const BookingHotel = require("../controllers/Books/bookingHotelController");
-const crypto = require("crypto");
-// const config = require("../configs/momo/momo");
 const moment = require("moment");
-const axios = require("axios");
-const sendPaymentSuccessEmail = require("../configs/momo/sendEmail");
+const HotelBooking = require("../models/Booking/HotelBooking");
+const RoomType = require("../models/Hotel/roomType");
+const Payment = require("../models//PaymentSchema");
 let config = require("../configs/momo/default.json");
+
 const paymentController = {
   createBooking: async (req, res) => {
     process.env.TZ = "Asia/Ho_Chi_Minh";
+    const { customer, hotelID, rooms, totalPrice } = req.body;
+    const holdDuration = 30 * 60 * 1000; // 30 phút tính bằng milliseconds
+    const holdUntil = new Date(Date.now() + holdDuration);
+
+    const updatedRooms = [];
+
+    for (const room of rooms) {
+      const { roomId, quantity } = room;
+
+      const roomType = await RoomType.findOneAndUpdate(
+        { _id: roomId, totalRooms: { $gte: quantity } },
+        { $inc: { totalRooms: -quantity, bookedRooms: quantity } },
+        { new: true }
+      );
+
+      if (!roomType) {
+        return res.status(400).json({
+          status: false,
+          message: `No available rooms for the specified room type: ${roomId}`,
+        });
+      }
+
+      updatedRooms.push({ roomId, quantity });
+    }
+
+    const newBooking = new HotelBooking({
+      ...req.body,
+      customer,
+      hotelID,
+      rooms: updatedRooms,
+      hold_until: holdUntil,
+      hold_status: "on_hold",
+      payment_status: "pending",
+    });
+
+    const CreateHotelBooking = await newBooking.save();
 
     let date = new Date();
     let createDate = moment(date).format("YYYYMMDDHHmmss");
@@ -22,7 +57,7 @@ const paymentController = {
     let secretKey = config.vnp_HashSecret;
     let vnpUrl = config.vnp_Url;
     let returnUrl = config.vnp_ReturnUrl;
-    let amount = 100000;
+    let amount = totalPrice;
     let bankCode = "NCB";
 
     let locale = req.body.language;
@@ -36,8 +71,9 @@ const paymentController = {
     vnp_Params["vnp_TmnCode"] = tmnCode;
     vnp_Params["vnp_Locale"] = "vn";
     vnp_Params["vnp_CurrCode"] = currCode;
-    vnp_Params["vnp_TxnRef"] = "123141";
-    vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + "123141";
+    vnp_Params["vnp_TxnRef"] = CreateHotelBooking._id;
+    vnp_Params["vnp_OrderInfo"] =
+      "Thanh toan cho ma GD:" + CreateHotelBooking._id;
     vnp_Params["vnp_OrderType"] = "other";
     vnp_Params["vnp_Amount"] = amount * 100;
     vnp_Params["vnp_ReturnUrl"] = returnUrl;
@@ -56,13 +92,21 @@ const paymentController = {
     let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
     vnp_Params["vnp_SecureHash"] = signed;
     vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
+
+    // Lưu thông tin thanh toán
+    const newPayment = new Payment({
+      orderId: CreateHotelBooking._id,
+      amount: totalPrice,
+      paymentStatus: "pending",
+      type: "hotel",
+    });
+    await newPayment.save();
+
     res.set("Content-Type", "text/html");
     res.json(vnpUrl);
   },
-
   returnBooking: async (req, res) => {
     let vnp_Params = req.query;
-
     let secureHash = vnp_Params["vnp_SecureHash"];
 
     delete vnp_Params["vnp_SecureHash"];
@@ -80,172 +124,117 @@ const paymentController = {
     let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
     if (secureHash === signed) {
-      //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
-      res.json("success", { code: vnp_Params["vnp_ResponseCode"] });
+      let orderId = vnp_Params["vnp_TxnRef"];
+      let rspCode = vnp_Params["vnp_ResponseCode"];
+      console.log(orderId);
+      // Tìm và cập nhật trạng thái thanh toán
+      let payment = await Payment.findOne({ orderId });
+      if (!payment) {
+        return res
+          .status(404)
+          .json({ status: false, message: "Payment not found" });
+      }
+
+      if (rspCode === "00") {
+        payment.paymentStatus = "success";
+      } else {
+        payment.paymentStatus = "failure";
+      }
+
+      await payment.save();
+
+      res.json({
+        status: true,
+        message: "Payment status updated",
+        code: rspCode,
+      });
     } else {
-      res.render("success", { code: "97" });
+      res
+        .status(400)
+        .json({ status: false, message: "Checksum failed", code: "97" });
     }
   },
-
-  // createBooking: async (req, res) => {
-  //   let {
-  //     accessKey,
-  //     secretKey,
-  //     orderInfo,
-  //     partnerCode,
-  //     redirectUrl,
-  //     ipnUrl,
-  //     requestType,
-  //     extraData,
-  //     orderGroupId,
-  //     autoCapture,
-  //     lang,
-  //   } = config;
-
-  //   const { amount } = req.body;
-  //   const orderId = partnerCode + new Date().getTime();
-  //   const requestId = orderId;
-
-  //   // Sign HMAC SHA256
-  //   const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
-  //   const signature = crypto
-  //     .createHmac("sha256", secretKey)
-  //     .update(rawSignature)
-  //     .digest("hex");
-
-  //   // Create request body
-  //   const requestBody = JSON.stringify({
-  //     partnerCode,
-  //     partnerName: "Test",
-  //     storeId: "MomoTestStore",
-  //     requestId,
-  //     amount,
-  //     orderId,
-  //     orderInfo,
-  //     redirectUrl,
-  //     ipnUrl,
-  //     lang,
-  //     requestType,
-  //     autoCapture,
-  //     extraData,
-  //     orderGroupId,
-  //     signature,
-  //   });
-
-  //   // Send request to MoMo
-  //   try {
-  //     const response = await axios.post(
-  //       "https://test-payment.momo.vn/v2/gateway/api/create",
-  //       requestBody,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "Content-Length": Buffer.byteLength(requestBody),
-  //         },
-  //       }
-  //     );
-  //     res.status(200).json(response.data);
-  //   } catch (error) {
-  //     res.status(500).json({ statusCode: 500, message: error.message });
-  //   }
-  // },
-
-  // returnBooking: async (req, res) => {
-  //   console.log("Received query:", req.query);
-  //   const { orderId, amount, status, transactionId } = req.query;
-
-  //   // Determine payment status
-  //   const paymentStatus = status === "success" ? "success" : "failure";
-
-  //   if (paymentStatus === "success") {
-  //     try {
-  //       // Fetch booking details
-  //       const booking = await BookingHotel.findOne({ orderId });
-
-  //       if (!booking) {
-  //         return res.status(404).json({ message: "Booking not found" });
-  //       }
-
-  //       // Save payment information
-  //       const paymentData = {
-  //         orderId,
-  //         amount,
-  //         paymentStatus,
-  //         status: "confirmed",
-  //         type: "hotel",
-  //         transactionId,
-  //         hotel: booking.hotel, // Ensure this is populated
-  //         customer: booking.customer, // Ensure this is populated
-  //         checkInDate: booking.checkInDate, // Ensure this is populated
-  //         checkOutDate: booking.checkOutDate, // Ensure this is populated
-  //         totalPrice: booking.totalPrice, // Ensure this is populated
-  //         rooms: booking.rooms, // Ensure this is populated if needed
-  //       };
-
-  //       await BookingHotel.create(paymentData);
-
-  //       // Send payment success email
-  //       const mailOptions = {
-  //         to: booking.customerEmail, // Ensure email is available
-  //         subject: "Payment Successful",
-  //         text: `Your payment of ${amount} for booking ${orderId} was successful.`,
-  //       };
-  //       await sendPaymentSuccessEmail(mailOptions);
-  //       console.log("Payment success email sent.");
-
-  //       res.json({ message: "Payment successful and booking updated." });
-  //     } catch (error) {
-  //       console.error("Error in returnBooking:", error);
-  //       res.status(500).json({ statusCode: 500, message: error.message });
-  //     }
-  //   } else {
-  //     res.status(400).json({ message: "Payment failed" });
-  //   }
-  // },
-
   checkStatus: async (req, res) => {
-    const { orderId } = req.body;
-
-    if (!orderId) {
-      return res
-        .status(400)
-        .json({ statusCode: 400, message: "orderId is required" });
-    }
-
-    const { accessKey, secretKey, partnerCode, lang } = config;
-
-    const rawSignature = `accessKey=${accessKey}&orderId=${orderId}&partnerCode=${partnerCode}&requestId=${orderId}`;
-    const signature = crypto
-      .createHmac("sha256", secretKey)
-      .update(rawSignature)
-      .digest("hex");
-
-    const requestBody = JSON.stringify({
-      partnerCode,
-      requestId: orderId,
-      orderId,
-      signature,
-      lang,
-    });
-
     try {
-      const result = await axios.post(
-        "https://test-payment.momo.vn/v2/gateway/api/query",
-        requestBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+      let vnp_Params = req.query;
+      let secureHash = vnp_Params["vnp_SecureHash"];
+
+      let orderId = vnp_Params["vnp_TxnRef"];
+      let rspCode = vnp_Params["vnp_ResponseCode"];
+      let amount = parseInt(vnp_Params["vnp_Amount"]) / 100; // Convert amount to dollars or relevant currency unit
+
+      delete vnp_Params["vnp_SecureHash"];
+      delete vnp_Params["vnp_SecureHashType"];
+
+      vnp_Params = sortObject(vnp_Params);
+      let secretKey = config.get("vnp_HashSecret");
+      let signData = querystring.stringify(vnp_Params, { encode: false });
+      let hmac = crypto.createHmac("sha512", secretKey);
+      let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+
+      if (secureHash === signed) {
+        // Check checksum
+        let payment = await Payment.findOne({ orderId });
+
+        if (!payment) {
+          return res
+            .status(200)
+            .json({ RspCode: "01", Message: "Order not found" });
         }
-      );
-      console.log("Payment status response:", result.data);
-      res.status(200).json(result.data);
+
+        // Verify amount
+        if (payment.amount !== amount) {
+          return res
+            .status(200)
+            .json({ RspCode: "04", Message: "Amount invalid" });
+        }
+
+        // Check payment status
+        let bookingUpdateStatus = false;
+        if (payment.paymentStatus === "0") {
+          // Update payment status
+          if (rspCode === "00") {
+            payment.paymentStatus = "success";
+            bookingUpdateStatus = true;
+          } else {
+            payment.paymentStatus = "failure";
+          }
+          await payment.save();
+
+          // Update hotel booking status
+          if (bookingUpdateStatus) {
+            let booking = await HotelBooking.findOne({ orderId });
+
+            if (booking) {
+              booking.payment_status = "confirmed"; // Or any relevant status for successful booking
+              await booking.save();
+            } else {
+              // Handle case where booking is not found
+              console.error("Booking not found for orderId:", orderId);
+            }
+          }
+
+          res.status(200).json({ RspCode: "00", Message: "Success" });
+        } else {
+          res.status(200).json({
+            RspCode: "02",
+            Message: "This order has already been updated",
+          });
+        }
+      } else {
+        return res
+          .status(200)
+          .json({ RspCode: "97", Message: "Checksum failed" });
+      }
     } catch (error) {
-      console.error("Error checking payment status:", error);
-      res.status(500).json({ statusCode: 500, message: error.message });
+      console.error("Error handling VNPAY IPN:", error);
+      return res
+        .status(500)
+        .json({ RspCode: "99", Message: "Internal server error" });
     }
   },
 };
+
 const sortObject = (obj) => {
   let sorted = {};
   let str = [];
@@ -261,4 +250,5 @@ const sortObject = (obj) => {
   }
   return sorted;
 };
+
 module.exports = paymentController;

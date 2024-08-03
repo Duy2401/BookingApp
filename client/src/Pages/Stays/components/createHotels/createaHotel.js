@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CreateHotel, GetAllHotelType } from "../../../../redux/hotelsSlice";
+import { toast } from "react-toastify";
 
 const CreateHotels = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const customers = useSelector((state) => state.customers?.customers);
-  const hotelType = useSelector((state) => state.hotels?.hotelsType);
   const [formData, setFormData] = useState({
     customers_id_create: customers?._id || "",
     hotel_name: "",
@@ -95,16 +95,22 @@ const CreateHotels = () => {
       const dataHotels = await dispatch(
         CreateHotel({ newData: data, customers })
       );
-      console.log(dataHotels.payload.data._id);
-      navigate(`/partner/addrooms/${dataHotels.payload.data._id}`);
+      if (dataHotels.payload.status === true) {
+        toast.success("Chuyển đến bước tiếp theo");
+        setTimeout(() => {
+          navigate(`/partner/addrooms/${dataHotels.payload.data._id}`);
+        }, 10000);
+      } else {
+        toast.error(dataHotels.payload.message);
+        setTimeout(() => {
+          navigate("/partner");
+        }, 10000);
+      }
       // handle the response if needed
     } catch (error) {
       console.error("Error creating hotel:", error);
     }
   };
-  useEffect(() => {
-    dispatch(GetAllHotelType({ customers }));
-  }, []);
   return (
     <form
       onSubmit={handleSubmit}
@@ -311,11 +317,11 @@ const CreateHotels = () => {
           <option value="" disabled>
             Select hotel type
           </option>
-          {hotelType?.map((type) => (
-            <option key={type._id} value={type._id}>
-              {type.HotelTypes_name}
-            </option>
-          ))}
+          <option value="Khách sạn">Khách sạn</option>
+          <option value="Resorts">Resorts</option>
+          <option value="Căn hộ">Căn hộ</option>
+          <option value="Biệt thự">Biệt thự</option>
+          <option value="Khu nghĩ dưỡng">Khu nghĩ dưỡng</option>
         </select>
       </div>
       <div className="mb-4">

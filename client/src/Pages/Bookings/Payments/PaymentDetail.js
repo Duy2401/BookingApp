@@ -10,19 +10,11 @@ const PaymentDetail = () => {
   );
   const modifiedBookingDetails = {
     ...bookingDetails,
-    hotel: Array.isArray(bookingDetails.hotel)
-      ? bookingDetails.hotel[0]._id
-      : bookingDetails.hotel._id,
-    rooms: bookingDetails.rooms.map((room) => ({
-      roomType: room.roomType, // Ensure roomType is properly assigned
-      price: room.price,
-      quantity: room.quantity,
-    })),
-    paymentStatus: "pending",
-    status: "confirmed",
+    hotelID: Array.isArray(bookingDetails.hotelID)
+      ? bookingDetails.hotelID[0]._id
+      : bookingDetails.hotelID._id,
   };
   const handleSubmit = async () => {
-    console.log(modifiedBookingDetails);
     const data = await dispatch(
       handleBookRoom({ bookingDetails: modifiedBookingDetails, customers })
     ).catch((err) => {

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AddRoomsHotel } from "../../../../redux/hotelsSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const RoomTypeForm = () => {
-  const idHotel = useParams();
+  const { id } = useParams(); // Lấy id từ URL
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const customers = useSelector((state) => state.customers?.customers);
   const [formData, setFormData] = useState({
-    hotel_id: idHotel.id,
-    room_types: [
-      { room_type: "", price_range: "", availableRooms: 0, displayPrice: "" },
-    ],
+    hotel_id: id,
+    room_types: [{ room_type: "", price: "", totalRooms: 0, displayPrice: "" }],
   });
 
   const formatCurrency = (value) => {
@@ -30,7 +30,7 @@ const RoomTypeForm = () => {
     const { name, value } = e.target;
     const updatedRoomTypes = [...formData.room_types];
     updatedRoomTypes[index][name] = value;
-    if (name === "price_range") {
+    if (name === "price") {
       updatedRoomTypes[index].displayPrice = formatCurrency(value);
     }
     setFormData({ ...formData, room_types: updatedRoomTypes });
@@ -41,7 +41,7 @@ const RoomTypeForm = () => {
       ...formData,
       room_types: [
         ...formData.room_types,
-        { room_type: "", price_range: "", availableRooms: 0, displayPrice: "" },
+        { room_type: "", price: "", totalRooms: 0, displayPrice: "" },
       ],
     });
   };
@@ -55,17 +55,28 @@ const RoomTypeForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const cleanedData = {
       ...formData,
       room_types: formData.room_types.map((roomType) => ({
         room_type: roomType.room_type,
-        price_range: parseFloat(roomType.price_range.replace(/[^0-9.-]+/g, "")),
-        availableRooms: roomType.availableRooms,
+        price: parseFloat(roomType.price.replace(/[^0-9.-]+/g, "")),
+        totalRooms: roomType.totalRooms,
       })),
     };
-    dispatch(AddRoomsHotel({ newRooms: cleanedData, customers }));
+    const data = await dispatch(
+      AddRoomsHotel({ newRooms: cleanedData, customers })
+    );
+    console.log(data);
+    if (data.payload.status === true) {
+      toast.success("Tạo khách sạn thành công");
+      setTimeout(() => {
+        navigate("/partner");
+      }, 10000);
+    } else {
+      toast.error(data.payload.message);
+    }
   };
 
   return (
@@ -89,8 +100,8 @@ const RoomTypeForm = () => {
               <label className="block text-gray-700 mb-1">Price:</label>
               <input
                 type="text"
-                name="price_range"
-                value={roomType.price_range}
+                name="price"
+                value={roomType.price}
                 onChange={(e) => handleRoomTypeChange(index, e)}
                 required
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
@@ -99,9 +110,9 @@ const RoomTypeForm = () => {
             </div>
             <input
               type="number"
-              name="availableRooms"
-              placeholder="Available Rooms"
-              value={roomType.availableRooms}
+              name="totalRooms"
+              placeholder="Total Rooms"
+              value={roomType.totalRooms}
               onChange={(e) => handleRoomTypeChange(index, e)}
               className="border border-gray-300 rounded p-2 w-full focus:outline-none focus:ring focus:border-blue-300"
               min="0"

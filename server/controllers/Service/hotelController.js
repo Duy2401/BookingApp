@@ -1,5 +1,4 @@
 const Hotels = require("../../models/Hotel/hotels");
-const HotelsType = require("../../models/Hotel/hotelType");
 const streamifier = require("streamifier");
 const cloudinary = require("../../configs/cloudinary");
 const RoomType = require("../../models/Hotel/roomType");
@@ -119,20 +118,19 @@ const HotelsController = {
   GetHotels: async (req, res) => {
     try {
       const hotel = await Hotels.findById(req.params.id)
-        .populate("hotel_type")
-        .populate("RoomType");
-      if (!hotel) {
-        return res.status(404).json({ error: "Hotel type not found" });
-      }
+        .populate("room_types")
+        .exec();
 
+      if (!hotel) {
+        return res.status(404).json({ error: "Hotel not found" });
+      }
       return res.status(200).json({
         status: true,
-        message: "Search Hotel successful",
+        message: "Get Detail Hotel successful",
         data: hotel,
       });
     } catch (error) {
-      console.error("Error fetching search results:", error);
-      res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json({ error: "Internal server error" });
     }
   },
   SearchHotels: async (req, res) => {
@@ -145,9 +143,7 @@ const HotelsController = {
 
       const hotels = await Hotels.find({
         hotel_address: searchRegex,
-      })
-        .populate("RoomType")
-        .exec();
+      }).exec();
 
       if (hotels.length === 0) {
         return res.status(404).json({
@@ -172,74 +168,26 @@ const HotelsController = {
     }
   },
 
-  // HOTEL TYPES
-  CreateHotelType: async (req, res) => {
-    try {
-      const newHotelType = new HotelsType({
-        HotelTypes_name: req.body.HotelTypes_name,
-      });
-      const hotelType = await newHotelType.save();
-      return res.status(200).json({
-        status: true,
-        message: "Create HotelType successful",
-        data: hotelType,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        status: false,
-        message: "Create HotelType not successful",
-        data: error,
-      });
-    }
-  },
-
-  GetAllHotelsType: async (req, res) => {
-    try {
-      const EditHoteltype = await HotelsType.find();
-      return res.status(200).json({
-        status: true,
-        message: "Edit HotelType successful",
-        data: EditHoteltype,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        status: false,
-        message: "Edit HotelType not successful",
-        data: error,
-      });
-    }
-  },
-  DeleteHotelsType: async (req, res) => {
-    try {
-      await HotelsType.findByIdAndDelete(req.params.id);
-      return res.status(200).json({
-        status: true,
-        message: "Delete HotelType successful",
-      });
-    } catch (error) {
-      return res.status(500).json({
-        status: false,
-        message: "Delete HotelType not successful",
-        data: error,
-      });
-    }
-  },
-
   // ROOM TYPES
   CreateRoomType: async (req, res) => {
     try {
       const { hotel_id, room_types } = req.body;
 
-      const newRooms = new RoomType({
+      const newRooms = room_types.map((room) => ({
         hotel_id,
-        room_types,
-      });
-      await newRooms.save();
+        room_type: room.room_type,
+        price: room.price,
+        totalRooms: room.totalRooms,
+      }));
+
+      const createdRooms = await RoomType.insertMany(newRooms);
+
+      // Lấy các ID của RoomType mới tạo
+      const roomTypeIds = createdRooms.map((room) => room._id);
 
       await Hotels.findByIdAndUpdate(hotel_id, {
-        $push: { RoomType: newRooms._id },
+        $push: { room_types: { $each: roomTypeIds } },
       });
-
       return res.status(200).json({
         status: true,
         message: "Create RoomType successful",

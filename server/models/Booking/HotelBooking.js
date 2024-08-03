@@ -8,7 +8,7 @@ const Hotelbooking = new Schema({
     enum: ["hotel"],
     required: true,
   },
-  booking_reference: {
+  hotelID: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: "Hotels",
@@ -18,19 +18,33 @@ const Hotelbooking = new Schema({
     enum: ["pending", "completed", "cancelled"],
     default: "pending",
   },
-  roomId: {
-    type: Schema.Types.ObjectId,
-    ref: "RoomTypeSchema",
-    required: true,
-  },
+  rooms: [
+    {
+      roomId: {
+        type: Schema.Types.ObjectId,
+        ref: "RoomType",
+        required: true,
+      },
+      quantity: { type: Number, required: true },
+    },
+  ],
   hold_until: { type: Date }, // thời gian hết hạn giữ phòng
   hold_status: {
     type: String,
     enum: ["on_hold", "released"],
     default: "released",
   },
-  createDate: { type: Date, default: Date.now },
-  updateDate: { type: Date, default: Date.now },
+  checkInDate: {
+    type: String,
+    required: true,
+  },
+  checkOutDate: {
+    type: String,
+    required: true,
+  },
+  customer_note: {
+    type: String,
+  },
 });
 
-module.exports = mongoose.model("Bookings", Hotelbooking);
+module.exports = mongoose.model("Hotelbookings", Hotelbooking);

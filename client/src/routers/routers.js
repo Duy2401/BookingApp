@@ -16,7 +16,12 @@ import AccountInfor from "../Pages/MySettting/accountInfor.js";
 import BillingInfor from "../Pages/MySettting/billingInfor.js";
 import Privacy from "../Pages/MySettting/privacy.js";
 import Secure from "../Pages/MySettting/secure.js";
+// HISTORY
 
+import History from "../Pages/history/history.js";
+import HotelBook from "../Pages/history/components/hotelbook.js";
+import FlightBook from "../Pages/history/components/flightbook.js";
+import TourBook from "../Pages/history/components/tourbook.js";
 // BOOKING
 import Booking from "../Pages/Bookings/Booking.js";
 // LAYOUT
@@ -51,6 +56,16 @@ export const RouterPages = [
       { path: "privacy", component: Privacy },
     ],
     layout: LayoutLogin,
+  },
+  {
+    path: "/history",
+    component: History,
+    layout: LayoutLogin,
+    children: [
+      { path: "hotelhistory", component: HotelBook },
+      { path: "flighthistory", component: FlightBook },
+      { path: "tourhistory", component: TourBook },
+    ],
   },
   { path: "/policy", component: SecurityPolicy, layout: LayoutLogin },
 

@@ -17,6 +17,7 @@ const CustomerRouter = require("./routers/Customer");
 dotenv.config();
 const app = express();
 const secretKey = crypto.randomBytes(64).toString("hex");
+
 // Database use save value of user and product
 mongoose
   .connect(process.env.MONGODB_URL)
@@ -59,7 +60,7 @@ app.use("/api/booking", BookingRouter);
 app.use("/api/payment", PaymentRouter);
 
 // sendPaymentSuccessEmail();
-
+require("./controllers/cleanExpiredBookings");
 // PORT RUN SERVER
 app.listen(8000, () => {
   console.log("Server is running");

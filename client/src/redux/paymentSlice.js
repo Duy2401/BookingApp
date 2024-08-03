@@ -33,9 +33,8 @@ export const handleBookRoom =
       const result = await dispatch(
         initiateVNPayPayment({ bookingDetails, customers })
       ).unwrap();
-      console.log("result", result);
-      if (result.payUrl) {
-        window.location.href = result.payUrl;
+      if (result.vnpUrl) {
+        window.location.href = result.vnpUrl;
       } else {
         console.error("No payment URL received");
       }

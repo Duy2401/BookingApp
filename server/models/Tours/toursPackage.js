@@ -70,18 +70,9 @@ const ToursPackagesSchema = new Schema({
       type: Number,
       required: true,
     },
-    created_at: {
-      type: Date,
-      default: Date.now,
-    },
-    updated_at: {
-      type: Date,
-      default: Date.now,
-    },
   },
-  Tour_Type: {
-    type: Schema.Types.ObjectId,
-    ref: "TourTypes",
+  tour_types: {
+    type: String,
     required: true,
   },
 });

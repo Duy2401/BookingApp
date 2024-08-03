@@ -72,6 +72,7 @@ export const UserProfile = () => {
             Quản lý Tài Khoản
           </DropdownItem>
           <DropdownItem
+            href="/history/hotelhistory"
             key="copy"
             className="mb-4"
             startContent={

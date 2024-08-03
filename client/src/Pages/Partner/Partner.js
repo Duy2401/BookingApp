@@ -11,18 +11,16 @@ function Partner() {
   return (
     <>
       <div className="p-4">
-        {customers?.isRole === 2 && (
-          <div className="p-4 m-4 text-center">
-            <Button
-              to={"/partner/addhotels"}
-              className="bg-blue-700 text-white p-5 rounded"
-              onClick={handleShow}
-            >
-              TẠO KHÁCH SẠN
-            </Button>
-          </div>
-        )}
-        {customers?.isRole === 1 && (
+        <div className="p-4 m-4 text-center">
+          <Button
+            to={"/partner/addhotels"}
+            className="bg-blue-700 text-white p-5 rounded"
+            onClick={handleShow}
+          >
+            TẠO KHÁCH SẠN
+          </Button>
+        </div>
+        {/* {customers?.isRole === 1 && (
           <div className="bg-gray-100 font-sans leading-normal tracking-normal">
             <h1 className="text-2xl font-bold text-gray-900 mb-4 text-center">
               ĐĂNG KÝ ĐỐI TÁC VÀ KHAI THÁC DỊCH VỤ
@@ -47,7 +45,7 @@ function Partner() {
               </Button>
             </div>
           </div>
-        )}
+        )} */}
       </div>
       <Outlet />
     </>

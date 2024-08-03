@@ -1,5 +1,4 @@
 const TourPackage = require("../../models/Tours/toursPackage");
-const TourType = require("../../models/Tours/toursType");
 
 const TourController = {
   CreateTour: async (req, res) => {
@@ -50,42 +49,8 @@ const TourController = {
       return res.status(500).json(error);
     }
   },
-  CreateTypeTour: async (req, res) => {
-    try {
-      const newTourType = new TourType({
-        TourTypes_id: req.body.TourTypes_id,
-        TourTypes_name: req.body.TourTypes_name,
-        TourTypes_desc: [
-          {
-            desc_id: req.body.desc_id,
-            desc_title: req.body.desc_title,
-            desc_prices: req.body.desc_prices,
-            availableSeats: req.body.availableSeats,
-          },
-        ],
-      });
-      const typeTour = await newTourType.save();
-      return res.status(200).json(typeTour);
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  },
-  EditTypeTour: async (req, res) => {
-    try {
-      const editTypeTour = await TourType.findById(req.params.id);
-      await editTypeTour.updateOne({ $set: req.body });
-      return res.status(200).json("Update Success");
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  },
-  DeleteTypeTour: async (req, res) => {
-    try {
-      await TourType.findByIdAndDelete(req.params.id);
-      return res.status(200).json("Delete Successfully");
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  },
+  CreateTypeTour: async (req, res) => {},
+  EditTypeTour: async (req, res) => {},
+  DeleteTypeTour: async (req, res) => {},
 };
 module.exports = TourController;

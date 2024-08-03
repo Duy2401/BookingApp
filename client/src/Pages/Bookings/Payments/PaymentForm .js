@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setBookingDetails } from "../../../redux/bookingsSlice";
 const PaymentForm = ({ handleSubmit }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
   const { bookingDetails, loading, error } = useSelector(
     (state) => state.booking
@@ -16,7 +18,10 @@ const PaymentForm = ({ handleSubmit }) => {
     additionalRequests: "",
     arrivalTime: "",
   });
-
+  const modifiedBookingDetails = {
+    ...bookingDetails,
+    customer_note: formData.additionalRequests,
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -29,6 +34,7 @@ const PaymentForm = ({ handleSubmit }) => {
     if (customers === null) {
       toast.error("Vui lòng đăng nhập và ứng dụng");
     } else {
+      dispatch(setBookingDetails(modifiedBookingDetails));
       navigate("/payment");
     }
     handleSubmit(formData);
@@ -42,7 +48,9 @@ const PaymentForm = ({ handleSubmit }) => {
       </h2>
       <form onSubmit={onSubmit} className="block">
         <div className="mb-4">
-          <label className="block text-gray-700">Tên Đầy Đủ(tiếng Anh) *</label>
+          <label className="block text-gray-700">
+            Tên Đầy Đủ <span className="text-red-600">*</span>
+          </label>
           <input
             type="text"
             name="fullName"
@@ -53,7 +61,9 @@ const PaymentForm = ({ handleSubmit }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Địa chỉ email *</label>
+          <label className="block text-gray-700">
+            Địa chỉ email <span className="text-red-600">*</span>
+          </label>
           <input
             type="email"
             name="email"
@@ -65,7 +75,7 @@ const PaymentForm = ({ handleSubmit }) => {
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">
-            Điện thoại (ưu tiên số ĐTDĐ) *
+            Điện thoại (ưu tiên số ĐTDĐ) <span className="text-red-600">*</span>
           </label>
           <input
             type="tel"
@@ -77,7 +87,9 @@ const PaymentForm = ({ handleSubmit }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Vùng/quốc gia *</label>
+          <label className="block text-gray-700">
+            Vùng/quốc gia <span className="text-red-600">*</span>
+          </label>
           <input
             type="text"
             name="region"
@@ -88,14 +100,13 @@ const PaymentForm = ({ handleSubmit }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Thời gian đến của bạn *</label>
+          <label className="block text-gray-700">Thời gian đến của bạn </label>
           <input
             type="text"
             name="arrivalTime"
             value={formData.arrivalTime}
             onChange={handleChange}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-            required
           />
         </div>
         <div className="mb-4">
@@ -115,7 +126,7 @@ const PaymentForm = ({ handleSubmit }) => {
             Xem lại quy tắc chung Chủ chỗ nghỉ muốn bạn đồng ý với các quy tắc
             chung này:
           </p>
-          {bookingDetails.hotel.map((hotel) =>
+          {bookingDetails?.booking_reference?.map((hotel) =>
             hotel.hotel_description.description_note?.map((note, index) => (
               <p className="ml-1 my-4 italic" key={index}>
                 {note.note_content}

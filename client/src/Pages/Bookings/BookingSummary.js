@@ -6,6 +6,7 @@ const BookingSummary = ({ bookingDetails }) => {
       currency: "VND",
     }).format(value);
   };
+
   const checkInDate = new Date(bookingDetails.checkInDate);
   const checkOutDate = new Date(bookingDetails.checkOutDate);
   const differenceInMilliseconds = checkOutDate - checkInDate;
@@ -18,7 +19,7 @@ const BookingSummary = ({ bookingDetails }) => {
       <div className="bg-white p-2 rounded-lg border-2">
         <div className="list-item2 my-4 cursor-pointer">
           <div className="p-2  items-center justify-center rounded-md">
-            {bookingDetails.hotel.map((value, index) => (
+            {bookingDetails.hotelID.map((value, index) => (
               <div
                 className="flex flex-col col-span-6 md:col-span-8 h-full gap-2"
                 key={index}
@@ -66,7 +67,6 @@ const BookingSummary = ({ bookingDetails }) => {
                 <div className="p-1 pr-2 text-wrap font-bold">
                   <h4>Nhận phòng</h4>
                   <p>{bookingDetails.checkInDate}</p>
-                  <span></span>
                 </div>
                 <div className="border-l-2 p-1 pl-2 font-bold">
                   <h4>Trả phòng</h4>
@@ -105,7 +105,7 @@ const BookingSummary = ({ bookingDetails }) => {
                 <div className="flex justify-between">
                   <p className="text-base font-medium">Giá tiền</p>
                   <p className="text-base font-normal">
-                    VND {formatCurrency(bookingDetails.amount)}
+                    VND {formatCurrency(bookingDetails.totalPrice)}
                   </p>
                 </div>
                 <div className="flex justify-between my-2">
@@ -130,7 +130,7 @@ const BookingSummary = ({ bookingDetails }) => {
           </div>
           <div>
             <p className="text-2xl font-bold">
-              VND {formatCurrency(bookingDetails.amount)}
+              VND {formatCurrency(bookingDetails.totalPrice)}
             </p>
             <p className="text-sm mt-2 pl-2">Đã bao gồm thuế và phí</p>
           </div>

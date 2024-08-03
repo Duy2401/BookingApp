@@ -5,33 +5,40 @@ const BookingController = {
   // Tạo đặt phòng mới
   createBooking: async (req, res) => {
     try {
-      const { customer, booking_type, booking_reference, roomId } = req.body;
-      const holdDuration = 30 * 60 * 1000; // 30 phút tính bằng milliseconds
+      const { customer, booking_type, booking_reference, rooms } = req.body;
+      const holdDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
       const holdUntil = new Date(Date.now() + holdDuration);
 
-      // Giảm số lượng phòng có sẵn
-      const roomType = await RoomType.findOneAndUpdate(
-        {
-          "room_types._id": roomId,
-          "room_types.isAvailable": true,
-          "room_types.availableRooms": { $gt: 0 },
-        },
-        { $inc: { "room_types.$.availableRooms": -1 } },
-        { new: true }
-      );
+      const updatedRooms = [];
 
-      if (!roomType) {
-        return res.status(400).json({
-          status: false,
-          message: "No available rooms for the specified room type",
-        });
+      for (const room of rooms) {
+        const { roomId, quantity } = room;
+
+        // Reduce available rooms
+        const roomType = await RoomType.findOneAndUpdate(
+          {
+            "room_types._id": roomId,
+            "room_types.isAvailable": true,
+            "room_types.availableRooms": { $gte: quantity },
+          },
+          { $inc: { "room_types.$.availableRooms": -quantity } },
+          { new: true }
+        );
+
+        if (!roomType) {
+          return res.status(400).json({
+            status: false,
+            message: `No available rooms for the specified room type: ${roomId}`,
+          });
+        }
+        updatedRooms.push({ roomId, quantity });
       }
 
       const newBooking = new HotelBooking({
         customer,
         booking_type,
         booking_reference,
-        roomId: roomId,
+        rooms: updatedRooms,
         hold_until: holdUntil,
         hold_status: "on_hold",
       });
