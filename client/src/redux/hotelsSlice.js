@@ -47,17 +47,20 @@ export const getDetailsHotel = createAsyncThunk(
     }
   }
 );
-// GET TYPE HOTELS getallhoteltype
-export const GetAllHotelType = createAsyncThunk(
-  "hotelsType/getAll",
+// GET ALL HOTEL OF PARTNER
+export const GetAllHotelOfPartner = createAsyncThunk(
+  "hotels/GetAllHotelOfPartner",
   async ({ customers }, { rejectWithValue, dispatch }) => {
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
-      const response = await axiosInstance.get("/hotel/getallhoteltype", {
-        headers: {
-          token: `Bearer ${customers?.accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(
+        `/hotel/listhotels/${customers._id}`,
+        {
+          headers: {
+            token: `Bearer ${customers?.accessToken}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -146,16 +149,16 @@ const hotelsSlice = createSlice({
       });
     // GET HOTELTYPES
     builder
-      .addCase(GetAllHotelType.pending, (state) => {
+      .addCase(GetAllHotelOfPartner.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(GetAllHotelType.fulfilled, (state, action) => {
+      .addCase(GetAllHotelOfPartner.fulfilled, (state, action) => {
         state.loading = false;
-        state.hotelsType = action.payload.data;
+        state.hotels = action.payload.data;
         state.success = true;
       })
-      .addCase(GetAllHotelType.rejected, (state, action) => {
+      .addCase(GetAllHotelOfPartner.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

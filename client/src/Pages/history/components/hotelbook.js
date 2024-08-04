@@ -4,10 +4,10 @@ import { getBooking } from "../../../redux/bookingsSlice";
 
 const HotelBook = () => {
   const dispatch = useDispatch();
-  const [expandedProductId, setExpandedProductId] = useState(null);
   const customers = useSelector((state) => state.customers?.customers);
   const [booking, setBooking] = useState([]);
 
+  const [expandedProductId, setExpandedProductId] = useState(null);
   const toggleProductDetails = (productId) => {
     setExpandedProductId(expandedProductId === productId ? null : productId);
   };

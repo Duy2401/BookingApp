@@ -114,7 +114,7 @@ const CreateHotels = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg"
+      className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg border-2"
     >
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">

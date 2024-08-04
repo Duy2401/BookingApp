@@ -78,9 +78,9 @@ const Navigations = () => {
           {t("common.navigation.tours")}
         </Button>
         <Button
-          href="/partner"
+          href="/partner/myhotel"
           className={
-            location.pathname === "/partner"
+            location.pathname === "/partner/myhotel"
               ? "flex p-3 ml-3 text-base items-center hover:bg-bgHover  bg-bgHover rounded-3xl"
               : "flex p-3 ml-3 text-base items-center hover:bg-bgHover rounded-3xl"
           }

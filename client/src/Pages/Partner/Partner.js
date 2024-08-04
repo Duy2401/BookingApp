@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Button from "../../components/Button/button";
 import { useSelector } from "react-redux";
-import ManagerHotels from "./manager/managerHotel";
 function Partner() {
   const customers = useSelector((state) => state.customers?.customers);
   return (
@@ -37,17 +36,19 @@ function Partner() {
         {customers?.isRole === 1 && (
           <div className="font-sans leading-normal tracking-normal">
             <div className="flex justify-between">
-              <Button className="bg-blue-700 text-white p-3 text-xl rounded text-center">
+              <Button
+                to={"/partner/myhotel"}
+                className="bg-blue-700 text-white p-3 text-lg rounded text-center hover:bg-opacity-90"
+              >
                 Dịch vụ khách sạn của tôi
               </Button>
-              <Button className="bg-blue-700 text-white p-3 text-xl rounded text-center">
+              <Button className="bg-blue-700 text-white p-3 text-lg rounded text-center hover:bg-opacity-90">
                 Dịch vụ vé máy bay của tôi{" "}
               </Button>
-              <Button className="bg-blue-700 text-white p-3 text-xl rounded text-center">
+              <Button className="bg-blue-700 text-white p-3 text-lg rounded text-center hover:bg-opacity-90">
                 Dịch vụ chuyến đi tham quan của tôi
               </Button>
             </div>
-            <ManagerHotels />
           </div>
         )}
       </div>

@@ -2,7 +2,7 @@ const Hotels = require("../../models/Hotel/hotels");
 const streamifier = require("streamifier");
 const cloudinary = require("../../configs/cloudinary");
 const RoomType = require("../../models/Hotel/roomType");
-
+const mongoose = require("mongoose");
 const HotelsController = {
   // HOTELS
   CreateHotel: async (req, res) => {
@@ -114,7 +114,27 @@ const HotelsController = {
       });
     }
   },
-
+  // GET ALL HOTEL OF PARTNER
+  GetHotelOfPartner: async (req, res) => {
+    try {
+      const customerId = new mongoose.Types.ObjectId(req.params.id);
+      const listHotel = await Hotels.find({
+        customers_id_create: customerId,
+      }).populate("room_types");
+      return res.status(200).json({
+        status: false,
+        message: "Get hotel of partner successful",
+        data: listHotel,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: false,
+        message: "Get hotel of partner not successful",
+        data: error,
+      });
+    }
+  },
+  // SEARCH AND GET DETAILS HOTEL
   GetHotels: async (req, res) => {
     try {
       const hotel = await Hotels.findById(req.params.id)

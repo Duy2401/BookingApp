@@ -31,6 +31,8 @@ import RoomTypeForm from "../Pages/Stays/components/createHotels/RoomTypeForm.js
 import SearchFlights from "../Pages/Flights/components/searchFlight/searchFlight.js";
 import VnpayReturn from "../Pages/Bookings/Payments/PaymentReturn.js";
 import CreateFlights from "../Pages/Flights/components/createFlights/createFlights.js";
+import ManagerHotels from "../Pages/Partner/manager/Hotels/managerHotel.js";
+import MyHotel from "../Pages/Partner/manager/Hotels/myhotel.js";
 
 export const RouterPages = [
   // STAYS
@@ -82,9 +84,14 @@ export const RouterPages = [
     path: "/partner",
     component: Partner,
     children: [
+      {
+        path: "myhotel",
+        component: ManagerHotels,
+      },
+      { path: "/partner/myhotel/:id", component: MyHotel },
       { path: "addhotels", component: CreateHotels },
       { path: "addrooms/:id", component: RoomTypeForm },
-      { path: "addtours", component: CreateHotels },
+      { path: "myhotel", component: CreateHotels },
       { path: "addflights", component: CreateFlights },
     ],
   },

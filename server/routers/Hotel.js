@@ -19,7 +19,9 @@ router.delete(
   middlewareControlle.verifyToken,
   HotelsController.DeleteHotel
 );
-
+// GET ALL HOTEL OF PARTNER
+router.get("/listhotels/:id", HotelsController.GetHotelOfPartner);
+// SEARCH AND GET DETAILS HOTEL
 router.get("/searchhotel/:address", HotelsController.SearchHotels);
 router.get("/gethoteldetail/:id", HotelsController.GetHotels);
 

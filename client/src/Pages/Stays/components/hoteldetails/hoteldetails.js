@@ -337,7 +337,7 @@ const HotelDetails = () => {
               <h2 className="text-2xl font-bold mb-4">Ghi chú</h2>
               <div className="flex flex-wrap my-4">
                 {hotel.hotel_description.description_note.map((note, index) => (
-                  <div className="w-full md:w-1/2 px-4 mb-4" key={index}>
+                  <div className="w-full px-4 mb-4" key={index}>
                     <p className="pl-2">{note.note_content}</p>
                   </div>
                 ))}

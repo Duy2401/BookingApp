@@ -67,6 +67,7 @@ const BookingController = {
         customer: customerId,
       })
         .populate("hotelID")
+        .populate("customer")
         .populate({
           path: "rooms",
           populate: { path: "roomId" },
