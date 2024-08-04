@@ -2,25 +2,13 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Button from "../../components/Button/button";
 import { useSelector } from "react-redux";
+import ManagerHotels from "./manager/managerHotel";
 function Partner() {
   const customers = useSelector((state) => state.customers?.customers);
-  const [show, setShow] = useState(false);
-  const handleShow = () => {
-    setShow((show) => !show);
-  };
   return (
     <>
       <div className="p-4">
-        <div className="p-4 m-4 text-center">
-          <Button
-            to={"/partner/addhotels"}
-            className="bg-blue-700 text-white p-5 rounded"
-            onClick={handleShow}
-          >
-            TẠO KHÁCH SẠN
-          </Button>
-        </div>
-        {/* {customers?.isRole === 1 && (
+        {customers?.isRole === 3 && (
           <div className="bg-gray-100 font-sans leading-normal tracking-normal">
             <h1 className="text-2xl font-bold text-gray-900 mb-4 text-center">
               ĐĂNG KÝ ĐỐI TÁC VÀ KHAI THÁC DỊCH VỤ
@@ -45,7 +33,23 @@ function Partner() {
               </Button>
             </div>
           </div>
-        )} */}
+        )}
+        {customers?.isRole === 1 && (
+          <div className="font-sans leading-normal tracking-normal">
+            <div className="flex justify-between">
+              <Button className="bg-blue-700 text-white p-3 text-xl rounded text-center">
+                Dịch vụ khách sạn của tôi
+              </Button>
+              <Button className="bg-blue-700 text-white p-3 text-xl rounded text-center">
+                Dịch vụ vé máy bay của tôi{" "}
+              </Button>
+              <Button className="bg-blue-700 text-white p-3 text-xl rounded text-center">
+                Dịch vụ chuyến đi tham quan của tôi
+              </Button>
+            </div>
+            <ManagerHotels />
+          </div>
+        )}
       </div>
       <Outlet />
     </>

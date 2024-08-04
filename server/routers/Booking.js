@@ -3,10 +3,18 @@ const bookingController = require("../controllers/Books/bookingHotelController")
 const router = require("express").Router();
 
 // Tạo đơn đặt phòng mới
-router.post("/bookings", bookingController.createBooking);
+router.post(
+  "/createbookings",
+  middlewareControlle.verifyToken,
+  bookingController.createBookingCash
+);
 
 // Lấy thông tin đơn đặt phòng
-router.get("/bookings/:id", bookingController.getBooking);
+router.get(
+  "/getbookings/:id",
+  middlewareControlle.verifyToken,
+  bookingController.getBooking
+);
 
 // Cập nhật trạng thái thanh toán
 router.patch(

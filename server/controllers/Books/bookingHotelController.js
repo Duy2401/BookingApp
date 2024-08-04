@@ -1,27 +1,21 @@
 const HotelBooking = require("../../models/Booking/HotelBooking");
 const RoomType = require("../../models/Hotel/roomType");
-
+const Payment = require("../../models/PaymentSchema");
+const mongoose = require("mongoose");
 const BookingController = {
   // Tạo đặt phòng mới
-  createBooking: async (req, res) => {
+  createBookingCash: async (req, res) => {
     try {
-      const { customer, booking_type, booking_reference, rooms } = req.body;
-      const holdDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
-      const holdUntil = new Date(Date.now() + holdDuration);
+      const { customer, hotelID, rooms, totalPrice } = req.body;
 
       const updatedRooms = [];
 
       for (const room of rooms) {
         const { roomId, quantity } = room;
 
-        // Reduce available rooms
         const roomType = await RoomType.findOneAndUpdate(
-          {
-            "room_types._id": roomId,
-            "room_types.isAvailable": true,
-            "room_types.availableRooms": { $gte: quantity },
-          },
-          { $inc: { "room_types.$.availableRooms": -quantity } },
+          { _id: roomId, totalRooms: { $gte: quantity } },
+          { $inc: { totalRooms: -quantity, bookedRooms: quantity } },
           { new: true }
         );
 
@@ -31,41 +25,91 @@ const BookingController = {
             message: `No available rooms for the specified room type: ${roomId}`,
           });
         }
+
         updatedRooms.push({ roomId, quantity });
       }
 
       const newBooking = new HotelBooking({
+        ...req.body,
         customer,
-        booking_type,
-        booking_reference,
+        hotelID,
         rooms: updatedRooms,
-        hold_until: holdUntil,
-        hold_status: "on_hold",
+        hold_status: "released",
+        payment_status: "pending",
       });
 
-      await newBooking.save();
+      const CreateHotelBooking = await newBooking.save();
 
-      res.status(201).json({
+      const newPayment = new Payment({
+        orderId: CreateHotelBooking._id,
+        amount: totalPrice,
+        paymentStatus: "pending",
+        type: "hotel",
+      });
+      await newPayment.save();
+      return res.status(201).json({
         status: true,
-        message: "Create booking hotel is success",
-        data: newBooking,
+        message: "create booking hotel cash is success",
       });
     } catch (error) {
-      res.status(500).json({ message: "Error creating booking", data: error });
+      return res
+        .status(500)
+        .json({ message: "Error create booking hotel cash", data: error });
     }
   },
 
   // Lấy thông tin đơn đặt phòng
   getBooking: async (req, res) => {
+    const customerId = new mongoose.Types.ObjectId(req.params.id);
     try {
-      const booking = await HotelBooking.findById(req.params.id).populate(
-        "booking_reference"
-      );
-      if (!booking)
-        return res.status(404).json({ message: "Booking not found" });
-      res.json(booking);
+      // Find all hotel bookings for the specified customer
+      const hotelBookings = await HotelBooking.find({
+        customer: customerId,
+      })
+        .populate("hotelID")
+        .populate({
+          path: "rooms",
+          populate: { path: "roomId" },
+        })
+        .lean();
+
+      if (hotelBookings.length === 0) {
+        return res.status(404).json({
+          status: false,
+          message: "No bookings found for this customer",
+        });
+      }
+
+      // Extract all orderIds from hotelBookings
+      const orderIds = hotelBookings.map((booking) => booking._id);
+
+      // Find all payments related to these bookings
+      const payments = await Payment.find({
+        orderId: { $in: orderIds },
+      }).lean();
+
+      // Create a map of payments by orderId for easy lookup
+      const paymentMap = payments.reduce((map, payment) => {
+        map[payment.orderId.toString()] = payment;
+        return map;
+      }, {});
+
+      // Combine hotel bookings with their related payments
+      const combinedBookings = hotelBookings.map((booking) => ({
+        ...booking,
+        payment: paymentMap[booking._id.toString()] || null,
+      }));
+
+      return res.json({
+        status: true,
+        message: "Get Data",
+        data: combinedBookings,
+      });
     } catch (error) {
-      res.status(500).json({ message: "Error fetching booking", error });
+      console.error("Error fetching booking:", error);
+      return res
+        .status(500)
+        .json({ status: false, message: "Error fetching booking", error });
     }
   },
 

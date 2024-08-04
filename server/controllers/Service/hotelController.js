@@ -143,7 +143,9 @@ const HotelsController = {
 
       const hotels = await Hotels.find({
         hotel_address: searchRegex,
-      }).exec();
+      })
+        .populate("room_types")
+        .exec();
 
       if (hotels.length === 0) {
         return res.status(404).json({

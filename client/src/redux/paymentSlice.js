@@ -6,7 +6,6 @@ export const initiateVNPayPayment = createAsyncThunk(
   "payment/initiateVNPayPayment",
   async ({ bookingDetails, customers }, { rejectWithValue, dispatch }) => {
     try {
-      console.log("Booking Details:", bookingDetails);
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.post(
         "/payment/momo-payment",
@@ -33,8 +32,8 @@ export const handleBookRoom =
       const result = await dispatch(
         initiateVNPayPayment({ bookingDetails, customers })
       ).unwrap();
-      if (result.vnpUrl) {
-        window.location.href = result.vnpUrl;
+      if (result) {
+        window.location.href = result;
       } else {
         console.error("No payment URL received");
       }

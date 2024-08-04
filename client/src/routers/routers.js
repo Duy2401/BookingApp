@@ -88,7 +88,8 @@ export const RouterPages = [
       { path: "addflights", component: CreateFlights },
     ],
   },
+  // PAYMENT AND CREATE BOOKING
   { path: "/booking", component: Booking },
   { path: "/payment", component: PaymentDetail },
-  { path: "/payment_return", component: VnpayReturn },
+  { path: "/vnpay_return", component: VnpayReturn },
 ];

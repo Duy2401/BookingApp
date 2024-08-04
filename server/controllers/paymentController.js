@@ -8,7 +8,7 @@ const paymentController = {
   createBooking: async (req, res) => {
     process.env.TZ = "Asia/Ho_Chi_Minh";
     const { customer, hotelID, rooms, totalPrice } = req.body;
-    const holdDuration = 30 * 60 * 1000; // 30 phút tính bằng milliseconds
+    const holdDuration = 10 * 60 * 1000; // 10 phút tính bằng milliseconds
     const holdUntil = new Date(Date.now() + holdDuration);
 
     const updatedRooms = [];
@@ -86,8 +86,8 @@ const paymentController = {
     vnp_Params = sortObject(vnp_Params);
 
     let querystring = require("qs");
-    let signData = querystring.stringify(vnp_Params, { encode: false });
     let crypto = require("crypto");
+    let signData = querystring.stringify(vnp_Params, { encode: false });
     let hmac = crypto.createHmac("sha512", secretKey);
     let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
     vnp_Params["vnp_SecureHash"] = signed;
@@ -106,131 +106,74 @@ const paymentController = {
     res.json(vnpUrl);
   },
   returnBooking: async (req, res) => {
-    let vnp_Params = req.query;
-    let secureHash = vnp_Params["vnp_SecureHash"];
-
-    delete vnp_Params["vnp_SecureHash"];
-    delete vnp_Params["vnp_SecureHashType"];
-
-    vnp_Params = sortObject(vnp_Params);
-
-    let tmnCode = config.vnp_TmnCode;
-    let secretKey = config.vnp_HashSecret;
-
-    let querystring = require("qs");
-    let signData = querystring.stringify(vnp_Params, { encode: false });
-    let crypto = require("crypto");
-    let hmac = crypto.createHmac("sha512", secretKey);
-    let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-
-    if (secureHash === signed) {
-      let orderId = vnp_Params["vnp_TxnRef"];
-      let rspCode = vnp_Params["vnp_ResponseCode"];
-      console.log(orderId);
-      // Tìm và cập nhật trạng thái thanh toán
-      let payment = await Payment.findOne({ orderId });
-      if (!payment) {
-        return res
-          .status(404)
-          .json({ status: false, message: "Payment not found" });
-      }
-
-      if (rspCode === "00") {
-        payment.paymentStatus = "success";
-      } else {
-        payment.paymentStatus = "failure";
-      }
-
-      await payment.save();
-
-      res.json({
-        status: true,
-        message: "Payment status updated",
-        code: rspCode,
-      });
-    } else {
-      res
-        .status(400)
-        .json({ status: false, message: "Checksum failed", code: "97" });
-    }
-  },
-  checkStatus: async (req, res) => {
     try {
       let vnp_Params = req.query;
       let secureHash = vnp_Params["vnp_SecureHash"];
-
-      let orderId = vnp_Params["vnp_TxnRef"];
-      let rspCode = vnp_Params["vnp_ResponseCode"];
-      let amount = parseInt(vnp_Params["vnp_Amount"]) / 100; // Convert amount to dollars or relevant currency unit
 
       delete vnp_Params["vnp_SecureHash"];
       delete vnp_Params["vnp_SecureHashType"];
 
       vnp_Params = sortObject(vnp_Params);
-      let secretKey = config.get("vnp_HashSecret");
+
+      let querystring = require("qs");
+      let crypto = require("crypto");
+      let secretKey = config.vnp_HashSecret;
       let signData = querystring.stringify(vnp_Params, { encode: false });
       let hmac = crypto.createHmac("sha512", secretKey);
       let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
       if (secureHash === signed) {
-        // Check checksum
-        let payment = await Payment.findOne({ orderId });
+        let orderId = vnp_Params["vnp_TxnRef"];
+        let rspCode = vnp_Params["vnp_ResponseCode"];
+        console.log("OrderId:", orderId);
 
+        // Tìm và cập nhật trạng thái thanh toán
+        let payment = await Payment.findOne({ orderId });
         if (!payment) {
           return res
-            .status(200)
-            .json({ RspCode: "01", Message: "Order not found" });
+            .status(404)
+            .json({ status: false, message: "Payment not found" });
         }
 
-        // Verify amount
-        if (payment.amount !== amount) {
-          return res
-            .status(200)
-            .json({ RspCode: "04", Message: "Amount invalid" });
-        }
-
-        // Check payment status
         let bookingUpdateStatus = false;
-        if (payment.paymentStatus === "0") {
-          // Update payment status
-          if (rspCode === "00") {
-            payment.paymentStatus = "success";
-            bookingUpdateStatus = true;
-          } else {
-            payment.paymentStatus = "failure";
-          }
-          await payment.save();
-
-          // Update hotel booking status
-          if (bookingUpdateStatus) {
-            let booking = await HotelBooking.findOne({ orderId });
-
-            if (booking) {
-              booking.payment_status = "confirmed"; // Or any relevant status for successful booking
-              await booking.save();
-            } else {
-              // Handle case where booking is not found
-              console.error("Booking not found for orderId:", orderId);
-            }
-          }
-
-          res.status(200).json({ RspCode: "00", Message: "Success" });
+        if (rspCode === "00") {
+          payment.paymentStatus = "success";
+          bookingUpdateStatus = true;
         } else {
-          res.status(200).json({
-            RspCode: "02",
-            Message: "This order has already been updated",
-          });
+          payment.paymentStatus = "failure";
         }
+
+        await payment.save();
+
+        // Update hotel booking status if payment was successful
+        if (bookingUpdateStatus) {
+          let booking = await HotelBooking.findById(orderId);
+
+          if (booking) {
+            booking.payment_status = "completed";
+            booking.hold_status = "released"; // Or any relevant status for successful booking
+            await booking.save();
+          } else {
+            // Handle case where booking is not found
+            console.error("Booking not found for orderId:", orderId);
+          }
+        }
+
+        res.json({
+          status: true,
+          message: "Payment status updated",
+          code: rspCode,
+        });
       } else {
-        return res
-          .status(200)
-          .json({ RspCode: "97", Message: "Checksum failed" });
+        res
+          .status(400)
+          .json({ status: false, message: "Checksum failed", code: "97" });
       }
     } catch (error) {
-      console.error("Error handling VNPAY IPN:", error);
+      console.error("Error handling VNPAY return:", error);
       return res
         .status(500)
-        .json({ RspCode: "99", Message: "Internal server error" });
+        .json({ status: false, message: "Internal server error", code: "99" });
     }
   },
 };

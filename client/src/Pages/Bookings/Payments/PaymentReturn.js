@@ -11,15 +11,15 @@ const VnpayReturn = () => {
         const params = new URLSearchParams(location.search);
         const response = await axios.get(
           "http://localhost:8000/api/payment/vnpay_return",
-          { params }
+          {
+            params,
+          }
         );
         const { status, message, code } = response.data;
-
+        // Xử lý khi thanh toán thành công hoặc thất bại
         if (status) {
-          // Xử lý khi thanh toán thành công
           console.log("Payment success:", message);
         } else {
-          // Xử lý khi thanh toán thất bại
           console.log("Payment failure:", message, "Code:", code);
         }
       } catch (error) {

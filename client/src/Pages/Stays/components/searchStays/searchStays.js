@@ -87,17 +87,15 @@ const SearchStays = () => {
                         </div>
                         <div className="flex justify-between flex-row mt-3 gap-1">
                           <div className="border-l-2">
-                            {hotel?.RoomType
-                              ? hotel?.RoomType?.room_types?.map(
-                                  (item, index) => (
-                                    <p
-                                      className="text-sm font-extrabold ml-1 text-wrap my-2"
-                                      key={index}
-                                    >
-                                      {item.room_type}
-                                    </p>
-                                  )
-                                )
+                            {hotel?.room_types
+                              ? hotel?.room_types?.map((item, index) => (
+                                  <p
+                                    className="text-sm font-extrabold ml-1 text-wrap my-2"
+                                    key={index}
+                                  >
+                                    {item.room_type}
+                                  </p>
+                                ))
                               : "Not Available"}
                           </div>
                           <div className="flex flex-col items-end">

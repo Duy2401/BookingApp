@@ -2,6 +2,7 @@ import BookingSummary from "../BookingSummary";
 import { useSelector, useDispatch } from "react-redux";
 import { handleBookRoom } from "../../../redux/paymentSlice";
 import { createBooking } from "../../../redux/bookingsSlice";
+import { toast } from "react-toastify";
 const PaymentDetail = () => {
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
@@ -10,10 +11,12 @@ const PaymentDetail = () => {
   );
   const modifiedBookingDetails = {
     ...bookingDetails,
-    hotelID: Array.isArray(bookingDetails.hotelID)
+    hotelID: Array.isArray(bookingDetails?.hotelID)
       ? bookingDetails.hotelID[0]._id
       : bookingDetails.hotelID._id,
   };
+  console.log(bookingDetails);
+
   const handleSubmit = async () => {
     const data = await dispatch(
       handleBookRoom({ bookingDetails: modifiedBookingDetails, customers })
@@ -22,13 +25,17 @@ const PaymentDetail = () => {
     });
     console.log(data);
   };
-  const PaymentTwo = () => {
-    console.log(modifiedBookingDetails);
-    dispatch(
+  const PaymentCash = async () => {
+    const response = await dispatch(
       createBooking({ bookingDetails: modifiedBookingDetails, customers })
-    ).catch((err) => {
-      console.error("Lỗi khi xử lý giao dịch:", err);
-    });
+    );
+    console.log(response);
+
+    if (response.payload.status) {
+      toast.success("Đặt khách sạn thành công");
+    } else {
+      toast.warning("Đặt khách sạn không thành công");
+    }
   };
   return (
     <div className="min-h-screen px-9 pt-2 mt-30 mx-44 font-Nunito">
@@ -119,7 +126,7 @@ const PaymentDetail = () => {
                 Thanh toán online
               </button>
               <button
-                onClick={PaymentTwo}
+                onClick={PaymentCash}
                 className="w-full text-center text-lg block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Thanh toán bằng tiền mặt

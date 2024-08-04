@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { createAxiosInstance } from "../services/api";
 
 export const createBooking = createAsyncThunk(
@@ -23,10 +22,31 @@ export const createBooking = createAsyncThunk(
     }
   }
 );
+export const getBooking = createAsyncThunk(
+  "booking/getBooking",
+  async (customers, { rejectWithValue, dispatch }) => {
+    try {
+      const axiosInstance = createAxiosInstance(customers, dispatch);
+      const response = await axiosInstance.get(
+        `/booking/getbookings/${customers._id}`,
+        {
+          headers: {
+            token: `Bearer ${customers?.accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 const bookingSlice = createSlice({
   name: "booking",
   initialState: {
+    bookings: null,
     bookingDetails: null,
+    creatBooking: null,
     loading: false,
     error: null,
     success: false,
@@ -47,10 +67,24 @@ const bookingSlice = createSlice({
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.loading = false;
-        state.bookingDetails = action.payload.data;
+        state.creatBooking = action.payload.data;
         state.success = true;
       })
       .addCase(createBooking.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(getBooking.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getBooking.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bookings = action.payload.data;
+        state.success = true;
+      })
+      .addCase(getBooking.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
