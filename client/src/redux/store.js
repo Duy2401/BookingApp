@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
@@ -8,15 +8,15 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import customersReducer from "./customersSlice";
-import hotelsSlice from "./hotelsSlice";
-import bookingsSlice from "./bookingsSlice";
-import paymentSlice from "./paymentSlice";
-
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import customersReducer from './customersSlice';
+import hotelsSlice from './hotelsSlice';
+import bookingsSlice from './bookingsSlice';
+import paymentSlice from './paymentSlice';
+import reviewSlice from './reviewSlice';
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage,
 };
 
@@ -25,6 +25,7 @@ const rootReducer = combineReducers({
   hotels: hotelsSlice,
   booking: bookingsSlice,
   payment: paymentSlice,
+  review: reviewSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

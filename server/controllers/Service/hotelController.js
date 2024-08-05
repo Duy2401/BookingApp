@@ -1,27 +1,27 @@
-const Hotels = require("../../models/Hotel/hotels");
-const streamifier = require("streamifier");
-const cloudinary = require("../../configs/cloudinary");
-const RoomType = require("../../models/Hotel/roomType");
-const mongoose = require("mongoose");
+const Hotels = require('../../models/Hotel/hotels');
+const streamifier = require('streamifier');
+const cloudinary = require('../../configs/cloudinary');
+const RoomType = require('../../models/Hotel/roomType');
+const mongoose = require('mongoose');
 const HotelsController = {
   // HOTELS
   CreateHotel: async (req, res) => {
     try {
       const descriptionImages = [];
-      if (req.files && req.files["description_images"]) {
-        for (const file of req.files["description_images"]) {
+      if (req.files && req.files['description_images']) {
+        for (const file of req.files['description_images']) {
           if (!file.buffer) continue;
           try {
             const result = await new Promise((resolve, reject) => {
               const uploadStream = cloudinary.uploader.upload_stream(
-                { upload_preset: "ml_default", folder: "booking-image" },
+                { upload_preset: 'ml_default', folder: 'booking-image' },
                 (error, result) => {
                   if (error) {
                     console.error(
                       `Cloudinary upload error for file ${file.originalname}:`,
                       error
                     );
-                    return reject(new Error("Failed to upload image"));
+                    return reject(new Error('Failed to upload image'));
                   }
                   console.log(
                     `Successfully uploaded ${file.originalname} to Cloudinary.`
@@ -41,7 +41,7 @@ const HotelsController = {
           }
         }
       } else {
-        console.error("No files found in req.files");
+        console.error('No files found in req.files');
       }
       const descriptionNote = JSON.parse(req.body.description_note);
       const descriptionGeneralRules = JSON.parse(
@@ -49,7 +49,7 @@ const HotelsController = {
       );
       const descriptionAmenities = req.body.description_amenities || [];
       const priceNumber = parseFloat(
-        req.body.hotel_price.replace(/[^0-9.-]+/g, "")
+        req.body.hotel_price.replace(/[^0-9.-]+/g, '')
       );
       const newHotel = new Hotels({
         hotel_name: req.body.hotel_name,
@@ -69,13 +69,13 @@ const HotelsController = {
       await newHotel.save();
       return res.status(201).json({
         status: true,
-        message: "Edit Hotel successful",
+        message: 'Edit Hotel successful',
         data: newHotel,
       });
     } catch (error) {
       return res.status(500).json({
         status: false,
-        message: "Create Hotel not successful",
+        message: 'Create Hotel not successful',
         data: error,
       });
     }
@@ -88,12 +88,12 @@ const HotelsController = {
       await EditHotels.updateOne({ $set: req.body });
       return res.status(200).json({
         status: true,
-        message: "Edit Hotel successful",
+        message: 'Edit Hotel successful',
       });
     } catch (error) {
       return res.status(500).json({
         status: false,
-        message: "Edit Hotel not successful",
+        message: 'Edit Hotel not successful',
         data: error,
       });
     }
@@ -104,12 +104,12 @@ const HotelsController = {
       await Hotels.findByIdAndDelete(req.params.id);
       return res.status(200).json({
         status: true,
-        message: "Delete Hotel successful",
+        message: 'Delete Hotel successful',
       });
     } catch (error) {
       return res.status(500).json({
         status: false,
-        message: "Delete Hotel not successful",
+        message: 'Delete Hotel not successful',
         data: error,
       });
     }
@@ -120,16 +120,16 @@ const HotelsController = {
       const customerId = new mongoose.Types.ObjectId(req.params.id);
       const listHotel = await Hotels.find({
         customers_id_create: customerId,
-      }).populate("room_types");
+      }).populate('room_types');
       return res.status(200).json({
         status: false,
-        message: "Get hotel of partner successful",
+        message: 'Get hotel of partner successful',
         data: listHotel,
       });
     } catch (error) {
       return res.status(500).json({
         status: false,
-        message: "Get hotel of partner not successful",
+        message: 'Get hotel of partner not successful',
         data: error,
       });
     }
@@ -138,19 +138,19 @@ const HotelsController = {
   GetHotels: async (req, res) => {
     try {
       const hotel = await Hotels.findById(req.params.id)
-        .populate("room_types")
+        .populate('room_types')
         .exec();
 
       if (!hotel) {
-        return res.status(404).json({ error: "Hotel not found" });
+        return res.status(404).json({ error: 'Hotel not found' });
       }
       return res.status(200).json({
         status: true,
-        message: "Get Detail Hotel successful",
+        message: 'Get Detail Hotel successful',
         data: hotel,
       });
     } catch (error) {
-      return res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json({ error: 'Internal server error' });
     }
   },
   SearchHotels: async (req, res) => {
@@ -159,32 +159,32 @@ const HotelsController = {
       const searchWords = searchString.split(/\s+/);
 
       // Tìm kiếm ít nhất 1 trong các từ, không phân biệt thứ tự
-      const searchRegex = new RegExp(`.*${searchWords.join("|")}.*`, "i");
+      const searchRegex = new RegExp(`.*${searchWords.join('|')}.*`, 'i');
 
       const hotels = await Hotels.find({
         hotel_address: searchRegex,
       })
-        .populate("room_types")
+        .populate('room_types')
         .exec();
 
       if (hotels.length === 0) {
         return res.status(404).json({
           status: false,
-          message: "There are no hotels in this location",
+          message: 'There are no hotels in this location',
           data: null,
         });
       }
 
       return res.status(200).json({
         status: true,
-        message: "Search Hotel successful",
+        message: 'Search Hotel successful',
         data: hotels,
       });
     } catch (error) {
-      console.error("Search error:", error);
+      console.error('Search error:', error);
       return res.status(500).json({
         status: false,
-        message: "Search Hotel not successful",
+        message: 'Search Hotel not successful',
         data: error,
       });
     }
@@ -212,14 +212,14 @@ const HotelsController = {
       });
       return res.status(200).json({
         status: true,
-        message: "Create RoomType successful",
+        message: 'Create RoomType successful',
         data: newRooms,
       });
     } catch (error) {
-      console.error("Error creating room types:", error);
+      console.error('Error creating room types:', error);
       return res.status(500).json({
         status: false,
-        message: "Create RoomType not successful",
+        message: 'Create RoomType not successful',
         error: error.message,
       });
     }
@@ -235,18 +235,18 @@ const HotelsController = {
       if (!room) {
         return res.status(404).json({
           status: false,
-          message: "RoomType not found",
+          message: 'RoomType not found',
         });
       }
       return res.status(200).json({
         status: true,
-        message: "Update RoomType successful",
+        message: 'Update RoomType successful',
         data: room,
       });
     } catch (error) {
       return res.status(500).json({
         status: false,
-        message: "Update RoomType not successful",
+        message: 'Update RoomType not successful',
         data: error,
       });
     }
@@ -256,12 +256,12 @@ const HotelsController = {
       await RoomType.findByIdAndDelete(req.params.id);
       return res.status(200).json({
         status: true,
-        message: "Delete RoomType successful",
+        message: 'Delete RoomType successful',
       });
     } catch (error) {
       return res.status(500).json({
         status: false,
-        message: "Delete RoomType not successful",
+        message: 'Delete RoomType not successful',
         data: error,
       });
     }

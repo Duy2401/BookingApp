@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
-import Button from "../../components/Button/button";
-import { useSelector } from "react-redux";
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import Button from '../../components/Button/button';
+import { useSelector } from 'react-redux';
 function Partner() {
   const customers = useSelector((state) => state.customers?.customers);
   return (
@@ -20,9 +20,7 @@ function Partner() {
                 <li className="text-gray-700 mb-8 text-xl">
                   Đăng ký dịch vụ cho thuê khách sạn
                 </li>
-                <li className="text-gray-700 mb-8 text-xl">
-                  Đăng ký dịch vụ cho đặt vé máy bay
-                </li>
+
                 <li className="text-gray-700 mb-8 text-xl">
                   Đăng ký dịch vụ cho đặt chuyến đi
                 </li>
@@ -35,16 +33,14 @@ function Partner() {
         )}
         {customers?.isRole === 1 && (
           <div className="font-sans leading-normal tracking-normal">
-            <div className="flex justify-between">
+            <div className="flex justify-around">
               <Button
-                to={"/partner/myhotel"}
+                to={'/partner/myhotel'}
                 className="bg-blue-700 text-white p-3 text-lg rounded text-center hover:bg-opacity-90"
               >
                 Dịch vụ khách sạn của tôi
               </Button>
-              <Button className="bg-blue-700 text-white p-3 text-lg rounded text-center hover:bg-opacity-90">
-                Dịch vụ vé máy bay của tôi{" "}
-              </Button>
+
               <Button className="bg-blue-700 text-white p-3 text-lg rounded text-center hover:bg-opacity-90">
                 Dịch vụ chuyến đi tham quan của tôi
               </Button>

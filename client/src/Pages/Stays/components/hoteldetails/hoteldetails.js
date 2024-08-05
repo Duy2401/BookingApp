@@ -1,15 +1,15 @@
-import Button from "../../../../components/Button/button";
-import SvgIcon from "../../../../components/SvgIcon/SvgIcon";
-import { ReactComponent as Like } from "../../../../assets/icons/Like.svg";
-import { ReactComponent as Location } from "../../../../assets/icons/location.svg";
-import { ReactComponent as Bed } from "../../../../assets/icons/Bed.svg";
-import Review from "../reviews/review";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { getDetailsHotel } from "../../../../redux/hotelsSlice";
-import { setBookingDetails } from "../../../../redux/bookingsSlice";
-import { toast } from "react-toastify";
+import Button from '../../../../components/Button/button';
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon';
+import { ReactComponent as Like } from '../../../../assets/icons/Like.svg';
+import { ReactComponent as Location } from '../../../../assets/icons/location.svg';
+import { ReactComponent as Bed } from '../../../../assets/icons/Bed.svg';
+import Review from '../reviews/review';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { getDetailsHotel } from '../../../../redux/hotelsSlice';
+import { setBookingDetails } from '../../../../redux/bookingsSlice';
+import { toast } from 'react-toastify';
 const HotelDetails = () => {
   const { aid } = useParams();
   const navigate = useNavigate();
@@ -26,9 +26,9 @@ const HotelDetails = () => {
   }, [dispatch]);
 
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -42,12 +42,12 @@ const HotelDetails = () => {
 
     // Kiểm tra số lượng phòng có hợp lệ không
     if (quantity < 0) {
-      alert("Quantity cannot be negative.");
+      alert('Quantity cannot be negative.');
       return;
     }
 
     if (quantity > availableRooms) {
-      alert("Quantity cannot be more than available rooms.");
+      alert('Quantity cannot be more than available rooms.');
       return;
     }
 
@@ -89,7 +89,7 @@ const HotelDetails = () => {
 
   const handleBookRooms = () => {
     if (bookingRooms.length === 0) {
-      alert("No rooms selected.");
+      alert('No rooms selected.');
       return;
     }
     const prices = bookingRooms.reduce(
@@ -100,18 +100,18 @@ const HotelDetails = () => {
       hotelID: hotelDetails,
       customer: customer?._id,
       rooms: bookingRooms,
-      checkInDate: localStorage.getItem("checkin"),
-      checkOutDate: localStorage.getItem("checkout"),
+      checkInDate: localStorage.getItem('checkin'),
+      checkOutDate: localStorage.getItem('checkout'),
       totalPrice: prices + prices * 0.1,
-      booking_type: "hotel",
+      booking_type: 'hotel',
     };
 
     dispatch(setBookingDetails(bookingData));
     console.log(bookingData);
-    if (bookingData.checkInDate === "" || bookingData.checkOutDate === "") {
-      toast.warning("Vui lòng điền thời gian");
+    if (bookingData.checkInDate === '' || bookingData.checkOutDate === '') {
+      toast.warning('Vui lòng điền thời gian');
     } else {
-      navigate("/booking");
+      navigate('/booking');
     }
   };
   return (
@@ -156,7 +156,7 @@ const HotelDetails = () => {
                         hotel?.hotel_description?.description_images?.[0]
                           ? hotel?.hotel_description?.description_images?.[0]
                               .name_image
-                          : ""
+                          : ''
                       }
                       alt=""
                     />
@@ -174,7 +174,7 @@ const HotelDetails = () => {
                               />
                             </div>
                           ))
-                      : ""}
+                      : ''}
                   </div>
                 </div>
               </div>
@@ -212,7 +212,7 @@ const HotelDetails = () => {
               <div className="my-3 py-3">
                 <div className="grid grid-cols-5 gap-4">
                   {hotel?.hotel_description?.description_amenities[0]
-                    .split(",")
+                    .split(',')
                     .map((item, index) => (
                       <Button
                         className="border-2 rounded min-w-28 p-3"
@@ -235,7 +235,7 @@ const HotelDetails = () => {
               </h1>
               <div className="grid grid-cols-5 gap-4">
                 {hotel?.hotel_description?.description_amenities[0]
-                  .split(",")
+                  .split(',')
                   .map((item, index) => (
                     <Button
                       className="min-w-28 p-2 border-2 rounded text-left"
@@ -275,7 +275,7 @@ const HotelDetails = () => {
                             placeholder="Số phòng"
                           />
                           <p className="font-bold text-red-600 ml-2">
-                            Còn lại {room.totalRooms <= 5 && room.totalRooms}{" "}
+                            Còn lại {room.totalRooms <= 5 && room.totalRooms}{' '}
                             phòng
                           </p>
                         </div>
@@ -309,7 +309,7 @@ const HotelDetails = () => {
               </Button>
             </div>
           </div>
-          <Review />
+          <Review hotelId={hotel._id} />
           <div className="my-6 mx-auto" id="rules">
             <div className="bg-white border-2 p-4 shadow-md rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Quy tắc chung</h2>

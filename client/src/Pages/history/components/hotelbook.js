@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getBooking } from "../../../redux/bookingsSlice";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBooking } from '../../../redux/bookingsSlice';
 
 const HotelBook = () => {
   const dispatch = useDispatch();
@@ -12,8 +12,8 @@ const HotelBook = () => {
     setExpandedProductId(expandedProductId === productId ? null : productId);
   };
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      currency: 'VND',
     }).format(value);
   };
   useEffect(() => {
@@ -75,7 +75,7 @@ const HotelBook = () => {
                   </td>
                   <td className="px-6 py-4 overflow-hidden text-ellipsis whitespace-wrap">
                     <div className="flex items-center">
-                      {product.payment?.paymentStatus === "success" ? (
+                      {product.payment?.paymentStatus === 'success' ? (
                         <span className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
                           Đã thanh toán
                         </span>
@@ -88,7 +88,7 @@ const HotelBook = () => {
                   </td>
                   <td className="px-6 py-4 overflow-hidden text-ellipsis whitespace-wrap">
                     <div className="flex items-center">
-                      {product.hold_status === "released" ? (
+                      {product.hold_status === 'released' ? (
                         <span className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
                           Xác nhận
                         </span>
@@ -100,7 +100,7 @@ const HotelBook = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 overflow-hidden text-ellipsis whitespace-nowrap">
-                    {formatCurrency(product.payment?.amount) || "N/A"} VND
+                    {formatCurrency(product.payment?.amount) || 'N/A'} VND
                   </td>
                 </tr>
                 {expandedProductId === product._id && (
@@ -125,7 +125,7 @@ const HotelBook = () => {
                           {product.rooms.map((roomName, index) => (
                             <span className="w-full my-1" key={index}>
                               <span className="font-bold">
-                                {roomName.quantity} -{" "}
+                                {roomName.quantity} -{' '}
                               </span>
                               <span className="flex-1">
                                 {roomName.roomId.room_type}

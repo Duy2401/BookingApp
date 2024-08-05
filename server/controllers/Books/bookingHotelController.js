@@ -1,7 +1,7 @@
-const HotelBooking = require("../../models/Booking/HotelBooking");
-const RoomType = require("../../models/Hotel/roomType");
-const Payment = require("../../models/PaymentSchema");
-const mongoose = require("mongoose");
+const HotelBooking = require('../../models/Booking/HotelBooking');
+const RoomType = require('../../models/Hotel/roomType');
+const Payment = require('../../models/PaymentSchema');
+const mongoose = require('mongoose');
 const BookingController = {
   // Tạo đặt phòng mới
   createBookingCash: async (req, res) => {
@@ -34,8 +34,8 @@ const BookingController = {
         customer,
         hotelID,
         rooms: updatedRooms,
-        hold_status: "released",
-        payment_status: "pending",
+        hold_status: 'released',
+        payment_status: 'pending',
       });
 
       const CreateHotelBooking = await newBooking.save();
@@ -43,18 +43,18 @@ const BookingController = {
       const newPayment = new Payment({
         orderId: CreateHotelBooking._id,
         amount: totalPrice,
-        paymentStatus: "pending",
-        type: "hotel",
+        paymentStatus: 'pending',
+        type: 'hotel',
       });
       await newPayment.save();
       return res.status(201).json({
         status: true,
-        message: "create booking hotel cash is success",
+        message: 'create booking hotel cash is success',
       });
     } catch (error) {
       return res
         .status(500)
-        .json({ message: "Error create booking hotel cash", data: error });
+        .json({ message: 'Error create booking hotel cash', data: error });
     }
   },
 
@@ -66,18 +66,18 @@ const BookingController = {
       const hotelBookings = await HotelBooking.find({
         customer: customerId,
       })
-        .populate("hotelID")
-        .populate("customer")
+        .populate('hotelID')
+        .populate('customer')
         .populate({
-          path: "rooms",
-          populate: { path: "roomId" },
+          path: 'rooms',
+          populate: { path: 'roomId' },
         })
         .lean();
 
       if (hotelBookings.length === 0) {
         return res.status(404).json({
           status: false,
-          message: "No bookings found for this customer",
+          message: 'No bookings found for this customer',
         });
       }
 
@@ -103,35 +103,40 @@ const BookingController = {
 
       return res.json({
         status: true,
-        message: "Get Data",
+        message: 'Get Data',
         data: combinedBookings,
       });
     } catch (error) {
-      console.error("Error fetching booking:", error);
+      console.error('Error fetching booking:', error);
       return res
         .status(500)
-        .json({ status: false, message: "Error fetching booking", error });
+        .json({ status: false, message: 'Error fetching booking', error });
     }
   },
 
   // Cập nhật trạng thái thanh toán
   updatePaymentStatus: async (req, res) => {
     try {
-      const { payment_status } = req.body;
       const booking = await HotelBooking.findByIdAndUpdate(
         req.params.id,
         {
-          payment_status,
-          updateDate: Date.now(),
+          payment_status: 'completed',
         },
         { new: true }
       );
-
-      if (!booking)
-        return res.status(404).json({ message: "Booking not found" });
-      res.json(booking);
+      await booking.save();
+      const payment = await Payment.findOne({ orderId: booking._id });
+      payment.paymentStatus = 'success';
+      await payment.save();
+      return res
+        .status(404)
+        .json({ status: true, message: 'Update Payment is Success' });
     } catch (error) {
-      res.status(500).json({ message: "Error updating payment status", error });
+      res.status(500).json({
+        status: false,
+        message: 'Error updating payment status',
+        error,
+      });
     }
   },
 
@@ -140,10 +145,10 @@ const BookingController = {
     try {
       const booking = await HotelBooking.findByIdAndDelete(req.params.id);
       if (!booking)
-        return res.status(404).json({ message: "Booking not found" });
-      res.json({ message: "Booking deleted successfully" });
+        return res.status(404).json({ message: 'Booking not found' });
+      res.json({ message: 'Booking deleted successfully' });
     } catch (error) {
-      res.status(500).json({ message: "Error deleting booking", error });
+      res.status(500).json({ message: 'Error deleting booking', error });
     }
   },
 
@@ -152,24 +157,24 @@ const BookingController = {
     try {
       const now = new Date();
       const expiredBookings = await HotelBooking.find({
-        hold_status: "on_hold",
+        hold_status: 'on_hold',
         hold_until: { $lte: now },
       });
 
       for (let booking of expiredBookings) {
-        booking.hold_status = "released";
+        booking.hold_status = 'released';
 
         // Tăng lại số lượng phòng có sẵn khi giải phóng
         await RoomType.findOneAndUpdate(
-          { "room_types._id": booking.roomId },
-          { $inc: { "room_types.$.availableRooms": 1 } }
+          { 'room_types._id': booking.roomId },
+          { $inc: { 'room_types.$.availableRooms': 1 } }
         );
 
         await booking.save();
         console.log(`Released hold for booking ID: ${booking._id}`);
       }
     } catch (error) {
-      console.error("Error releasing expired holds:", error);
+      console.error('Error releasing expired holds:', error);
     }
   },
 
@@ -187,10 +192,10 @@ const BookingController = {
       );
 
       if (!booking)
-        return res.status(404).json({ message: "Booking not found" });
+        return res.status(404).json({ message: 'Booking not found' });
       res.json(booking);
     } catch (error) {
-      res.status(500).json({ message: "Error updating hold status", error });
+      res.status(500).json({ message: 'Error updating hold status', error });
     }
   },
 };

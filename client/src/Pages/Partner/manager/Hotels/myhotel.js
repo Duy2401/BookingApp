@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { getDetailsHotel } from "../../../../redux/hotelsSlice";
-import Button from "../../../../components/Button/button";
-import { getBooking } from "../../../../redux/bookingsSlice";
-
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { getDetailsHotel } from '../../../../redux/hotelsSlice';
+import Button from '../../../../components/Button/button';
+import { getBooking, UpdateBooking } from '../../../../redux/bookingsSlice';
+import Statistical from './statistical';
+import { toast } from 'react-toastify';
 const MyHotel = () => {
   const id = useParams();
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
   const [hotelDetails, setHotelDetails] = useState(null);
   const [booking, setBooking] = useState([]);
-
   const [expandedProductId, setExpandedProductId] = useState(null);
+
   const toggleProductDetails = (productId) => {
     setExpandedProductId(expandedProductId === productId ? null : productId);
   };
@@ -29,16 +30,22 @@ const MyHotel = () => {
     fetchData();
   }, [dispatch]);
 
+  const UpdatePayment = async (id) => {
+    const result = await dispatch(UpdateBooking({ bookingID: id, customers }));
+    if (result.payload.status === true) {
+      toast.success('Cập nhật thanh toán thành công');
+    } else {
+      toast.warning('Cập nhật thanh toán không thành công');
+    }
+  };
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
   };
-  console.log(booking);
-
   return (
     <div className="relative">
       {hotelDetails?.map((hotel, index) => (
@@ -69,7 +76,7 @@ const MyHotel = () => {
               <div className="py-1">
                 <div className="grid grid-cols-5 gap-4">
                   {hotel?.hotel_description?.description_amenities[0]
-                    .split(",")
+                    .split(',')
                     .map((item, index) => (
                       <Button
                         className="border-2 rounded min-w-28 p-3"
@@ -179,7 +186,7 @@ const MyHotel = () => {
                           </td>
                           <td className="px-6 py-4 overflow-hidden text-ellipsis whitespace-wrap">
                             <div className="flex items-center">
-                              {product.payment?.paymentStatus === "success" ? (
+                              {product.payment?.paymentStatus === 'success' ? (
                                 <span className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
                                   Đã thanh toán
                                 </span>
@@ -192,7 +199,7 @@ const MyHotel = () => {
                           </td>
                           <td className="px-6 py-4 overflow-hidden text-ellipsis whitespace-wrap">
                             <div className="flex items-center">
-                              {product.hold_status === "released" ? (
+                              {product.hold_status === 'released' ? (
                                 <span className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
                                   Xác nhận
                                 </span>
@@ -204,7 +211,7 @@ const MyHotel = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 overflow-hidden text-ellipsis whitespace-nowrap">
-                            {formatCurrency(product.payment?.amount) || "N/A"}{" "}
+                            {formatCurrency(product.payment?.amount) || 'N/A'}{' '}
                             VND
                           </td>
                         </tr>
@@ -230,7 +237,7 @@ const MyHotel = () => {
                                   {product.rooms.map((roomName, index) => (
                                     <span className="w-full my-1" key={index}>
                                       <span className="font-bold">
-                                        {roomName.quantity} -{" "}
+                                        {roomName.quantity} -{' '}
                                       </span>
                                       <span className="flex-1">
                                         {roomName.roomId.room_type}
@@ -247,14 +254,17 @@ const MyHotel = () => {
                                   {product.customer_note}
                                 </span>
                               </div>
-                              {product.payment?.paymentStatus !== "success" && (
+                              {product.payment?.paymentStatus !== 'success' && (
                                 <div>
                                   <Button className="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
                                     Hủy
                                   </Button>
-                                  <Button className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                                  <button
+                                    onClick={() => UpdatePayment(product._id)}
+                                    className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400"
+                                  >
                                     Xác nhận thanh toán
-                                  </Button>
+                                  </button>
                                 </div>
                               )}
                             </td>
@@ -269,9 +279,7 @@ const MyHotel = () => {
               )}
             </div>
           </div>
-          <div className="mt-5">
-            <h2 className="text-2xl font-bold mb-4">Thống kê doanh thu</h2>
-          </div>
+          <Statistical hotelID={id.id} />
         </div>
       ))}
     </div>

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AddRoomsHotel } from "../../../../redux/hotelsSlice";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddRoomsHotel } from '../../../../redux/hotelsSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const RoomTypeForm = () => {
   const { id } = useParams(); // Lấy id từ URL
@@ -11,16 +11,16 @@ const RoomTypeForm = () => {
   const customers = useSelector((state) => state.customers?.customers);
   const [formData, setFormData] = useState({
     hotel_id: id,
-    room_types: [{ room_type: "", price: "", totalRooms: 0, displayPrice: "" }],
+    room_types: [{ room_type: '', price: '', totalRooms: 0, displayPrice: '' }],
   });
 
   const formatCurrency = (value) => {
-    if (!value) return ""; // Xử lý input rỗng
-    const numericValue = parseFloat(value.replace(/[^0-9.-]+/g, ""));
-    if (isNaN(numericValue)) return "NaN ₫";
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    if (!value) return ''; // Xử lý input rỗng
+    const numericValue = parseFloat(value.replace(/[^0-9.-]+/g, ''));
+    if (isNaN(numericValue)) return 'NaN ₫';
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(numericValue);
@@ -30,7 +30,7 @@ const RoomTypeForm = () => {
     const { name, value } = e.target;
     const updatedRoomTypes = [...formData.room_types];
     updatedRoomTypes[index][name] = value;
-    if (name === "price") {
+    if (name === 'price') {
       updatedRoomTypes[index].displayPrice = formatCurrency(value);
     }
     setFormData({ ...formData, room_types: updatedRoomTypes });
@@ -41,7 +41,7 @@ const RoomTypeForm = () => {
       ...formData,
       room_types: [
         ...formData.room_types,
-        { room_type: "", price: "", totalRooms: 0, displayPrice: "" },
+        { room_type: '', price: '', totalRooms: 0, displayPrice: '' },
       ],
     });
   };
@@ -61,7 +61,7 @@ const RoomTypeForm = () => {
       ...formData,
       room_types: formData.room_types.map((roomType) => ({
         room_type: roomType.room_type,
-        price: parseFloat(roomType.price.replace(/[^0-9.-]+/g, "")),
+        price: parseFloat(roomType.price.replace(/[^0-9.-]+/g, '')),
         totalRooms: roomType.totalRooms,
       })),
     };
@@ -70,9 +70,9 @@ const RoomTypeForm = () => {
     );
     console.log(data);
     if (data.payload.status === true) {
-      toast.success("Tạo khách sạn thành công");
+      toast.success('Tạo khách sạn thành công');
       setTimeout(() => {
-        navigate("/partner");
+        navigate('/partner');
       }, 10000);
     } else {
       toast.error(data.payload.message);

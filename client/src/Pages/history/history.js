@@ -1,5 +1,5 @@
-import Button from "../../components/Button/button";
-import { Outlet } from "react-router-dom";
+import Button from '../../components/Button/button';
+import { Outlet } from 'react-router-dom';
 const History = () => {
   return (
     <div className="min-h-screen px-9 pt-2 mt-30 mx-44 font-Nunito">
@@ -16,12 +16,6 @@ const History = () => {
               className="py-3 hover:opacity-30 flex-1 text-lg font-bold text-center"
             >
               Khách Sạn
-            </Button>
-            <Button
-              to="/history/flighthistory"
-              className="py-3 hover:opacity-30 flex-1 text-lg font-bold text-center"
-            >
-              Vé máy bay
             </Button>
             <Button
               to="/history/tourhistory"
