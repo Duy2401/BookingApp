@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBooking } from '../../../redux/bookingsSlice';
+import { getBookingOfCustomer } from '../../../redux/bookingsSlice';
 
 const HotelBook = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const HotelBook = () => {
   };
   useEffect(() => {
     const getBill = async () => {
-      const result = await dispatch(getBooking(customers));
+      const result = await dispatch(getBookingOfCustomer(customers));
       setBooking(result.payload?.data);
     };
     getBill();

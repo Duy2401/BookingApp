@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import ReactStars from 'react-rating-stars-component';
 import { createReview, fetchAllReviews } from '../../../../redux/reviewSlice';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Button from '../../../../components/Button/button';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Reviews = ({ hotelId }) => {
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
-  const { reviews, status, error } = useSelector((state) => state.review);
   const [listReviews, setListReviews] = useState([]);
   const [reviewData, setReviewData] = useState({
     booking_service_id: hotelId,
     booking_service_type: 'Hotel',
     customers: customers?._id,
-    rating: '',
+    rating: 0,
     comment: '',
   });
   const [showReview, setShowReview] = useState(false);
@@ -26,25 +27,40 @@ const Reviews = ({ hotelId }) => {
       setListReviews(result.payload);
     };
     getData();
-  }, [dispatch, hotelId, customers]);
+  }, [dispatch]);
+  console.log(listReviews);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setReviewData({ ...reviewData, [name]: value });
   };
 
+  const handleRatingChange = (newRating) => {
+    setReviewData({ ...reviewData, rating: newRating });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createReview({ reviewData, customers }));
-    setReviewData({ rating: '', comment: '' });
+    if (customers) {
+      dispatch(createReview({ reviewData, customers }));
+      setReviewData({ rating: 0, comment: '' });
+    } else {
+      toast.warning('Vui lòng đăng nhập để bình luận');
+    }
   };
 
   const handleComment = () => {
-    setShowReview((prev) => !prev);
+    if (customers) {
+      setShowReview((prev) => !prev);
+    } else {
+      toast.warning('Vui lòng đăng nhập để bình luận');
+    }
   };
+  console.log();
 
   return (
     <div className="container mx-auto p-4">
+      <ToastContainer icon={true} />
       <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
 
       <Swiper spaceBetween={20} slidesPerView={3} className="pb-4">
@@ -63,7 +79,12 @@ const Reviews = ({ hotelId }) => {
                   </div>
                 </div>
                 <p className="mt-2 text-sm italic">“{review.comment}”</p>
-                <p className="text-sm mt-2">Rating: {review.rating}</p>
+                <ReactStars
+                  value={review.rating}
+                  onChange={handleRatingChange}
+                  size={24}
+                  activeColor="#ffd700"
+                />
               </div>
             </SwiperSlide>
           ))
@@ -93,16 +114,12 @@ const Reviews = ({ hotelId }) => {
             >
               Rating:
             </label>
-            <input
-              id="rating"
-              type="number"
-              name="rating"
+            <ReactStars
+              count={5}
               value={reviewData.rating}
-              onChange={handleChange}
-              min="1"
-              max="5"
-              required
-              className="w-full border-gray-300 border rounded-lg px-3 py-2"
+              onChange={handleRatingChange}
+              size={24}
+              activeColor="#ffd700"
             />
           </div>
           <div className="mb-4">

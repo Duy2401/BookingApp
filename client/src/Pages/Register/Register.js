@@ -1,16 +1,17 @@
-import { useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { CustomerRegister } from "../../redux/customersSlice";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Button from "../../components/Button/button";
+import { useState, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { CustomerRegister } from '../../redux/customersSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Button from '../../components/Button/button';
 function Register() {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.customers);
   const [initialFormState, setInitialFormState] = useState({
-    customer_name: "",
-    customer_email: "",
-    customer_password: "",
+    customer_name: '',
+    customer_email: '',
+    customer_password: '',
+    isRole: 3,
   });
   const [body, setBody] = useState(initialFormState);
 
@@ -18,9 +19,9 @@ function Register() {
     e.preventDefault();
     try {
       const data = await dispatch(CustomerRegister(body));
-      if (data.meta.requestStatus === "fulfilled")
-        toast.success("Đăng ký tài khoản thành công");
-      if (data.meta.requestStatus === "rejected") toast.error(error);
+      if (data.meta.requestStatus === 'fulfilled')
+        toast.success('Đăng ký tài khoản thành công');
+      if (data.meta.requestStatus === 'rejected') toast.error(error);
       setBody(initialFormState);
     } catch (error) {}
   };

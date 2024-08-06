@@ -11,9 +11,15 @@ router.post(
 
 // Lấy thông tin đơn đặt phòng
 router.get(
-  '/getbookings/:id',
+  '/getbookingofcustomer/:id',
   middlewareControlle.verifyToken,
-  bookingController.getBooking
+  bookingController.getBookingOfCustomer
+);
+
+router.get(
+  '/getbookingofhotel/:id',
+  middlewareControlle.verifyToken,
+  bookingController.getBookingOfHotel
 );
 
 // Cập nhật trạng thái thanh toán

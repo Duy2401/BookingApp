@@ -52,14 +52,10 @@ export const deleteReview = createAsyncThunk(
 // Lấy tất cả đánh giá
 export const fetchAllReviews = createAsyncThunk(
   'reviews/fetchAllReviews',
-  async ({ hotelID, customers }, { rejectWithValue, dispatch }) => {
+  async ({ hotelID }, { rejectWithValue, dispatch }) => {
     try {
-      const axiosInstance = createAxiosInstance(customers, dispatch);
-      const response = await axiosInstance.get(
-        `/review/getreviews/${hotelID}`,
-        {
-          headers: { token: `Bearer ${customers?.accessToken}` },
-        }
+      const response = await axios.get(
+        `http://localhost:8000/api/review/getreviews/${hotelID}`
       );
       return response.data;
     } catch (error) {

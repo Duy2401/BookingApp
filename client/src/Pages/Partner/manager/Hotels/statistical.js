@@ -22,7 +22,7 @@ const Statistical = ({ hotelID }) => {
     <div className="mt-5">
       <h2 className="text-2xl font-bold mb-4">Thống kê doanh thu</h2>
       <div>
-        {chartData.map((data, index) => (
+        {chartData?.map((data, index) => (
           <div key={index}>
             <span className="bg-gray-100 inline-block text-gray-800 text-base font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
               <div>

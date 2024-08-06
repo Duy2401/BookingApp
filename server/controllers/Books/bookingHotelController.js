@@ -59,12 +59,68 @@ const BookingController = {
   },
 
   // Lấy thông tin đơn đặt phòng
-  getBooking: async (req, res) => {
+  getBookingOfCustomer: async (req, res) => {
     const customerId = new mongoose.Types.ObjectId(req.params.id);
     try {
       // Find all hotel bookings for the specified customer
       const hotelBookings = await HotelBooking.find({
         customer: customerId,
+      })
+        .populate('hotelID')
+        .populate('customer')
+        .populate({
+          path: 'rooms',
+          populate: { path: 'roomId' },
+        })
+        .lean();
+
+      if (hotelBookings.length === 0) {
+        return res.status(404).json({
+          status: false,
+          message: 'No bookings found for this customer',
+        });
+      }
+
+      // Extract all orderIds from hotelBookings
+      const orderIds = hotelBookings.map((booking) => booking._id);
+
+      // Find all payments related to these bookings
+      const payments = await Payment.find({
+        orderId: { $in: orderIds },
+      }).lean();
+
+      // Create a map of payments by orderId for easy lookup
+      const paymentMap = payments.reduce((map, payment) => {
+        map[payment.orderId.toString()] = payment;
+        return map;
+      }, {});
+
+      // Combine hotel bookings with their related payments
+      const combinedBookings = hotelBookings.map((booking) => ({
+        ...booking,
+        payment: paymentMap[booking._id.toString()] || null,
+      }));
+
+      return res.json({
+        status: true,
+        message: 'Get Data',
+        data: combinedBookings,
+      });
+    } catch (error) {
+      console.error('Error fetching booking:', error);
+      return res
+        .status(500)
+        .json({ status: false, message: 'Error fetching booking', error });
+    }
+  },
+
+  // Lấy thông tin đơn đặt phòng
+  getBookingOfHotel: async (req, res) => {
+    const hotelID = new mongoose.Types.ObjectId(req.params.id);
+    try {
+      // Find all hotel bookings for the specified customer
+      const hotelBookings = await HotelBooking.find({
+        hotelID: hotelID,
       })
         .populate('hotelID')
         .populate('customer')

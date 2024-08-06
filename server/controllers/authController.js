@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const Customers = require("../models/People/customers");
-const { setValue, getValue, DelTokeLogout } = require("../helpers/WorkData");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const Customers = require('../models/People/customers');
+const { setValue, getValue, DelTokeLogout } = require('../helpers/WorkData');
 const AuthController = {
   CreateAccessToken: (user) => {
     return jwt.sign(
@@ -11,7 +11,7 @@ const AuthController = {
       },
       process.env.KEY_ACCESS_TOKEN,
       {
-        expiresIn: "10s",
+        expiresIn: '10s',
       }
     );
   },
@@ -23,7 +23,7 @@ const AuthController = {
       },
       process.env.KEY_REFRESH_TOKEN,
       {
-        expiresIn: "7d",
+        expiresIn: '7d',
       }
     );
   },
@@ -40,7 +40,7 @@ const AuthController = {
         customer_address: req.body.customer_address,
         customer_email: req.body.customer_email,
         customer_password: hashed,
-        customer_role: req.body.customer_role,
+        customer_role: 3,
         customer_dateOfBirth: req.body.customer_dateOfBirth,
       });
       const customers = await NewCustomer.save();
@@ -48,7 +48,7 @@ const AuthController = {
     } catch (error) {
       return res.status(500).json({
         status: true,
-        message: "Emaill valided",
+        message: 'Emaill valided',
         data: error,
       });
     }
@@ -58,22 +58,22 @@ const AuthController = {
       const customers = await Customers.findOne({
         customer_email: req.body.customer_email,
       });
-      if (!customers) return res.status(404).json({ message: "Wrong Email" });
+      if (!customers) return res.status(404).json({ message: 'Wrong Email' });
 
       const valiPass = await bcrypt.compare(
         req.body.customer_password,
         customers.customer_password
       );
-      if (!valiPass) return res.status(404).json({ message: "Wrong Password" });
+      if (!valiPass) return res.status(404).json({ message: 'Wrong Password' });
       if (customers && valiPass) {
         const accessToken = AuthController.CreateAccessToken(customers);
         const refreshToken = AuthController.CreateRefreshToken(customers);
         await setValue(customers._id.toString(), refreshToken);
-        res.cookie("rfr", refreshToken, {
+        res.cookie('rfr', refreshToken, {
           httpOnly: true,
           secure: false,
-          path: "/",
-          sameSite: "strict",
+          path: '/',
+          sameSite: 'strict',
         });
         const { password, ...others } = customers._doc;
         const returnedCustomers = {
@@ -82,14 +82,14 @@ const AuthController = {
         };
         return res.status(200).json({
           status: true,
-          message: "Login in Successfully",
+          message: 'Login in Successfully',
           data: returnedCustomers,
         });
       }
     } catch (err) {
       return res.status(500).json({
         status: true,
-        message: "Your session is not valid",
+        message: 'Your session is not valid',
         data: err,
       });
     }
@@ -115,28 +115,28 @@ const AuthController = {
       if (oldRefreshToken !== refreshToken) {
         return res.status(403).json({
           status: true,
-          message: "Invalid refresh token",
+          message: 'Invalid refresh token',
         });
       }
       const newAccessToken = AuthController.CreateAccessToken(decoded);
       const newRefreshToken = AuthController.CreateRefreshToken(decoded);
       await setValue(decoded.id, newRefreshToken);
-      res.cookie("rfr", newRefreshToken, {
+      res.cookie('rfr', newRefreshToken, {
         httpOnly: true,
         secure: false,
-        path: "/",
-        sameSite: "strict",
+        path: '/',
+        sameSite: 'strict',
       });
 
       return res.status(200).json({
         status: true,
-        message: "Request RefreshToken Successfully",
+        message: 'Request RefreshToken Successfully',
         data: { accessToken: newAccessToken },
       });
     } catch (error) {
       return res.status(500).json({
         status: true,
-        message: "Your session is not valid",
+        message: 'Your session is not valid',
         data: error,
       });
     }
@@ -146,13 +146,13 @@ const AuthController = {
     const idUser = req.body;
     try {
       await DelTokeLogout(idUser);
-      res.clearCookie("rfr", {
+      res.clearCookie('rfr', {
         httpOnly: true,
         secure: false,
-        path: "/",
-        sameSite: "strict",
+        path: '/',
+        sameSite: 'strict',
       });
-      return res.status(200).json({ message: "Logout Successfully" });
+      return res.status(200).json({ message: 'Logout Successfully' });
     } catch (error) {
       return res.status(500).json({ message: error });
     }

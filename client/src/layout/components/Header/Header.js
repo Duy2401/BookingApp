@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { locales } from "../../../i18n/i18n";
-import { useSelector } from "react-redux";
-import SvgIcon from "../../../components/SvgIcon/SvgIcon";
-import Button from "../../../components/Button/button";
-import { UserProfile } from "./userProfile/userProfile";
-import { ReactComponent as Question } from "../../../assets/icons/Question.svg";
-import { ReactComponent as Notification } from "../../../assets/icons/Notification.svg";
-import VNflag from "../../../assets/images/VN.png";
-import USAflag from "../../../assets/images/USA.png";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { locales } from '../../../i18n/i18n';
+import { useSelector } from 'react-redux';
+import SvgIcon from '../../../components/SvgIcon/SvgIcon';
+import Button from '../../../components/Button/button';
+import { UserProfile } from './userProfile/userProfile';
+import { ReactComponent as Question } from '../../../assets/icons/Question.svg';
+import { ReactComponent as Notification } from '../../../assets/icons/Notification.svg';
+import VNflag from '../../../assets/images/VN.png';
+import USAflag from '../../../assets/images/USA.png';
 function Header() {
   const { customers } = useSelector((state) => state.customers);
   const { t, i18n } = useTranslation();
@@ -27,7 +27,7 @@ function Header() {
       <div className="flex items-center text-white h-h_48 mx-44 font-Nunito">
         <div className="logo flex-grow">
           <Button href="/" className="font-Nunito font-bold text-3xl">
-            Booking.com
+            bOOkhOTels
           </Button>
         </div>
         <div className="flex items-center h-full">
@@ -73,7 +73,7 @@ function Header() {
                     <img className="w-6 h-6" alt="flag error" src={VNflag} />
                     <Button
                       className=" px-4 py-2 text-base text-gray-700"
-                      onClick={() => changeLanguage("vi")}
+                      onClick={() => changeLanguage('vi')}
                     >
                       Tiếng Việt
                     </Button>
@@ -82,7 +82,7 @@ function Header() {
                     <img className="w-6 h-6" src={USAflag} alt="flag error" />
                     <Button
                       className=" px-4 py-2 text-base text-gray-700"
-                      onClick={() => changeLanguage("en")}
+                      onClick={() => changeLanguage('en')}
                     >
                       English
                     </Button>
@@ -116,13 +116,13 @@ function Header() {
                 href="/sign-in"
                 className="flex items-center hover:bg-bgHover text-base min-w-20 px-2 rounded h-full"
               >
-                {t("common.button.signin")}
+                {t('common.button.signin')}
               </Button>
               <Button
                 href="/register"
                 className="flex items-center hover:bg-bgHover text-base min-w-20 px-2 ml-2 rounded h-full"
               >
-                {t("common.button.register")}
+                {t('common.button.register')}
               </Button>
             </div>
           )}

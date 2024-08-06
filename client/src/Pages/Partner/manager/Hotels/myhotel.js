@@ -3,14 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getDetailsHotel } from '../../../../redux/hotelsSlice';
 import Button from '../../../../components/Button/button';
-import { getBooking, UpdateBooking } from '../../../../redux/bookingsSlice';
+import {
+  getBookingOfHotel,
+  UpdateBooking,
+} from '../../../../redux/bookingsSlice';
 import Statistical from './statistical';
 import { toast } from 'react-toastify';
 const MyHotel = () => {
   const id = useParams();
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
-  const [hotelDetails, setHotelDetails] = useState(null);
+  const [hotelDetails, setHotelDetails] = useState([]);
   const [booking, setBooking] = useState([]);
   const [expandedProductId, setExpandedProductId] = useState(null);
 
@@ -20,10 +23,12 @@ const MyHotel = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await dispatch(getDetailsHotel({ idHotel: id.id }));
-      setHotelDetails([result.payload.data]);
+      setHotelDetails([result.payload?.data]);
     };
     const getBill = async () => {
-      const result = await dispatch(getBooking(customers));
+      const result = await dispatch(
+        getBookingOfHotel({ hotelID: id.id, customers })
+      );
       setBooking(result.payload?.data);
     };
     getBill();
@@ -46,6 +51,8 @@ const MyHotel = () => {
       maximumFractionDigits: 0,
     }).format(value);
   };
+  console.log(hotelDetails);
+
   return (
     <div className="relative">
       {hotelDetails?.map((hotel, index) => (
@@ -56,7 +63,7 @@ const MyHotel = () => {
                 <div className="grid gap-4">
                   <h1 className="text-2xl font-bold mb-2">Hình ảnh mô tả</h1>
                   <div className="flex gap-2 justify-around">
-                    {hotel.hotel_description.description_images.map(
+                    {hotel?.hotel_description?.description_images?.map(
                       (file, index) => (
                         <div key={index} className="mb-2">
                           <img

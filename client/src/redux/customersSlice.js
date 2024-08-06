@@ -1,13 +1,13 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { createAxiosInstance } from "../services/api";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { createAxiosInstance } from '../services/api';
 
 export const CustomerLogin = createAsyncThunk(
-  "customer/login",
+  'customer/login',
   async (customerAccount, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/auth/login",
+        'http://localhost:8000/api/auth/login',
         customerAccount,
         {
           withCredentials: true, // Đảm bảo rằng cookie được gửi cùng với yêu cầu
@@ -22,11 +22,11 @@ export const CustomerLogin = createAsyncThunk(
   }
 );
 export const CustomerRegister = createAsyncThunk(
-  "customer/register",
+  'customer/register',
   async (customerAccount, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/auth/register",
+        'http://localhost:8000/api/auth/register',
         customerAccount
       );
       return response.data;
@@ -36,11 +36,11 @@ export const CustomerRegister = createAsyncThunk(
   }
 );
 export const LogoutAccount = createAsyncThunk(
-  "customer/logout",
+  'customer/logout',
   async ({ customers }, { rejectWithValue, dispatch }) => {
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
-      const response = await axiosInstance.post("/auth/logout", customers._id, {
+      const response = await axiosInstance.post('/auth/logout', customers._id, {
         headers: { token: `Bearer ${customers?.accessToken}` },
       });
       localStorage.clear();
@@ -51,7 +51,7 @@ export const LogoutAccount = createAsyncThunk(
   }
 );
 export const EditProfileUser = createAsyncThunk(
-  "customer/edit",
+  'customer/edit',
   async (
     { customers, newCustomers, iduser },
     { rejectWithValue, dispatch }
@@ -71,10 +71,31 @@ export const EditProfileUser = createAsyncThunk(
     }
   }
 );
+export const RegisterPartner = createAsyncThunk(
+  'customer/RegisterPartner',
+  async ({ customers }, { rejectWithValue, dispatch }) => {
+    try {
+      console.log(customers.customer_email);
+
+      const axiosInstance = createAxiosInstance(customers, dispatch);
+      const response = await axiosInstance.put(
+        `/customer/register_partner/${customers?._id}`,
+        { customer_email: customers.customer_email },
+        {
+          headers: { token: `Bearer ${customers?.accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 const customersSlice = createSlice({
-  name: "customers",
+  name: 'customers',
   initialState: {
     customers: null,
+    changeRole: null,
     loading: false,
     error: null,
     success: false,
@@ -87,6 +108,24 @@ const customersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder
+      .addCase(RegisterPartner.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(RegisterPartner.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customers = {
+          ...state.customers,
+          ...action.payload.data,
+          accessToken: state.customers.accessToken,
+        };
+        state.success = true;
+      })
+      .addCase(RegisterPartner.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
     // LOGIN
     builder
       .addCase(CustomerLogin.pending, (state) => {

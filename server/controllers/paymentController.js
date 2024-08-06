@@ -159,7 +159,7 @@ const paymentController = {
           }
         }
 
-        res.json({
+        return res.status(200).json({
           status: true,
           message: 'Payment status updated',
           code: rspCode,

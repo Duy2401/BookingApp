@@ -22,13 +22,13 @@ export const createBooking = createAsyncThunk(
     }
   }
 );
-export const getBooking = createAsyncThunk(
-  'booking/getBooking',
+export const getBookingOfCustomer = createAsyncThunk(
+  'booking/getBookingOfCustomer',
   async (customers, { rejectWithValue, dispatch }) => {
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.get(
-        `/booking/getbookings/${customers._id}`,
+        `/booking/getbookingofcustomer/${customers._id}`,
         {
           headers: {
             token: `Bearer ${customers?.accessToken}`,
@@ -41,6 +41,26 @@ export const getBooking = createAsyncThunk(
     }
   }
 );
+export const getBookingOfHotel = createAsyncThunk(
+  'booking/getBookingOfHotel',
+  async ({ hotelID, customers }, { rejectWithValue, dispatch }) => {
+    try {
+      const axiosInstance = createAxiosInstance(customers, dispatch);
+      const response = await axiosInstance.get(
+        `/booking/getbookingofhotel/${hotelID}`,
+        {
+          headers: {
+            token: `Bearer ${customers?.accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const UpdateBooking = createAsyncThunk(
   'booking/updateBookings',
   async ({ bookingID, customers }, { rejectWithValue, dispatch }) => {
@@ -94,16 +114,30 @@ const bookingSlice = createSlice({
         state.error = action.payload;
       });
     builder
-      .addCase(getBooking.pending, (state) => {
+      .addCase(getBookingOfHotel.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getBooking.fulfilled, (state, action) => {
+      .addCase(getBookingOfHotel.fulfilled, (state, action) => {
         state.loading = false;
         state.bookings = action.payload.data;
         state.success = true;
       })
-      .addCase(getBooking.rejected, (state, action) => {
+      .addCase(getBookingOfHotel.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(getBookingOfCustomer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getBookingOfCustomer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bookings = action.payload.data;
+        state.success = true;
+      })
+      .addCase(getBookingOfCustomer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

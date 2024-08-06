@@ -1,14 +1,14 @@
-const middlewareControlle = require("../controllers/middlewareController");
-const Customers = require("../controllers/Service/customersController");
-const router = require("express").Router();
+const middlewareControlle = require('../controllers/middlewareController');
+const Customers = require('../controllers/Service/customersController');
+const router = require('express').Router();
 router.put(
-  "/edit_infor/:id",
+  '/edit_infor/:id',
   middlewareControlle.verifyToken,
   Customers.UpdateInfor
 );
-router.post(
-  "/register_partner",
-  middlewareControlle.verifyCustomer,
+router.put(
+  '/register_partner/:id',
+  middlewareControlle.verifyToken,
   Customers.RegisterPartner
 );
 module.exports = router;
