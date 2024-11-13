@@ -2,6 +2,7 @@ const Hotels = require('../../models/Hotel/hotels');
 const streamifier = require('streamifier');
 const cloudinary = require('../../configs/cloudinary');
 const RoomType = require('../../models/Hotel/roomType');
+const Review = require('../../models/review');
 const mongoose = require('mongoose');
 const HotelsController = {
   // HOTELS
@@ -264,6 +265,49 @@ const HotelsController = {
         message: 'Delete RoomType not successful',
         data: error,
       });
+    }
+  },
+
+  // getTopRatedHotels
+  getTopRatedHotels: async (req, res) => {
+    try {
+      // Lấy tất cả reviews và nhóm theo hotel_id
+      const reviews = await Review.aggregate([
+        {
+          $match: { booking_service_type: 'Hotel' }, // Chỉ lấy các review cho dịch vụ Hotel
+        },
+        {
+          $group: {
+            _id: '$booking_service_id',
+            averageRating: { $avg: '$rating' },
+            totalComments: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { averageRating: -1, totalComments: -1 }, // Sắp xếp theo rating trung bình và số lượng comment giảm dần
+        },
+        {
+          $limit: 10, // Giới hạn kết quả trả về, ví dụ: top 10 khách sạn
+        },
+      ]);
+
+      // Lấy thông tin chi tiết của các khách sạn
+      const hotelIds = reviews.map((review) => review._id);
+      const topHotels = await Hotels.find({ _id: { $in: hotelIds } });
+
+      // Gộp thông tin rating và comment vào thông tin khách sạn
+      const result = topHotels.map((hotel) => {
+        const review = reviews.find((r) => r._id.equals(hotel._id));
+        return {
+          ...hotel.toObject(),
+          averageRating: review.averageRating,
+          totalComments: review.totalComments,
+        };
+      });
+
+      return res.status(200).json({ status: true, data: result });
+    } catch (error) {
+      return res.status(500).json({ status: false, error: error.message });
     }
   },
 };

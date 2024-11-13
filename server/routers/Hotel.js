@@ -41,5 +41,5 @@ router.delete(
   middlewareControlle.verifyToken,
   HotelsController.DeleteRoomType
 );
-
+router.get('/top-rated-hotels', HotelsController.getTopRatedHotels);
 module.exports = router;

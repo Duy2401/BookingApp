@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import provinces from "../../../../locales/provinces.json";
+import { useEffect, useState } from 'react';
+import provinces from '../../../../locales/provinces.json';
 const Destinations = () => {
   const [desti, setDesti] = useState([]);
 

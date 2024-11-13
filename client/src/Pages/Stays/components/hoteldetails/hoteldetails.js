@@ -17,6 +17,13 @@ const HotelDetails = () => {
   const customer = useSelector((state) => state.customers?.customers);
   const [hotelDetails, setHotelDetails] = useState(null);
   const [bookingRooms, setBookingRooms] = useState([]);
+  const [totalRating, setTotalRating] = useState(0);
+  const [totalReview, setTotalReview] = useState(0);
+  const calculateTotalRating = (reviews) => {
+    const total = reviews.reduce((acc, review) => acc + review.rating, 0);
+    setTotalRating(total);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await dispatch(getDetailsHotel({ idHotel: aid }));
@@ -182,11 +189,11 @@ const HotelDetails = () => {
                 <div className="flex items-center p-3 w-full">
                   <div className="flex-1">
                     <h4 className="font-bold">Xuất sắc</h4>
-                    <div className="mr-2 text-xs">736 đánh giá</div>
+                    <div className="mr-2 text-xs">{totalReview} đánh giá</div>
                   </div>
                   <div>
                     <Button className="bg-backgroud p-1 text-white rounded-bl-none rounded-md">
-                      9,1
+                      {totalRating}
                     </Button>
                   </div>
                 </div>
@@ -309,7 +316,12 @@ const HotelDetails = () => {
               </Button>
             </div>
           </div>
-          <Review hotelId={hotel._id} />
+          <Review
+            hotelId={hotel._id}
+            setTotalReview={setTotalReview}
+            setTotalRating={setTotalRating}
+            calculateTotalRating={calculateTotalRating}
+          />
           <div className="my-6 mx-auto" id="rules">
             <div className="bg-white border-2 p-4 shadow-md rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Quy tắc chung</h2>

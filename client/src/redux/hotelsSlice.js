@@ -1,16 +1,16 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createAxiosInstance } from "../services/api";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAxiosInstance } from '../services/api';
+import axios from 'axios';
 // HOTELS
 export const CreateHotel = createAsyncThunk(
-  "hotels/create",
+  'hotels/create',
   async ({ newData, customers }, { rejectWithValue, dispatch }) => {
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
-      const response = await axiosInstance.post("/hotel/createhotel", newData, {
+      const response = await axiosInstance.post('/hotel/createhotel', newData, {
         headers: {
           token: `Bearer ${customers?.accessToken}`,
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
       return response.data;
@@ -21,7 +21,7 @@ export const CreateHotel = createAsyncThunk(
 );
 // SEARCH HOTELS
 export const SearchHotels = createAsyncThunk(
-  "hotels/searchhotel",
+  'hotels/searchhotel',
   async ({ keySearch }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
@@ -35,7 +35,7 @@ export const SearchHotels = createAsyncThunk(
 );
 
 export const getDetailsHotel = createAsyncThunk(
-  "hotels/getDetailsHotel",
+  'hotels/getDetailsHotel',
   async ({ idHotel }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
@@ -49,7 +49,7 @@ export const getDetailsHotel = createAsyncThunk(
 );
 // GET ALL HOTEL OF PARTNER
 export const GetAllHotelOfPartner = createAsyncThunk(
-  "hotels/GetAllHotelOfPartner",
+  'hotels/GetAllHotelOfPartner',
   async ({ customers }, { rejectWithValue, dispatch }) => {
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
@@ -69,12 +69,12 @@ export const GetAllHotelOfPartner = createAsyncThunk(
 );
 // ROOMS IN HOTELS
 export const AddRoomsHotel = createAsyncThunk(
-  "roomsType/Addrooms",
+  'roomsType/Addrooms',
   async ({ newRooms, customers }, { rejectWithValue, dispatch }) => {
     try {
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.post(
-        "/hotel/createroomtype",
+        '/hotel/createroomtype',
         newRooms,
         {
           headers: {
@@ -88,9 +88,21 @@ export const AddRoomsHotel = createAsyncThunk(
     }
   }
 );
-
+export const GetTopRatedHotels = createAsyncThunk(
+  'hotels/GetTopRatedHotels',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        'http://localhost:8000/api/hotel/top-rated-hotels'
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 const hotelsSlice = createSlice({
-  name: "hotels",
+  name: 'hotels',
   initialState: {
     hotels: null,
     hotelsType: null,
@@ -102,6 +114,20 @@ const hotelsSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
+    builder
+      .addCase(GetTopRatedHotels.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetTopRatedHotels.fulfilled, (state, action) => {
+        state.loading = false;
+        state.hotels = action.payload.data;
+        state.success = true;
+      })
+      .addCase(GetTopRatedHotels.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
     // GET DETAILS HOTELS
     builder
       .addCase(getDetailsHotel.pending, (state) => {

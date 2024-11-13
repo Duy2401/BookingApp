@@ -6,7 +6,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import Button from '../../../../components/Button/button';
 import { toast, ToastContainer } from 'react-toastify';
 
-const Reviews = ({ hotelId }) => {
+const Reviews = ({
+  hotelId,
+  setTotalRating,
+  calculateTotalRating,
+  setTotalReview,
+}) => {
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.customers?.customers);
   const [listReviews, setListReviews] = useState([]);
@@ -25,6 +30,9 @@ const Reviews = ({ hotelId }) => {
         fetchAllReviews({ hotelID: hotelId, customers })
       );
       setListReviews(result.payload);
+      setTotalRating(result.payload);
+      setTotalReview(listReviews.length);
+      calculateTotalRating(result.payload);
     };
     getData();
   }, [dispatch]);

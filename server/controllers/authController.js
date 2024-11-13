@@ -75,6 +75,7 @@ const AuthController = {
           path: '/',
           sameSite: 'strict',
         });
+
         const { password, ...others } = customers._doc;
         const returnedCustomers = {
           ...others,
