@@ -4,12 +4,8 @@ const CustomersController = {
   // Đăng ký đối tác
   RegisterPartner: async (req, res) => {
     try {
-      const { customer_email } = req.body;
-      const { id } = req.params;
-
       // Tìm khách hàng bằng email và ID
-      const customer = await Customers.findOne({ customer_email, _id: id });
-
+      const customer = await Customers.findOne(req.body.customer_email);
       if (!customer) {
         return res.status(404).json({
           status: false,
@@ -18,11 +14,10 @@ const CustomersController = {
       }
 
       // Cập nhật vai trò của khách hàng
-      customer.isRole = 1;
+      customer.isRole = 3;
       await customer.save();
-
       // Kiểm tra lại dữ liệu sau khi lưu
-      const updatedCustomer = await Customers.findById(id);
+      const updatedCustomer = await Customers.findOne(req.body.customer_email);
 
       return res.status(200).json({
         status: true,

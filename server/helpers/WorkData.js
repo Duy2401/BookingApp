@@ -6,7 +6,6 @@ const setValue = async (key, value) => {
     if (!redisClient.isOpen) {
       await redisClient.connect();
     }
-    console.log('Setting key:', key, 'with value:', JSON.stringify(value));
     await redisClient.set(key, JSON.stringify(value));
     console.log('Value set in Redis successfully');
   } catch (error) {

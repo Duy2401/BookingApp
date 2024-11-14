@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import InputField from "../../components/InputField/InputField";
-import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { EditProfileUser } from "../../redux/customersSlice";
-import { toast, ToastContainer } from "react-toastify";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import InputField from '../../components/InputField/InputField';
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { EditProfileUser } from '../../redux/customersSlice';
+import { toast, ToastContainer } from 'react-toastify';
 function AccountInfor() {
   const id = useParams();
   const dispatch = useDispatch();
@@ -14,12 +14,12 @@ function AccountInfor() {
     setFormData(initialFormData);
   }, []);
   const initialFormData = {
-    customer_name: customers?.customer_name || "",
-    customer_gender: customers?.customer_gender || "",
-    customer_phone: customers?.customer_phone || "",
-    customer_address: customers?.customer_address || "",
-    customer_email: customers?.customer_email || "",
-    customer_dateOfBirth: customers?.customer_dateOfBirth || "",
+    customer_name: customers?.customer_name || '',
+    customer_gender: customers?.customer_gender || '',
+    customer_phone: customers?.customer_phone || '',
+    customer_address: customers?.customer_address || '',
+    customer_email: customers?.customer_email || '',
+    customer_dateOfBirth: customers?.customer_dateOfBirth || '',
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -38,9 +38,9 @@ function AccountInfor() {
         EditProfileUser({ customers, newCustomers: formData, iduser: idUser })
       );
       if (data.payload.status)
-        return toast.success("Thay đổi thông tin thành công");
+        return toast.success('Thay đổi thông tin thành công');
       if (!data.payload.status)
-        return toast.success("Thay đổi thông tin thất bại");
+        return toast.success('Thay đổi thông tin thất bại');
       return data;
     } catch (error) {}
   };
@@ -70,6 +70,7 @@ function AccountInfor() {
           value={formData.customer_email}
           onChange={handleChange}
           disabled
+          className={'text-gray-300 select-none'}
         />
         <InputField
           label="Số điện thoại"

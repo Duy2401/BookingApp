@@ -7,7 +7,7 @@ router.put(
   Customers.UpdateInfor
 );
 router.put(
-  '/register_partner/:id',
+  '/register_partner',
   middlewareControlle.verifyToken,
   Customers.RegisterPartner
 );

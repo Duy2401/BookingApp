@@ -73,14 +73,12 @@ export const EditProfileUser = createAsyncThunk(
 );
 export const RegisterPartner = createAsyncThunk(
   'customer/RegisterPartner',
-  async ({ customers }, { rejectWithValue, dispatch }) => {
+  async ({ customersEmail, customers }, { rejectWithValue, dispatch }) => {
     try {
-      console.log(customers.customer_email);
-
       const axiosInstance = createAxiosInstance(customers, dispatch);
       const response = await axiosInstance.put(
-        `/customer/register_partner/${customers?._id}`,
-        { customer_email: customers.customer_email },
+        '/customer/register_partner',
+        { customersEmail },
         {
           headers: { token: `Bearer ${customers?.accessToken}` },
         }

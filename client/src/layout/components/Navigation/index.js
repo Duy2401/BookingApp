@@ -34,7 +34,7 @@ const Navigations = () => {
         </Button>
 
         <Button
-          href={customers?.isRole === 1 ? '/partner/myhotel' : '/partner'}
+          href={customers?.isRole === 3 ? '/partner/myhotel' : '/partner'}
           className={
             location.pathname === '/partner/myhotel'
               ? 'flex p-3 ml-3 text-base items-center hover:bg-bgHover  bg-bgHover rounded-3xl'

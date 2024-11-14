@@ -18,7 +18,6 @@ const ManagerHotels = () => {
     };
     getListHotels();
   }, [dispatch, customers]);
-  console.log(listHotel.length);
 
   return (
     <div className="p-4">

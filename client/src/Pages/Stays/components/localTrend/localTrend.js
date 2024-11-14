@@ -15,10 +15,12 @@ import { GetTopRatedHotels } from '../../../../redux/hotelsSlice';
 const LocalTrend = () => {
   const dispatch = useDispatch();
   const { hotels, loading, error } = useSelector((state) => state.hotels);
+  const [listHotel, setListHotel] = useState([]);
   useEffect(() => {
     dispatch(GetTopRatedHotels());
+    setListHotel(hotels);
   }, [dispatch]);
-  console.log(hotels);
+  console.log(listHotel);
   return (
     <div className="font-Nunito mt-10">
       <div>
@@ -42,7 +44,7 @@ const LocalTrend = () => {
         }}
         className="pb-4"
       >
-        {hotels?.map((hotel, index) => (
+        {listHotel?.map((hotel, index) => (
           <SwiperSlide>
             <a href={`/stays/${hotel._id}`} key={index}>
               <div className=" hover:cursor-pointer mb-2.5 card min-w-max rounded overflow-hidden flex flex-col items-center shadow-lg h-full">
